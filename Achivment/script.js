@@ -114,14 +114,14 @@ for (const key in achievements) {
     if (achivment.point != 0) {
       li.innerHTML = `
           <a class="hexIn">
-              <img src="../img/achivment/${achivment.img}.png" alt="${key}">
+              <img src="img/achivment/${achivment.img}.png" alt="${key}">
               <h1 id="title">${key}</h1>
               <p id="description">${achivment.description}<br><b><small>Награда:<br>${achivment.point} б.</small><b></p>
           </a>
       `;} else {
         li.innerHTML = `
           <a class="hexIn">
-              <img src="../img/achivment/${achivment.img}.png" alt="${key}">
+              <img src="img/achivment/${achivment.img}.png" alt="${key}">
               <h1 id="title">${key}</h1>
               <p id="description">${achivment.description}</p>
           </a>

@@ -111,12 +111,13 @@ body::-webkit-scrollbar-thumb:hover {
 }
 #raiting { 
   background-color: #268BC1; /* Дерево навыков */
+  
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 #tree {
   background-color: #2AAD89; /* Достижения */
   
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
 }
 #achivment {
   background-color: #67C0B9 /* рейтинг */
