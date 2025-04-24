@@ -469,7 +469,7 @@ branches.forEach((branch, index) => {
         // Добавляем изображение, если оно есть
         if (data[branch].topics[topic].img) {
             const img = document.createElement('img');
-            img.src = "img/Topics/" + data[branch].topics[topic].img; // Путь к изображению
+            img.src = "../img/Topics/" + data[branch].topics[topic].img; // Путь к изображению
             topicBlock.appendChild(img); // Добавляем изображение в кнопку
         }
 
