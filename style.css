@@ -1,0 +1,247 @@
+body {
+  background: linear-gradient(230deg, #00F8BE, #2A96FB);
+  background-size: 300% 300%;
+  -webkit-animation: 20s ease infinite;
+  -moz-animation: 20s ease infinite;
+  -o-animation: 20s ease infinite;
+  animation: 20s ease infinite;
+  background: transparent linear-gradient(47deg, #00F8BE, #2A96FB) repeat scroll 0% 0% / 200% 200%;
+  animation: 10s ease 0s normal none infinite running CustomAnimation;
+  margin: 0; /* Убираем стандартные отступы body */
+}
+/* Анимация заднего фона -------------------------------------------------------------------------------- */
+@keyframes CustomAnimation {
+  0% {
+    background-position: 0% 53%;
+  }
+  50% {
+    background-position: 100% 48%;
+  }
+  100% {
+    background-position: 0% 53%;
+  }
+}
+/* Анимация заднего фона -------------------------------------------------------------------------------- */
+
+/* Скролл бар -------------------------------------------------------------------------------- */
+body::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+body::-webkit-scrollbar-track {
+  background: rgb(74, 125, 125); /* Цвет трека */
+}
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8); 
+} 
+/* Скролл бар -------------------------------------------------------------------------------- */
+
+/* Логотип -------------------------------------------------------------------------------- */
+#logo-container {
+  position: fixed; /* Фиксированное позиционирование */
+  bottom: 0; /* Прижимаем к нижней части */
+  left: 0; /* Прижимаем к левому краю */
+  width: 1100px; /* Ширина контейнера */
+  height: 1100px; /* Высота контейнера */
+  overflow: hidden; /* Скрываем часть логотипа */
+  z-index: -10;
+}
+
+#logo-img {
+  position: absolute; /* Абсолютное позиционирование внутри контейнера */
+  bottom: -45%; /* Прижимаем к нижней части контейнера */
+  left: -45%; /* Прижимаем к левому краю контейнера */
+  width: 90%; /* Увеличиваем ширину для показа 1/4 */
+  height: auto; /* Автоматическая высота */
+  filter: opacity(0.4);
+  animation: rotate 20s linear infinite; /* Анимация вращения */
+}
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg); /* Начальное положение */
+  }
+  to {
+      transform: rotate(360deg); /* Конечное положение */
+  }
+}
+/* Логотип -------------------------------------------------------------------------------- */
+
+/* Кнопки -------------------------------------------------------------------------------- */
+.button-container {
+  position: fixed; /* Фиксированное позиционирование */
+  top: 0px; /* Отступ от верха */
+  left: 50%; /* Позиционируем по центру */
+  transform: translateX(-50%); /* Центрируем абсолютно */
+  height: 50px; /* Высота в обычном состоянии (видна только первая кнопка) */
+  
+  z-index: 10;
+
+  display: flex; /* Используем flexbox для выравнивания кнопок в ряд */
+  flex-direction: column-reverse; /* Располагаем кнопки вертикально */
+  align-items: center; /* Центрируем кнопки по горизонтали */
+  transition: height 0.3s ease; /* Анимация изменения высоты */
+  overflow: hidden; /* Скрываем остальные кнопки */
+}
+.button-container:hover {
+  height: 150px; /* Общая высота трех кнопок */
+}
+.button-container button {
+  cursor: pointer; /* Курсор в виде руки при наведении */
+
+  width: 300px; /* Фиксированная ширина кнопок */
+  display: inline-block; /* Отображаем как строчный элемент */
+  padding: 5px 20px; /* Отступы внутри кнопки */
+  border: 1px solid rgba(0,0,0,1);
+  box-sizing: border-box; /* Учитываем padding и border в ширине */
+  font-family: cursive;
+
+  color: white; /* Белый текст */
+  text-align: center; /* Выравниваем текст по центру */
+  font-size: 30px; /* Размер шрифта */
+   -webkit-text-stroke: 0.5px #000000;  /*Толщина и цвет обводки */
+   font-family: cursive;
+}
+.button-container button:hover {
+  opacity: 0.8; /* Небольшая прозрачность при наведении */
+}
+#raiting { 
+  background-color: #268BC1; /* Дерево навыков */
+}
+#tree {
+  background-color: #2AAD89; /* Достижения */
+  
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+#achivment {
+  background-color: #67C0B9 /* рейтинг */
+}
+/* Кнопки -------------------------------------------------------------------------------- */
+
+
+
+/* Основа страницы -------------------------------------------------------------------------------- */
+#flex-container {
+  display: flex; /* Устанавливаем flexbox */
+  height: calc(100vh - 50px); /* Высота контейнера на всю страницу, учитывая высоту кнопок */
+  margin-top: 50px; /* Отступ сверху для кнопок */
+  width: 100%;
+  flex-wrap: wrap;
+}
+#flex-container div {
+  background-color: rgba(0,0,0,0);
+  color: white;
+  font-family: cursive;
+  font-size: 25px;
+  flex: 1;
+  margin: '0';
+  padding: '10px';
+  border-top: 'none'; 
+  border-bottom: 'none'; 
+  position: 'relative';
+}
+#flex-container div div{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  min-width: 235px;
+}
+#flex-container div div button{
+  width: 60px;
+  height: 60px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 5px;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+#flex-container div div button img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+#info {
+  background-color: rgba(36, 202, 218, 0.778);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: auto;
+  width: 300px;
+}
+#flex-1 {
+  display: flex;
+  align-items: center;
+  justify-content:center;
+}
+#flex-2 {
+  margin-left: 10px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  min-width: auto;
+}
+#mark {
+  resize: none;
+  min-width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgb(45, 219, 45);
+  font-size: 40px;
+  border: 2px solid #000000;
+  margin: 10px;
+
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+#description {
+  width: 95%;
+  height: auto;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  
+  color: black;
+  
+  font-size: 20px;
+  font-family: monospace;
+  
+  text-align: center;
+}
+#points {
+  width: 100px;
+  height: 30px;
+  border-radius: 10px;
+  margin-top: -15px;
+  background-color: #E275E0;
+  border: 2px solid #000000;
+  font-size: 20px;
+
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+#title {
+  font-size: 25px;
+  color: white;
+  -webkit-text-stroke: 0.5px black; /* Толщина и цвет обводки (для браузеров, использующих движок WebKit, например Google Chrome) */
+
+}
+
+
+@media (max-width: 500px) {
+  body {
+    overflow-y:visible;
+  }
+}
+

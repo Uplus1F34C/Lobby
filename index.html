@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дерево навыков</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <!-- Кнопки -->
+    <div class="button-container">
+      <button id="tree" style="font-family: cursive ;">Дерево навыков</button>
+      <button id="achivment" onclick="location.href='../Achivment/index.html' " style="font-family: cursive ;">Достижения</button> <!-- Добавляем кнопку для информации -->
+      <button id="raiting" onclick="location.href='../Raiting/index.html'" style="font-family: cursive ;">Рейтинг</button>
+    </div>
+    <!-- Кнопки -->
+
+    <!-- Логотип -->
+    <div id="logo-container">
+      <img id="logo-img" src="../img/Кванториум.svg" alt="" />
+    </div>
+    <!-- Логотип -->
+
+
+
+    <!-- Контейнер для тем -->
+    <div id="flex-container"></div> 
+    <!-- Контейнер для тем -->
+
+    <!-- Блок информации о теме -->
+    <div id="info" style="display: none;">
+      <div id="flex-1">
+        <div id="flex-2">
+          <h2 id="title" style="font-family: cursive ;"><b>Название</b></h2>
+          <div id="points" style="font-family: cursive;">_/_</div>
+        </div>
+        <div id="mark" style="font-family: cursive;">_</div>
+      </div>
+      <div id="description" style="font-family: cursive;"><b>Описание</b></div>
+    </div>
+    <!-- Блок информации о теме -->
+
+    </body>
+  <script src="script.js"></script>
+</html>
