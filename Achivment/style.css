@@ -1,0 +1,398 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(230deg, #00F8BE, #2A96FB);
+  background-size: 300% 300%;
+  -webkit-animation: 20s ease infinite;
+  -moz-animation: 20s ease infinite;
+  -o-animation: 20s ease infinite;
+  animation: 20s ease infinite;
+  background: transparent linear-gradient(47deg, #00F8BE, #2A96FB) repeat scroll 0% 0% / 200% 200%;
+  animation: 10s ease 0s normal none infinite running CustomAnimation;
+  margin: 0; /* Убираем стандартные отступы body */
+}
+
+@keyframes CustomAnimation {
+  0% {
+    background-position: 0% 53%;
+  }
+  50% {
+    background-position: 100% 48%;
+  }
+  100% {
+    background-position: 0% 53%;
+  }
+}
+
+body::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+body::-webkit-scrollbar-track {
+  background: rgb(74, 125, 125); /* Цвет трека */
+}
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8); 
+} 
+
+#logo-container {
+  position: fixed; /* Фиксированное позиционирование */
+  bottom: 0; /* Прижимаем к нижней части */
+  left: 0; /* Прижимаем к левому краю */
+  width: 1100px; /* Ширина контейнера */
+  height: 1100px; /* Высота контейнера */
+  overflow: hidden; /* Скрываем часть логотипа */
+  z-index: -10;
+}
+
+#logo {
+  position: absolute; /* Абсолютное позиционирование внутри контейнера */
+  bottom: -45%; /* Прижимаем к нижней части контейнера */
+  left: -45%; /* Прижимаем к левому краю контейнера */
+  width: 90%; /* Увеличиваем ширину для показа 1/4 */
+  height: auto; /* Автоматическая высота */
+  filter: opacity(0.4);
+  animation: rotate 20s linear infinite; /* Анимация вращения */
+}
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg); /* Начальное положение */
+  }
+  to {
+      transform: rotate(360deg); /* Конечное положение */
+  }
+}
+
+/* КНОПКИ -------------------------------------------------------------------------------- */
+.button-container {
+  position: fixed; /* Фиксированное позиционирование */
+  top: 0px; /* Отступ от верха */
+  left: 50%; /* Позиционируем по центру */
+  transform: translateX(-50%); /* Центрируем абсолютно */
+  height: 50px; /* Высота в обычном состоянии (видна только первая кнопка) */
+  
+  z-index: 10;
+
+  display: flex; /* Используем flexbox для выравнивания кнопок в ряд */
+  flex-direction: column-reverse; /* Располагаем кнопки вертикально */
+  align-items: center; /* Центрируем кнопки по горизонтали */
+  transition: height 0.3s ease; /* Анимация изменения высоты */
+  overflow: hidden; /* Скрываем остальные кнопки */
+}
+.button-container:hover {
+  height: 180px; /* Общая высота трех кнопок */
+}
+.button-container button {
+  cursor: pointer; /* Курсор в виде руки при наведении */
+
+  width: 300px; /* Фиксированная ширина кнопок */
+  display: inline-block; /* Отображаем как строчный элемент */
+  padding: 10px 20px; /* Отступы внутри кнопки */
+  border: 1px solid rgba(0,0,0,1);
+  box-sizing: border-box; /* Учитываем padding и border в ширине */
+  font-family: cursive;
+
+  color: white; /* Белый текст */
+  text-align: center; /* Выравниваем текст по центру */
+  font-size: 30px; /* Размер шрифта */
+   -webkit-text-stroke: 0.5px #000000;  /*Толщина и цвет обводки */
+   font-family: cursive;
+}
+.button-container button:hover {
+  opacity: 0.8; /* Небольшая прозрачность при наведении */
+}
+#raiting { 
+  background-color: #268BC1; /* Дерево навыков */
+}
+#tree {
+  background-color: #2AAD89; /* Достижения */
+}
+#achivment {
+  background-color: #67C0B9; /* рейтинг */
+  
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+/* КНОПКИ -------------------------------------------------------------------------------- */
+
+
+
+#hexGrid {
+
+  overflow: hidden;
+  width: 75%;
+  margin: 0 auto;
+  margin-top: 45px;
+  padding:0.866% 0;
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+}
+#hexGrid:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.hex {
+  display: flex;
+
+  position: relative;
+  background-color: gray;
+  list-style-type: none;
+  float: left;
+  overflow: hidden;
+  visibility: hidden;
+  outline:1px solid transparent; /* fix for jagged edges in FF on hover transition */
+  -webkit-transform: rotate(-60deg) skewY(30deg) translatez(-1px);
+      -ms-transform: rotate(-60deg) skewY(30deg) translatez(-1px);
+          transform: rotate(-60deg) skewY(30deg) translatez(-1px);
+
+}
+
+.hex * {
+  position: absolute;
+  visibility: visible;
+  outline: 1px solid transparent; /* fix for jagged edges in FF on hover transition */
+}
+.hexIn {
+  display:block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+  -webkit-transform: skewY(-30deg) rotate(60deg);
+      -ms-transform: skewY(-30deg) rotate(60deg);
+          transform: skewY(-30deg) rotate(60deg);
+}
+
+/*** HEX CONTENT **********************************************************************/
+.hex img {
+  left: -100%;
+  right: -100%;
+  width: auto;
+  height: 50%;
+  margin: 0 auto;
+  margin-top: 25%;
+}
+
+.hex h1, .hex p {
+  width: 102%;
+  left:-1%; /* prevent line on the right where background doesn't cover image */
+  padding: 5%;
+  box-sizing:border-box;
+  font-family: cursive;
+  font-size: 1em;
+  background-color: rgba(0, 128, 128, 0.8);
+  font-weight: 300;
+  -webkit-transition:  -webkit-transform .2s ease-out, opacity .3s ease-out;
+          transition:          transform .2s ease-out, opacity .3s ease-out;
+}
+.hex h1 {
+  bottom: 60%;
+  padding-top:50%;
+  font-size: 1.3em;
+  z-index: 1;
+  -webkit-transform:translateY(-100%) translatez(-1px);
+      -ms-transform:translateY(-100%) translatez(-1px);
+          transform:translateY(-100%) translatez(-1px);
+}
+.hex h1:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 45%;
+  width: 10%;
+  text-align: center;
+  border-bottom: 1px solid #fff;
+}
+.hex p {
+  top: 40%;
+  padding-bottom:50%;
+  -webkit-transform:translateY(100%) translatez(-1px);
+      -ms-transform:translateY(100%) translatez(-1px);
+          transform:translateY(100%) translatez(-1px);
+}
+.hex p small{
+  margin-left: -24px;
+}
+
+/*** HOVER EFFECT  **********************************************************************/
+.hexIn:hover h1, .hexIn:focus h1,
+.hexIn:hover p, .hexIn:focus p{
+  -webkit-transform:translateY(0%) translatez(-1px);
+      -ms-transform:translateY(0%) translatez(-1px);
+          transform:translateY(0%) translatez(-1px);
+}
+
+/*** SPACING AND SIZING *****************************************************************/
+@media (min-width:1201px) { /* <- 5-4  hexagons per row */
+  .hex {
+      width: 19.2%; /* = (100-4) / 5 */
+      padding-bottom: 22.170%; /* =  width / sin(60deg) */
+  }
+  .hex:nth-child(9n+6),
+  .hex:nth-child(9n+7),
+  .hex:nth-child(9n+8),
+  .hex:nth-child(9n+9) {
+      margin-top: -4.676%;
+      margin-bottom: -4.676%;
+      -webkit-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+          -ms-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+              transform: translateX(50%) rotate(-60deg) skewY(30deg);
+  }
+  .hex:nth-child(9n+6):last-child,
+  .hex:nth-child(9n+7):last-child,
+  .hex:nth-child(9n+8):last-child,
+  .hex:nth-child(9n+9):last-child {
+      margin-bottom: 0;
+  }
+  .hex:nth-child(9n+6) {
+      margin-left: 0.5%;
+      clear: left;
+  }
+  .hex:nth-child(9n+10) {
+      clear: left;
+  }
+  .hex:nth-child(9n+2),
+  .hex:nth-child(9n+ 7) {
+      margin-left: 1%;
+      margin-right: 1%;
+  }
+  .hex:nth-child(9n+3),
+  .hex:nth-child(9n+4),
+  .hex:nth-child(9n+8) {
+      margin-right: 1%;
+  }
+}
+@media (max-width: 1200px) and (min-width:901px) {/* <- 4-3  hexagons per row */
+  .hex {
+      width: 24.25%; /* = (100-3) / 4 */
+      padding-bottom: 28.001%; /* =  width / sin(60deg) */
+  }
+  .hex:nth-child(7n+5),
+  .hex:nth-child(7n+6),
+  .hex:nth-child(7n+7) {
+      margin-top: -6.134%;
+      margin-bottom: -6.134%;
+      -webkit-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+          -ms-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+              transform: translateX(50%) rotate(-60deg) skewY(30deg);
+  }
+  .hex:nth-child(7n+5):last-child,
+  .hex:nth-child(7n+6):last-child,
+  .hex:nth-child(7n+7):last-child {
+      margin-bottom: 0;
+  }
+  .hex:nth-child(7n+2),
+  .hex:nth-child(7n+6) {
+      margin-left: 1%;
+      margin-right: 1%;
+  }
+  .hex:nth-child(7n+3) {
+      margin-right: 1%;
+  }
+  .hex:nth-child(7n+8) {
+      clear: left;
+  }
+  .hex:nth-child(7n+5) {
+      clear: left;
+      margin-left: 0.5%;
+  }
+}
+@media (max-width: 900px) and (min-width:601px) { /* <- 3-2  hexagons per row */
+  .hex {
+      width: 32.666%; /* = (100-2) / 3 */
+      padding-bottom: 37.720%; /* =  width / sin(60) */
+  }
+  .hex:nth-child(5n+4),
+  .hex:nth-child(5n+5) {
+      margin-top: -8.564%;
+      margin-bottom: -8.564%;
+      -webkit-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+          -ms-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+              transform: translateX(50%) rotate(-60deg) skewY(30deg);
+  }
+  .hex:nth-child(5n+4):last-child,
+  .hex:nth-child(5n+5):last-child {
+      margin-bottom: 0;
+  }
+  .hex:nth-child(5n+4) {
+      margin-right: 1%;
+      margin-left: 0.5%;
+  }
+  .hex:nth-child(5n+2) {
+      margin-left: 1%;
+      margin-right: 1%;
+  }
+  .hex:nth-child(5n+6) {
+      clear: left;
+  }
+}
+@media (max-width: 600px) { /* <- 2-1  hexagons per row */
+  #hexGrid {
+    width: 90%; }
+  
+  .hex {
+      width: 49.5%; /* = (100-1) / 2 */
+      padding-bottom: 57.158%; /* =  width / sin(60) */
+  }
+  .hex:nth-child(3n+3) {
+      margin-top: -13.423%;
+      margin-bottom: -13.423%;
+      -webkit-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+          -ms-transform: translateX(50%) rotate(-60deg) skewY(30deg);
+              transform: translateX(50%) rotate(-60deg) skewY(30deg);
+  }
+  .hex:nth-child(3n+3):last-child {
+      margin-bottom: 0;
+  }
+  .hex:nth-child(3n+3) {
+      margin-left: 0.5%;
+  }
+  .hex:nth-child(3n+2) {
+      margin-left: 1%;
+  }
+  .hex:nth-child(3n+4) {
+      clear: left;
+  }
+  #hexGrid {
+    font-size: 13px;
+}
+
+body {
+  overflow-y:visible;
+}
+
+  /* Добавляем стиль для адаптивного отображения блока информации */
+}
+
+
+
+@media (max-width: 700px) {
+  #logo-container {
+    position: fixed; /* Фиксированное позиционирование */
+    bottom: 0; /* Прижимаем к нижней части */
+    left: 0; /* Прижимаем к левому краю */
+    width: 1100px; /* Ширина контейнера */
+    height: 1100px; /* Высота контейнера */
+    overflow: hidden; /* Скрываем часть логотипа */
+    z-index: -10;
+  }
+  
+  #logo {
+    position: absolute; /* Абсолютное позиционирование внутри контейнера */
+    bottom: -30%; /* Прижимаем к нижней части контейнера */
+    left: -30%; /* Прижимаем к левому краю контейнера */
+    width: 60%; /* Увеличиваем ширину для показа 1/4 */
+    height: auto; /* Автоматическая высота */
+    filter: opacity(0.4);
+    animation: rotate 20s linear infinite; /* Анимация вращения */
+  }
+}

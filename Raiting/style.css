@@ -1,0 +1,462 @@
+body {
+  background: linear-gradient(230deg, #00F8BE, #2A96FB);
+  background-size: 300% 300%;
+  -webkit-animation: 20s ease infinite;
+  -moz-animation: 20s ease infinite;
+  -o-animation: 20s ease infinite;
+  animation: 20s ease infinite;
+  background: transparent linear-gradient(47deg, #00F8BE, #2A96FB) repeat scroll 0% 0% / 200% 200%;
+  animation: 10s ease 0s normal none infinite running CustomAnimation;
+  margin: 0; /* Убираем стандартные отступы body */
+}
+/* Анимация заднего фона -------------------------------------------------------------------------------- */
+
+@keyframes CustomAnimation {
+  0% {
+    background-position: 0% 53%;
+  }
+  50% {
+    background-position: 100% 48%;
+  }
+  100% {
+    background-position: 0% 53%;
+  }
+}
+/* Анимация заднего фона -------------------------------------------------------------------------------- */
+
+/* Скролл бар -------------------------------------------------------------------------------- */
+body::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+body::-webkit-scrollbar-track {
+  background: rgb(74, 125, 125); /* Цвет трека */
+}
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8); 
+} 
+/* Скролл бар -------------------------------------------------------------------------------- */
+
+/* Логотип -------------------------------------------------------------------------------- */
+#logo-container {
+  position: fixed; /* Фиксированное позиционирование */
+  bottom: 0; /* Прижимаем к нижней части */
+  left: 0; /* Прижимаем к левому краю */
+  width: 1100px; /* Ширина контейнера */
+  height: 1100px; /* Высота контейнера */
+  overflow: hidden; /* Скрываем часть логотипа */
+  z-index: -10;
+}
+
+#logo-img {
+  position: absolute; /* Абсолютное позиционирование внутри контейнера */
+  bottom: -45%; /* Прижимаем к нижней части контейнера */
+  left: -45%; /* Прижимаем к левому краю контейнера */
+  width: 90%; /* Увеличиваем ширину для показа 1/4 */
+  height: auto; /* Автоматическая высота */
+  filter: opacity(0.4);
+  animation: rotate 20s linear infinite; /* Анимация вращения */
+}
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg); /* Начальное положение */
+  }
+  to {
+      transform: rotate(360deg); /* Конечное положение */
+  }
+}
+/* Логотип -------------------------------------------------------------------------------- */
+
+/* Кнопки -------------------------------------------------------------------------------- */
+.button-container {
+  position: fixed; /* Фиксированное позиционирование */
+  top: 0px; /* Отступ от верха */
+  left: 50%; /* Позиционируем по центру */
+  transform: translateX(-50%); /* Центрируем абсолютно */
+  height: 50px; /* Высота в обычном состоянии (видна только первая кнопка) */
+  
+  z-index: 10;
+
+  display: flex; /* Используем flexbox для выравнивания кнопок в ряд */
+  flex-direction: column-reverse; /* Располагаем кнопки вертикально */
+  align-items: center; /* Центрируем кнопки по горизонтали */
+  transition: height 0.3s ease; /* Анимация изменения высоты */
+  overflow: hidden; /* Скрываем остальные кнопки */
+}
+.button-container:hover {
+  height: 150px; /* Общая высота трех кнопок */
+}
+.button-container button {
+  cursor: pointer; /* Курсор в виде руки при наведении */
+
+  width: 300px; /* Фиксированная ширина кнопок */
+  display: inline-block; /* Отображаем как строчный элемент */
+  padding: 5px 20px; /* Отступы внутри кнопки */
+  border: 1px solid rgba(0,0,0,1);
+  box-sizing: border-box; /* Учитываем padding и border в ширине */
+  font-family: cursive;
+
+  color: white; /* Белый текст */
+  text-align: center; /* Выравниваем текст по центру */
+  font-size: 30px; /* Размер шрифта */
+   -webkit-text-stroke: 0.5px #000000;  /*Толщина и цвет обводки */
+   font-family: cursive;
+}
+.button-container button:hover {
+  opacity: 0.8; /* Небольшая прозрачность при наведении */
+}
+#raiting { 
+  background-color: #268BC1; /* Дерево навыков */
+}
+#tree {
+  background-color: #2AAD89; /* Достижения */
+  
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+#achivment {
+  background-color: #67C0B9 /* рейтинг */
+}
+/* Кнопки -------------------------------------------------------------------------------- */
+
+
+
+#container {
+  display: flex;
+  height: calc(100vh);
+  margin-top: 0px;
+}
+
+#group {
+  width: 50%;
+  margin-left: 0; /* Убираем отступ слева */
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрируем студентов по горизонтали */
+
+  overflow-y: auto;
+  direction: rtl;
+}
+/* Стилизация скроллбара */
+#group::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+#group::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* Цвет трека */
+  border-radius: 4px;
+}
+#group::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+#group::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6); /* Цвет ползунка при наведении */
+}
+
+.student {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  height: 75px;
+  width: auto; /* Adjust width as needed */
+  color: black; /* Darker text color for readability */
+  direction: ltr; /* Возвращаем нормальное направление для содержимого */
+}
+.rank {
+  background-color: #00FFAE; /* Green background */
+  padding: 10px; /* Use position instead of clip-path for visible borders */
+  height: 30px;
+  min-width: 25px;
+  width: auto;
+  padding-right: 20px; /* Use position instead of clip-path for visible borders */
+  padding-left: 15px; /* Use position instead of clip-path for visible borders */
+  border: 2px solid black; /* Add visible border */
+  margin: 0;
+  transform: skew(-40deg); /* Skew to create parallelogram effect with visible borders */
+  display: flex;
+  align-items: center;
+}
+
+.text{
+  transform: skew(0deg); /* Skew to create parallelogram effect with visible borders */
+  text-align: center;
+}
+
+#group .rank {
+  padding-left: 20px;
+  padding-right: 15px;
+}
+
+.name {
+  background-color: #fff; /* White background */
+  padding: 10px; 
+  height: 20px;
+  min-width: 200px; /* Минимальная ширина 250 пикселей */
+  width: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: 2px solid black; /* Add visible border */
+  transform: skew(-40deg); /* Skew to create parallelogram effect with visible borders */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -10px;
+  z-index: 0;
+
+}
+.score {
+  background-color: #000; /* Black background */
+  padding: 10px;
+  height: 20px;
+  min-width: 20px;
+  width: auto;
+  padding-left: 15px;
+  
+  padding-right: 15px;
+  border: 2px solid rgb(255, 255, 255); /* Add visible border */
+  transform: skew(-40deg); /* Skew to create parallelogram effect с visible borders */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-left: -2px;
+  z-index: -1;
+}
+.text {
+  font-family: cursive;
+  font-size: 20px;
+  transform: skew(40deg)
+}
+
+/* ГРУППА -------------------------------------------------------------------------------- */
+/* ЛИДЕРЫ -------------------------------------------------------------------------------- */
+
+
+#leaders {
+  width: 50%;
+  margin-left: 0; /* Убираем отступ слева */
+  /* background-color: rgba(0,0,0,0.2); */
+  
+
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрируем студентов по горизонтали */
+
+  overflow-y: auto;
+  direction: rtl;
+}
+
+
+
+
+#leaders::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+#leaders::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* Цвет трека */
+  border-radius: 4px;
+}
+#leaders::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+#leaders::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6); /* Цвет ползунка при наведении */
+}
+
+#leaders .student {
+  padding: 0px;
+}
+#leaders .score {
+  min-width: 60px;
+}
+
+#zero .rank {
+  background-color: #00E6DA;
+}
+#first .rank {
+  background-color: #E6B800;
+}
+#second .rank {
+  background-color: #9AB3C5;
+}
+#third .rank {
+  background-color: #CB4000;
+}
+
+/* ЛИДЕРЫ -------------------------------------------------------------------------------- */
+/* НАГРАДЫ -------------------------------------------------------------------------------- */
+#gift {
+  display: flex;
+  
+  margin-top: auto; /* Pushes the element to the bottom of the flex container */
+}
+
+#gift div{
+  width: 100px;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.post img {
+  height: 75px;
+  width: 75px;
+  margin: auto;
+}
+#zero-gift {
+  background-color: #00E6DA;
+  height: 100px;
+  margin: 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+#zero-img {
+  margin-bottom: 10px;
+}
+#first-gift {
+  background-color: #E6B800;
+  height: 75px;
+  margin-top: 25px;
+  border-top-left-radius: 10px;
+}
+#first-img {
+  margin-bottom: -15px;
+}
+#second-gift {
+  background-color: #9AB3C5;
+  height: 50px;
+  margin-top: 50px;
+  border-top-right-radius: 10px;
+}
+#second-img {
+  margin-bottom: -40px;
+}
+#third-gift {
+  background-color: #CB4000;
+  height: 25px;
+  margin-top: 75px;
+  border-top-left-radius: 10px;
+}
+#third-img {
+  margin-bottom: -65px;
+}
+/* НАГРАДЫ -------------------------------------------------------------------------------- */
+#otstup {
+  height: 50px;
+  padding: 0px;
+  visibility: hidden;
+}
+
+
+/* Адаптивность -------------------------------------------------------------------------------- */
+@media (max-width: 1050px) {
+  #container * {
+    font-size: 18px;
+  }
+  .rank {
+    padding-right: 10px;
+    transform: skew(-20deg);
+  }
+  .name {
+    transform: skew(-20deg);
+  }
+  .score {
+    transform: skew(-20deg);
+  }
+  .text {
+    transform: skew(20deg)
+  }
+
+}
+
+@media (max-width: 970px) {
+  body {
+    overflow-y:visible;
+  }
+
+  #container {
+    flex-direction: column;
+  }
+
+  #group {
+    width: 100%;
+    overflow-y:visible;
+  }
+
+  #leaders {
+    width: 100%;
+    overflow-y:visible;
+  }
+
+  .student {
+    padding: 0;
+  }
+
+}
+
+@media (max-height: 550px) {
+  body {
+    overflow-y:visible;
+  }
+
+  #container {
+    flex-direction: column;
+  }
+
+  #group {
+    width: 100%;
+    overflow-y:visible;
+  }
+
+  #leaders {
+    width: 100%;
+    overflow-y:visible;
+  }
+
+  .student {
+    padding: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  #container * {
+    font-size: 15px;
+  }
+
+  #container div {
+    font-size: 18px;
+  }
+
+  #group .rank {
+    min-width: 40px;
+    padding-left: 4px;
+    padding-right: 8px;
+  }
+  
+  #leaders .rank {
+    min-width: 40px;
+    padding-left: 8px;
+    padding-right: 16px;
+  }
+  .name {
+    min-width: 170px;
+  }
+  .score {
+    min-width: 30px;
+    padding-left: 1;
+    padding-right: 1;
+  }
+
+}
+/* Адаптивность -------------------------------------------------------------------------------- */
