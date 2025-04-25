@@ -3,12 +3,11 @@ from sqlalchemy import create_engine, String
 
 from typing import Annotated
 
-# from config import settings
+from settings.config import settings
 
 #Движое алхимии
 engine = create_engine(
-    # url=settings.DATABASE_URL_pymysql,
-    url="mysql+pymysql://root:zjq.2-;HSOM4@localhost:3306/kvant_game",
+    url=settings.DATABASE_URL_pymysql,
     echo=False,
 )
 

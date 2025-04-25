@@ -1,8 +1,6 @@
 import os
 os.chdir("DataBase")
-
-
-import DataBase 
+import Func 
 from tabulate import tabulate
 
 from models import level, kvant
@@ -28,12 +26,12 @@ raiting_by_kvant - Получить рейтинг Кванта \n
     )
 
     if cmd == "reset":
-        print(DataBase.reset_base())
-        print(DataBase.insert_group())
+        print(Func.reset_base())
+        print(Func.insert_group())
 
     elif cmd == "add":
         print(
-            DataBase.insert_student(
+            Func.insert_student(
                 name=input("Имя: "),
                 surname=input("Фамилия: "),
                 patronymic=input("Отчество: "),
@@ -49,7 +47,7 @@ raiting_by_kvant - Получить рейтинг Кванта \n
     elif cmd == "test":
         for i in range(1, 17):
             print(
-                DataBase.insert_student(
+                Func.insert_student(
                 name=str("n" * i),
                 surname=str("s" * i),
                 patronymic=str("p" * i),
@@ -63,7 +61,7 @@ raiting_by_kvant - Получить рейтинг Кванта \n
             )
         for i in range(1, 17):
             print(
-                DataBase.insert_student(
+                Func.insert_student(
                 name=str("n2" * i),
                 surname=str("s2" * i),
                 patronymic=str("p2" * i),
@@ -78,7 +76,7 @@ raiting_by_kvant - Получить рейтинг Кванта \n
 
     elif cmd == "raiting_by_group":
         print(
-            DataBase.get_group_rating(
+            Func.get_group_rating(
                 level=input(f"Уровень -> ({', '.join([l.value for l in level])}): "),
                 kvant=input(f"Квант -> ({', '.join([l.value for l in kvant])}): "),
                 group_num=input("Группа: "),
@@ -86,14 +84,14 @@ raiting_by_kvant - Получить рейтинг Кванта \n
 
     elif cmd == "raiting_by_kvant":
         print(
-            DataBase.get_kvant_rating(
+            Func.get_kvant_rating(
                 level=input(f"Уровень -> ({', '.join([l.value for l in level])}): "),
                 kvant=input(f"Квант -> ({', '.join([l.value for l in kvant])}): ")
         ))
 
     elif cmd == "select":
         student_id = int(input("Введите ID студента: "))
-        student_info = DataBase.get_info_about_student(student_id)
+        student_info = Func.get_info_about_student(student_id)
         
         if isinstance(student_info, str):
             print(student_info)
@@ -124,16 +122,16 @@ raiting_by_kvant - Получить рейтинг Кванта \n
             print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
     elif cmd == "auth":
-        DataBase.authenticate(
+        Func.authenticate(
             input("Логин: "),
             input("Пароль: ")
             )
     
     elif cmd == "count":
-        print(DataBase.count_points())
+        print(Func.count_points())
 
     elif cmd == "register":
-        print(DataBase.register(
+        print(Func.register(
             input("CODE: "),
             input("login: "),
             input("password: "),
@@ -141,10 +139,10 @@ raiting_by_kvant - Получить рейтинг Кванта \n
         )
 
     elif cmd == "new_code":
-        print(DataBase.new_student_code(int(input("ID студента: "))))
+        print(Func.new_student_code(int(input("ID студента: "))))
 
     elif cmd == "delete":
-        print(DataBase.delete_student(int(input("ID студента: "))))
+        print(Func.delete_student(int(input("ID студента: "))))
 
     else: 
         print("Неизвестная команда")
