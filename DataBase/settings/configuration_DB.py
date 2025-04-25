@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, String
 
 from typing import Annotated
 
-from settings.config import settings
+from DataBase.settings.config import settings
 
 #Движое алхимии
 engine = create_engine(

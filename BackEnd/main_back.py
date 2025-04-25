@@ -4,7 +4,12 @@ from pydantic import BaseModel
 import jwt
 # from jwt.exceptions import InvalidKeyException
 
-from DataBase import Func ????
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from DataBase import Func
 
 app = FastAPI()
 

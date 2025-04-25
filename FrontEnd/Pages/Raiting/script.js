@@ -3,9 +3,6 @@ let kvants_raiting = [{'id': 6, 'name': 'Никита ', 'surname': 'Ивано�
 let groups_raiting = [{'id': 6, 'name': 'Никита ', 'surname': 'Иванов', 'point': 198}, {'id': 2, 'name': 'Анна ', 'surname': 'Сидорова ', 'point': 64}, {'id': 1, 'name': 'Александр', 'surname': 'Петров ', 'point': 50}, {'id': 5, 'name': 'Наталья ', 'surname': 'Кузнецова ', 'point': 45}, {'id': 7, 'name': 'Сергей ', 'surname': 'Попов ', 'point': 34}, {'id': 9, 'name': 'Анна ', 'surname': 'Романова ', 'point': 25}, {'id': 10, 'name': 'Мария ', 'surname': 'Соколова ', 'point': 17}, {'id': 11, 'name': 'Ольга ', 'surname': 'Васильева ', 'point': 15}, {'id': 12, 'name': 'Вика ', 'surname': 'Антонова ', 'point': 8}, {'id': 13, 'name': 'Никита ', 'surname': 'Рубцов ', 'point': 2}]
 
 
-
-
-
 const groupContainer = document.getElementById('group');
 const leadersContainer = document.getElementById('leaders').querySelector('#top');
 

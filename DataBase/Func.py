@@ -1,8 +1,12 @@
 import json, bcrypt, shutil, os
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 # from settings.database import Base, session_factory, engine
-from settings.database import Base, session_factory, engine
-from models import GroupClass, StudentClass, MarkClass, level, kvant
+from DataBase.settings.configuration_DB import Base, session_factory, engine
+from DataBase.settings.models import GroupClass, StudentClass, MarkClass, level, kvant
 
 # Сброс таблиц --------------------------------------------------------------------------
 def reset_base():
@@ -11,7 +15,7 @@ def reset_base():
         Base.metadata.drop_all(engine)
         
         # Очистка папки MARKS
-        marks_dir = "DATA\MARKS"
+        marks_dir = "DataBase\DATA\MARKS"
         if os.path.exists(marks_dir):
             for file in os.listdir(marks_dir):
                 file_path = os.path.join(marks_dir, file)
@@ -19,7 +23,7 @@ def reset_base():
                     os.unlink(file_path)
         
         # Очистка папки ACHIVMENT
-        marks_dir = "DATA\ACHIVMENT"
+        marks_dir = "DataBase\DATA\ACHIVMENT"
         if os.path.exists(marks_dir):
             for file in os.listdir(marks_dir):
                 file_path = os.path.join(marks_dir, file)
@@ -48,7 +52,7 @@ def insert_group():
                                 level=l,
                                 kvant=k,
                                 group_num=g,
-                                topics=f"DATA\TOPICS\{k.name}\{l.name}.json",
+                                topics=f"DataBase\DATA\TOPICS\{k.name}\{l.name}.json",
                             )
                             session.add(group)
                             
@@ -127,8 +131,8 @@ def insert_student(
             # Подключение оценок ------------------------------------------------
 
             # Подключение достижений ------------------------------------------------
-            achivment_file_path = os.path.join("DATA\ACHIVMENT", f"{Student.id}.json")
-            shutil.copy("DATA/EXEMPLE_ACHIVMENT.json", achivment_file_path)
+            achivment_file_path = os.path.join("DataBase\DATA\ACHIVMENT", f"{Student.id}.json")
+            shutil.copy("DataBase\DATA\EXEMPLE_ACHIVMENT.json", achivment_file_path)
             # Подключение достижений ------------------------------------------------
 
             # Создание оценок
@@ -238,7 +242,7 @@ def new_student_code(student_id: int):
                 session.rollback()
                 return f"> Студент с ID={student_id} не найден <"
             
-            from models import generate_random_code
+            from settings.models import generate_random_code
             code = generate_random_code()
             Student._code = code
 
@@ -300,8 +304,6 @@ def register(code: str, login: str, password: str):
                 Student.login = login
                 
                 Student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-                Student._code = "Использован"
 
                 session.commit()
 

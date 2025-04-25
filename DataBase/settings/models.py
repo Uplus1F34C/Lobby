@@ -6,7 +6,7 @@ from typing import Annotated
 from enum import Enum
 import secrets, string, bcrypt
 
-from settings.database import Base, str_256, str_32, session_factory
+from DataBase.settings.configuration_DB import Base, str_256, str_32, session_factory
 
 
 # Помощь --------------------------------------------------------------------------

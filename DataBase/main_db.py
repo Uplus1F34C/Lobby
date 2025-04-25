@@ -1,9 +1,12 @@
+import sys
 import os
-os.chdir("DataBase")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
 import Func 
 from tabulate import tabulate
 
-from models import level, kvant
+from DataBase.settings.models import level, kvant
 
 
 while True:
