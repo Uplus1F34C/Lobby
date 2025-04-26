@@ -5,7 +5,6 @@ if (window.Telegram && window.Telegram.WebApp) {
     const userId = tgWebApp.initDataUnsafe.user?.id;
     
     if (userId) {
-        alert("Telegram User ID:", userId);
         alert("Все данные initDataUnsafe:", Telegram.WebApp.initDataUnsafe);
         // Можно отправить этот ID на сервер или использовать в боте
     } else {
