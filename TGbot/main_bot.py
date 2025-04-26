@@ -23,7 +23,7 @@ async def cmd_start(message: Message):
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(
         text="Open Mini App",
-        web_app={"url": "https://uplus1f34c.github.io/Lobby/FrontEnd/Pages"}  # Передаём user_id в URL
+        web_app={"url": f"https://uplus1f34c.github.io/Lobby/FrontEnd/Pages?user_id={message.from_user.id}"}  # Передаём user_id в URL
         )
     )
     builder.add(InlineKeyboardButton(
