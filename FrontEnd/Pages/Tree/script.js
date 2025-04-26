@@ -1,23 +1,3 @@
-if (window.Telegram && window.Telegram.WebApp) {
-    const tgWebApp = window.Telegram.WebApp;
-    
-    // Получаем ID пользователя
-    const userId = tgWebApp.initDataUnsafe.user?.id;
-    
-    if (userId) {
-        console.log("Telegram id:", userId);
-        // Можно отправить этот ID на сервер или использовать в боте
-    } else {
-        console.log("User ID не доступен (пользователь не авторизован)");
-    }
-} else {
-    console.log("Telegram WebApp API не загружен");
-}
-
-
-
-
-
 let data = { 
     "1": {
         "title": "Введение в информационные технологии",
