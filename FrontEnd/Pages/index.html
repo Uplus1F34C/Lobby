@@ -45,11 +45,14 @@
 
 
     <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const user_id = urlParams.get('user_id');
-      if (user_id) {
-        alert("User ID: " + user_id);  // Или показываем в alert
-      }
+      // Разбиваем initData на параметры
+      const params = new URLSearchParams(initDataString);
+      const userJson = params.get('user'); // получаем URL-encoded JSON
+      
+      // Декодируем и парсим JSON
+      const user = userJson ? JSON.parse(decodeURIComponent(userJson)) : null;
+      
+      console.log(user);
     </script>
 
 
