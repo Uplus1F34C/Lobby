@@ -22,6 +22,11 @@ dp = Dispatcher()
 async def cmd_start(message: Message):
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(
+        text="Open Mini App",
+        web_app={"url": "https://uplus1f34c.github.io/Lobby/FrontEnd/Pages"}  # Передаём user_id в URL
+        )
+    )
+    builder.add(InlineKeyboardButton(
             text="Узнать свой Tg id",
             callback_data="get_tg_id"
         )
