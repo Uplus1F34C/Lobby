@@ -9,3 +9,5 @@ DataBase/__pycache__/Func.cpython-312.pyc
 FrontEnd/Achivment/.vscode/easycode.ignore
 FrontEnd/Achivment/.vscode/easycode.ignore
 DataBase/settings/__pycache__/configuration_DB.cpython-312.pyc
+TGbot/.env
+DataBase/settings/.env
