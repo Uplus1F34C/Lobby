@@ -45,14 +45,27 @@
 
 
     <script>
-      // Разбиваем initData на параметры
-      const params = new URLSearchParams(initDataString);
-      const userJson = params.get('user'); // получаем URL-encoded JSON
-      
-      // Декодируем и парсим JSON
-      const user = userJson ? JSON.parse(decodeURIComponent(userJson)) : null;
-      
-      console.log(user);
+      // Проверяем, запущено ли приложение в Telegram
+    if (window.Telegram && Telegram.WebApp) {
+        const initData = Telegram.WebApp.initData;  // Получаем initData
+        const initDataUnsafe = Telegram.WebApp.initDataUnsafe;  // Упрощённый доступ к данным
+        
+        // Способ 1: Используем initDataUnsafe (если доступно)
+        if (initDataUnsafe && initDataUnsafe.user) {
+            const userId = initDataUnsafe.user.id;
+            console.log("User ID:", userId);
+        }
+        
+        // Способ 2: Разбираем initData вручную
+        else if (initData) {
+            const params = new URLSearchParams(initData);
+            const userStr = params.get('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                console.log("User ID:", user.id);
+            }
+        }
+    }
     </script>
 
 
