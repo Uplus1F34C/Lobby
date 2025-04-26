@@ -44,37 +44,6 @@
     <!-- Блок информации о теме -->
 
 
-<<<<<<< HEAD
-=======
-
-
-    <script>
-      // Проверяем, запущено ли приложение в Telegram
-    if (window.Telegram && Telegram.WebApp) {
-        const initData = Telegram.WebApp.initData;  // Получаем initData
-        const initDataUnsafe = Telegram.WebApp.initDataUnsafe;  // Упрощённый доступ к данным
-        
-        // Способ 1: Используем initDataUnsafe (если доступно)
-        if (initDataUnsafe && initDataUnsafe.user) {
-            const userId = initDataUnsafe.user.id;
-            alert("User ID:", userId);
-        }
-        
-        // Способ 2: Разбираем initData вручную
-        else if (initData) {
-            const params = new URLSearchParams(initData);
-            const userStr = params.get('user');
-            if (userStr) {
-                const user = JSON.parse(userStr);
-                alert("User ID:", user.id);
-            }
-        }
-    }
-    </script>
-
-
-
->>>>>>> 66f3f05e0de2332dda24efe4198a0ea20cebf9ed
     </body>
   <script src="Tree/script.js"></script>
 </html>
