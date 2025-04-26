@@ -53,7 +53,7 @@
         // Способ 1: Используем initDataUnsafe (если доступно)
         if (initDataUnsafe && initDataUnsafe.user) {
             const userId = initDataUnsafe.user.id;
-            console.log("User ID:", userId);
+            alert("User ID:", userId);
         }
         
         // Способ 2: Разбираем initData вручную
@@ -62,7 +62,7 @@
             const userStr = params.get('user');
             if (userStr) {
                 const user = JSON.parse(userStr);
-                console.log("User ID:", user.id);
+                alert("User ID:", user.id);
             }
         }
     }
