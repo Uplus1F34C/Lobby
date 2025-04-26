@@ -331,6 +331,54 @@ def authenticate(login: str, password: str):
 # Авторизация студента --------------------------------------------------------------------------
 
 
+# Регистрация студента через Tg--------------------------------------------------------------------------
+def register_by_tg_id(code: str, login: str, password: str, tg_id):
+    with session_factory() as session:
+        try:
+            if not session.query(StudentClass).filter_by(login=login).first():
+                Student = session.query(StudentClass).filter(
+                StudentClass._code == code).first()
+
+                if not Student:
+                    return {"status": False, "info": "Студент с таким кодом не найден"}
+
+                Student.login = login
+                
+                Student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+                Student.tg_id = tg_id
+
+                session.commit()
+
+                return {"status": True, "info": "Студент зарегестрирован", "id": Student.id}
+            else:
+                return {"status": False, "info": "Студент с таким логином уже существует"}
+
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при регистрации: {e}"}
+# Регистрация студента через Tg --------------------------------------------------------------------------
+
+
+# Авторизация по ID --------------------------------------------------------------------------
+def authenticate_by_tg_id(tg_id):
+    # Проверяет правильность логина и пароля
+    with session_factory() as session:
+        try:
+            Student = session.query(StudentClass).filter(StudentClass.tg_id == tg_id).first()
+            if Student is None:
+                return {"status": False, "info": f"Студент не найден"}
+            else:
+                return {"status": True, "info": f"Успешно", "id": Student.id}
+        except Exception as e:
+            print(f"Ошибка при аутентификации студента по ТГ id: {e}")
+            return {"status": False, "info": f"Ошибка"}
+        
+
+
+# Авторизация по ID --------------------------------------------------------------------------
+
+
 # Получить достижения --------------------------------------------------------------------------
 def get_achivments(student_id: int):
     with session_factory() as session:

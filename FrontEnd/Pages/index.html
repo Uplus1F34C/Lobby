@@ -41,6 +41,19 @@
     </div>
     <!-- Блок информации о теме -->
 
+
+
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const user_id = urlParams.get('user_id');
+      if (user_id) {
+        alert("User ID: " + user_id);  // Или показываем в alert
+      }
+    </script>
+
+
+
     </body>
   <script src="Tree/script.js"></script>
 </html>
