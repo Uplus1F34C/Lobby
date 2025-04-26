@@ -46,4 +46,11 @@
 
     </body>
   <script src="Tree/script.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('tgWebAppStartParam'); // Если бот передаёт ID здесь
+    
+    if (userId) {
+        console.log("User ID из URL:", userId);
+  </script>
 </html>
