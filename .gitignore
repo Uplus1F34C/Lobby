@@ -11,3 +11,4 @@ FrontEnd/Achivment/.vscode/easycode.ignore
 DataBase/settings/__pycache__/configuration_DB.cpython-312.pyc
 TGbot/.env
 DataBase/settings/.env
+DataBase/settings/.env
