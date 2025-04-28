@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # from settings.database import Base, session_factory, engine
 from DataBase.settings.configuration_DB import Base, session_factory, engine
-from DataBase.settings.models import GroupClass, StudentClass, MarkClass, level, kvant
+from DataBase.settings.models import GroupClass, StudentClass, TeacherClass, MarkClass, level, kvant
 
 # Сброс таблиц --------------------------------------------------------------------------
 def reset_base():
@@ -33,10 +33,10 @@ def reset_base():
         # Создание БД
         Base.metadata.create_all(engine)
         
-        return "> База данных сброшена <"
+        return {"status": True, "info": "База данных успешно сброшена"}
     
     except Exception as e: 
-        return f"Ошибка при сбросе БД: {e}"
+        return {"status": False, "info": f"Ошибка при сбросе БД: {e}"}
 # Сброс таблиц --------------------------------------------------------------------------
 
 
@@ -52,20 +52,148 @@ def insert_group():
                                 level=l,
                                 kvant=k,
                                 group_num=g,
-                                topics=f"DataBase\DATA\TOPICS\{k.name}\{l.name}.json",
+                                topics=f"DataBase/DATA/TOPICS/{k.name}/{l.name}.json",
                             )
                             session.add(group)
                             
                 session.commit()
-                return "> Группы добавлены <"
+                return {"status": True, "info": "Группы успешно добавлены"}
 
             except Exception as e:
                 session.rollback()
-                return f"Ошибка при добавлении групп: {e}"
+                return {"status": False, "info": f"Ошибка при добавлении групп: {e}"}
 # Добавление группы --------------------------------------------------------------------------
 
 
-# Добавление студента --------------------------------------------------------------------------
+# Учитель -------------------------------------------------------------------------------------------------------------------------------------------
+# Добавление учителя ------------------------------------------------------------------------------
+def insert_teacher(
+    name: str,
+    surname: str,
+    patronymic: str,
+    tg_id: str = "",
+    ):
+
+    with session_factory() as session:
+        try:
+            # Созданеи студента
+            Teacher = TeacherClass(
+                name=name,
+                surname=surname,
+                patronymic=patronymic,
+                tg_id=tg_id,
+                code=""
+            )
+
+            session.add(Teacher)
+            session.commit()
+
+            return {"status": True, "info": f"Учитель {Teacher.name} {Teacher.patronymic} добавлен(а) в БД", "id": Teacher.id}
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при добавлении учителя: {e}"}
+# Добавление учителя ------------------------------------------------------------------------------
+
+# Удалить студента --------------------------------------------------------------------------------
+def delete_teacher(teacher_id: int):
+     with session_factory() as session:
+        try:
+            Teacher = session.query(TeacherClass).filter(TeacherClass.id == teacher_id).first()
+            if not Teacher:
+                session.rollback()
+                return {"status": False, "info": f"Учитель с id={teacher_id} не найден"}
+
+            session.delete(Teacher)
+            session.commit()
+
+            return {"status": True, "info": f"Учитель удален"}
+
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при удалении учителя: {e}"}
+# Удалить студента --------------------------------------------------------------------------------
+
+# Аутентификация учителя --------------------------------------------------------------------------
+def log_teacher(teacher_tg_id: int):
+    # Проверяет правильность логина и пароля
+    with session_factory() as session:
+        try:
+            Teacher = session.query(TeacherClass).filter(TeacherClass.tg_id == teacher_tg_id).first()
+            if Teacher is None:
+                return {"status": False, "info": f"Учитель с tg_id={teacher_tg_id} не найден"}
+            return {"status": True, "info": f"Учитель аутентифицирован", "id": Teacher.id}
+        except Exception as e:
+            return {"status": False, "info": f"Ошибка при аутентификации учителя: {e}"}
+# Аутентификация учителя --------------------------------------------------------------------------
+
+# Регистрация учителя -----------------------------------------------------------------------------
+def reg_teacher(teacher_tg_id: int, code: str):
+    with session_factory() as session:
+        try:
+            if not session.query(TeacherClass).filter_by(tg_id=teacher_tg_id).first():
+
+                Teacher = session.query(TeacherClass).filter(
+                TeacherClass._code == code).first()
+
+                if not Teacher:
+                    return {"status": False, "info": "Учитель с таким кодом не найден"}
+
+                Teacher.tg_id = teacher_tg_id
+
+                session.commit()
+
+                return {"status": True, "info": "Учитель зарегестрирован", "id": Teacher.id}
+            else:
+                return {"status": False, "info": "Учитель с таким tg_id уже существует"}
+            
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при регистрации учителя: {e}"}
+# Регистрация учителя -----------------------------------------------------------------------------
+
+# Получение информации об учителе -----------------------------------------------------------------
+def get_FIO_teacher(teacher_tg_id: int):
+    with session_factory() as session:
+        try:
+            student_info = session.query(
+                TeacherClass.name,
+                TeacherClass.surname,
+                TeacherClass.patronymic,
+            ).filter(
+                TeacherClass.tg_id == teacher_tg_id
+            ).first()
+
+            return {"status": True, "name": student_info[0], "surname": student_info[1], "patronymic": student_info[2]}
+            
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при получении информации о учителе: {e}"}
+# Получение информации об учителе -----------------------------------------------------------------
+
+# Удалить tg id учителя ---------------------------------------------------------------------
+def del_tg_id_teacher(teacher_tg_id: int):
+    with session_factory() as session:
+        try:
+            Teacher = session.query(TeacherClass).filter(
+            TeacherClass.tg_id == teacher_tg_id).first()
+
+
+            Teacher.tg_id = ""
+
+            session.commit()
+
+            return {"status": True, "info": "Tg id учителя удален", "id": Teacher.id}
+
+
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при удалении Tg id учителя: {e}"}
+# Удалить tg id учителя ---------------------------------------------------------------------
+# Учитель -------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# Студент -------------------------------------------------------------------------------------------------------------------------------------------
+# Добавление студента -----------------------------------------------------------------------------
 def insert_student(
     name: str,
     surname: str,
@@ -84,7 +212,7 @@ def insert_student(
         else: 
             hashed_password = ""
 
-        # обращение к группе
+        # Обращение к группе
         group = session.query(GroupClass).filter(
             GroupClass.level == level,
             GroupClass.kvant == kvant,
@@ -92,11 +220,11 @@ def insert_student(
             ).first()
             
         if not group:
-            return f"> Группа {level}-{kvant}-{group_num} не найдена <"
+            return {"status": False, "info": f'Группа {level}-{kvant}-{group_num} не найдена'}
         
         if session.query(StudentClass).filter_by(login=login).first():
             if login != "":
-                return "> Студент с таким login уже существует <"
+                return {"status": False, "info": f'Студент с таким login уже существуе'}
             
         group_id = group.id
         topics = group.topics
@@ -113,14 +241,11 @@ def insert_student(
                 code=""
             )
 
-            if login and password and tg_id:
-                Student._code = 'Использован'
-
             session.add(Student)
             session.commit()
 
             # Подключение оценок ------------------------------------------------
-            marks_file_path = os.path.join("DATA\MARKS", f"{Student.id}.json")
+            marks_file_path = os.path.join("DataBase/DATA/MARKS", f"{Student.id}.json")
             shutil.copy(topics, marks_file_path)
 
             with open(marks_file_path, 'r', encoding='utf-8') as file:
@@ -146,55 +271,191 @@ def insert_student(
             session.add(Mark)
             session.commit()
 
-            return f"> Студент {Student.name} {Student.surname} добавлен(а) в БД, ему присвоен id: {Student.id} <"
+            return {"status": True, "info": f"Студент {Student.name} {Student.surname} добавлен(а) в БД", "id": Student.id}
             
         except Exception as e:
             session.rollback()
-            return f"Ошибка при добавлении студента: {e}"
-# Добавление студента --------------------------------------------------------------------------
+            return {"status": False, "info": f"Ошибка при добавлении студента: {e}"}
+# Добавление студента -----------------------------------------------------------------------------
 
-
-# Получение информации о студенте --------------------------------------------------------------------------
-def get_info_about_student(student_id: int):
-    with session_factory() as session:
+# Удалить студента --------------------------------------------------------------------------------
+def delete_student(student_id: int):
+     with session_factory() as session:
         try:
-            student_info = session.query(
-                StudentClass.id,
-                StudentClass.name,
-                StudentClass.surname,
-                StudentClass.patronymic,
-                GroupClass.level,
-                GroupClass.kvant,
-                GroupClass.group_num,
-                MarkClass.points,
-                MarkClass.marks,
-                MarkClass.achivment,
-                StudentClass.login,
-                StudentClass.password,
-                StudentClass.tg_id,
-                StudentClass._code.label("code"),
-            ).join(
-                MarkClass, StudentClass.id == MarkClass.id_student
-            ).join(
-                GroupClass, MarkClass.id_group == GroupClass.id
-            ).filter(
-                StudentClass.id == student_id
-            ).all()
+            Marks = session.query(MarkClass).filter(MarkClass.id_student == student_id).all() 
 
-            if student_info:
-                return student_info
-            else:
-                return f"> Студент с ID={student_id} не найден. <"
+            for mark in Marks:  # Проходим по всем оценкам
+                if os.path.isfile(mark.achivment):
+                    os.unlink(mark.achivment)
+                if os.path.isfile(mark.marks):
+                    os.unlink(mark.marks)
+                session.delete(mark)  # Удаляем оценку
+
+            Student = session.query(StudentClass).filter(StudentClass.id == student_id).first()
+            if not Student:
+                session.rollback()
+                return {"status": False, "info": f"Студент с id={student_id} не найден"}
+
+            session.delete(Student)
+            session.commit()
+
+            return {"status": True, "info": f"Студент удален"}
 
         except Exception as e:
-            return f"Ошибка при получении обработанной информации о студенте: {e}"
-# Получение информации о студенте --------------------------------------------------------------------------
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при удалении студента: {e}"}
+# Удалить студента --------------------------------------------------------------------------------
 
-
-# Пересчет очков студента --------------------------------------------------------------------------
-def count_points():
+# Регистрация студента через login ----------------------------------------------------------------
+def reg_student(code: str, login: str, password: str):
     with session_factory() as session:
         try:
+            if not session.query(StudentClass).filter_by(login=login).first():
+                Student = session.query(StudentClass).filter(
+                StudentClass._code == code).first()
+
+                if not Student:
+                    return {"status": False, "info": f"Студент с code={code} не найден"}
+
+                Student.login = login
+                
+                Student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+                session.commit()
+
+                return {"status": True, "info": "Студент зарегестрирован", "id": Student.id}
+            else:
+                return {"status": False, "info": f"Студент с login={login} уже существует"}
+
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при регистрации: {e}"}
+# Регистрация студента через login ----------------------------------------------------------------
+
+# Регистрация студента через Tg--------------------------------------------------------------------
+def reg_student_tg(code: str, student_tg_id: int):
+    with session_factory() as session:
+        try:
+            if not session.query(StudentClass).filter_by(tg_id=student_tg_id).first():
+                Student = session.query(StudentClass).filter(
+                StudentClass._code == code).first()
+
+                if not Student:
+                    return {"status": False, "info": "Студент с таким кодом не найден"}
+
+                Student.tg_id = student_tg_id
+
+                session.commit()
+
+                return {"status": True, "info": "Студент зарегестрирован по tg", "id": Student.id}
+            else:
+                return {"status": False, "info": f"Студент с tg_id={student_tg_id} уже существует"}
+
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при регистрации по tg: {e}"}
+# Регистрация студента через Tg -------------------------------------------------------------------
+
+# Авторизация студента через login ----------------------------------------------------------------
+def log_student_login(login: str, password: str):
+    # Проверяет правильность логина и пароля
+    with session_factory() as session:
+        try:
+            Student = session.query(StudentClass).filter(StudentClass.login == login).first()
+            if Student is None:
+                return {"status": False, "info": f"Студент с login={login} не найден"}
+            return Student.check_password(password)
+        except Exception as e:
+            return {"status": False, "info": f"Ошибка при аутентификации: {e}"}
+# Авторизация студента через login ----------------------------------------------------------------
+
+# Авторизация студента через Tg -------------------------------------------------------------------
+def log_student_tg(tg_id: int):
+    with session_factory() as session:
+        try:
+            Student = session.query(StudentClass).filter(StudentClass.tg_id == tg_id).first()
+            if Student is None:
+                return {"status": False, "info": f"Студент не найден"}
+            else:
+                return {"status": True, "info": f"Успешная утентификация", "id": Student.id}
+        except Exception as e:
+            print(f"Ошибка при аутентификации студента по ТГ id: {e}")
+            return {"status": False, "info": f"Ошибка"}
+# Авторизация студента через Tg -------------------------------------------------------------------
+
+# Получить ФИО студента ---------------------------------------------------------------------------
+def get_FIO_student(student_id: int):
+    with session_factory() as session:
+        try:
+            # Получаем информацию о студенте
+            student = session.query(StudentClass).filter(StudentClass.id == student_id).first()
+            if not student:
+                return {"status": False, "info": "Студент не найден"}
+
+            return {"status": True, "name": student.name, "surname": student.surname, "patronymic": student.patronymic}
+
+        except Exception as e:
+            return  {"status": False, "info": f"Ошибка при получении ФИО студента: {e}"}
+# Получить ФИО студента ---------------------------------------------------------------------------
+
+# Получить код студента по фио ---------------------------------------------------------------------------
+def get_code_student(name: str, surname: str, patronymic: str):
+    with session_factory() as session:
+        try:
+            # Получаем информацию о студенте
+            student  = session.query(StudentClass).filter(StudentClass.name == name, StudentClass.surname == surname, StudentClass.patronymic == patronymic,).first()
+            if not student:
+                return {"status": False, "info": "Студент не найден", "code": ""}
+
+            return {"status": True, "info": "Студент найден", "code": student._code}
+
+        except Exception as e:
+            return  {"status": False, "info": f"Ошибка при получении кода студента: {e}"}
+# Получить код студента по фио ---------------------------------------------------------------------------
+
+# Получить ФИО студента по id ---------------------------------------------------------------------
+def get_FIO_student_tg(student_tg_id: int):
+    with session_factory() as session:
+        try:
+            # Получаем информацию о студенте
+            student = session.query(StudentClass).filter(StudentClass.tg_id == student_tg_id).first()
+            if not student:
+                return {"status": False, "info": "Студент не найден"}
+
+            return {"status": True, "name": student.name, "surname": student.surname, "patronymic": student.patronymic}
+
+        except Exception as e:
+            return  {"status": False, "info": f"Ошибка при получении ФИО студента: {e}"}
+# Получить ФИО студента по id ---------------------------------------------------------------------
+
+
+# Удалить tg id студента ---------------------------------------------------------------------
+def del_tg_id_student(student_tg_id: int):
+    with session_factory() as session:
+        try:
+            Student = session.query(StudentClass).filter(
+            StudentClass.tg_id == student_tg_id).first()
+
+
+            Student.tg_id = ""
+
+            session.commit()
+
+            return {"status": True, "info": "Tg id студента удален", "id": Student.id}
+
+
+        except Exception as e:
+            session.rollback()
+            return {"status": False, "info": f"Ошибка при удалении Tg id студента: {e}"}
+# Удалить tg id студента ---------------------------------------------------------------------
+# Студент -------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# Сайт -------------------------------------------------------------------------------------------------------------------------------------------
+# Пересчет очков студентов ------------------------------------------------------------------------
+def count_points():
+    with session_factory() as session:
+        # try:
             Mark_list = session.query(MarkClass).all()
             for Mark in Mark_list:
                 
@@ -211,7 +472,7 @@ def count_points():
                             if mark < 4:
                                 points += data[str(vetka)]["topics"][str(topic)][str(mark)]
                             else:
-                                print("Установлена некоректная оценка")
+                                return {"status": False, "info": f'В файле "{Mark.marks}", в ветке "{str(vetka)}", у темы "{str(topic)}" установлена некоректная оценка - "{str(mark)}"'}
 
 
                 with open(Mark.achivment, 'r', encoding='utf-8') as file:
@@ -223,163 +484,14 @@ def count_points():
 
                 Mark.points = points
                 session.commit()
-            return "Баллы высчитаны"
+            return {"status": True, "info": "Баллы успешно пересчитаны"}
 
 
-        except Exception as e:
-            return f"Ошибка при пересчете баллов: {e}"
-# Пересчет очков студента --------------------------------------------------------------------------
+        # except Exception as e:
+        #     return {"status": False, "info": f"Ошибка при пересчете баллов: {e}"}
+# Пересчет очков студента -------------------------------------------------------------------------
 
-
-# Созданеи нового кода студента --------------------------------------------------------------------------
-def new_student_code(student_id: int):
-    with session_factory() as session:
-        try:
-            Student = session.query(StudentClass).filter(
-            StudentClass.id == student_id).first()
-
-            if not Student:
-                session.rollback()
-                return f"> Студент с ID={student_id} не найден <"
-            
-            from settings.models import generate_random_code
-            code = generate_random_code()
-            Student._code = code
-
-            session.commit()
-
-            return f"> Новый код: {code} <"
-        
-        except Exception as e:
-            session.rollback()
-            return f"Ошибка при создании нового кода: {e}"
-# Созданеи нового кода студента --------------------------------------------------------------------------
-
-
-# Удалить студента --------------------------------------------------------------------------
-def delete_student(student_id: int):
-     with session_factory() as session:
-        try:
-            Marks = session.query(MarkClass).filter(MarkClass.id_student == student_id).all()  # Изменено на all()
-
-            for mark in Marks:  # Проходим по всем оценкам
-                if os.path.isfile(mark.achivment):
-                    os.unlink(mark.achivment)
-                if os.path.isfile(mark.marks):
-                    os.unlink(mark.marks)
-                session.delete(mark)  # Удаляем оценку
-
-
-            Student = session.query(StudentClass).filter(StudentClass.id == student_id).first()
-            if not Student:
-                session.rollback()
-                return f"> Студент с ID={student_id} не найден <"
-
-            session.delete(Student)
-            session.commit()
-
-            return f"> Студент удален <"
-
-        except Exception as e:
-            session.rollback()
-            return f"Ошибка при удалении студента: {e}"
-# Удалить студента --------------------------------------------------------------------------
-
-
-
-
-
-
-# Регистрация студента --------------------------------------------------------------------------
-def register(code: str, login: str, password: str):
-    with session_factory() as session:
-        try:
-            if not session.query(StudentClass).filter_by(login=login).first():
-                Student = session.query(StudentClass).filter(
-                StudentClass._code == code).first()
-
-                if not Student:
-                    return {"status": False, "info": "Студент с таким кодом не найден"}
-
-                Student.login = login
-                
-                Student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-                session.commit()
-
-                return {"status": True, "info": "Студент зарегестрирован", "id": Student.id}
-            else:
-                return {"status": False, "info": "Студент с таким логином уже существует"}
-
-        except Exception as e:
-            session.rollback()
-            return {"status": False, "info": f"Ошибка при регистрации: {e}"}
-# Регистрация студента --------------------------------------------------------------------------
-
-
-# Авторизация студента --------------------------------------------------------------------------
-def authenticate(login: str, password: str):
-    # Проверяет правильность логина и пароля
-    with session_factory() as session:
-        try:
-            Student = session.query(StudentClass).filter(StudentClass.login == login).first()
-            if Student is None:
-                return {"status": False, "info": f"Студент с login={login} не найден"}
-            return Student.check_password(password)
-        except Exception as e:
-            return {"status": False, "info": f"Ошибка при аутентификации: {e}"}
-# Авторизация студента --------------------------------------------------------------------------
-
-
-# Регистрация студента через Tg--------------------------------------------------------------------------
-def register_by_tg_id(code: str, login: str, password: str, tg_id):
-    with session_factory() as session:
-        try:
-            if not session.query(StudentClass).filter_by(login=login).first():
-                Student = session.query(StudentClass).filter(
-                StudentClass._code == code).first()
-
-                if not Student:
-                    return {"status": False, "info": "Студент с таким кодом не найден"}
-
-                Student.login = login
-                
-                Student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-                Student.tg_id = tg_id
-
-                session.commit()
-
-                return {"status": True, "info": "Студент зарегестрирован", "id": Student.id}
-            else:
-                return {"status": False, "info": "Студент с таким логином уже существует"}
-
-        except Exception as e:
-            session.rollback()
-            return {"status": False, "info": f"Ошибка при регистрации: {e}"}
-# Регистрация студента через Tg --------------------------------------------------------------------------
-
-
-# Авторизация по ID --------------------------------------------------------------------------
-def authenticate_by_tg_id(tg_id):
-    # Проверяет правильность логина и пароля
-    with session_factory() as session:
-        try:
-            Student = session.query(StudentClass).filter(StudentClass.tg_id == tg_id).first()
-            if Student is None:
-                return {"status": False, "info": f"Студент не найден"}
-            else:
-                return {"status": True, "info": f"Успешно", "id": Student.id}
-        except Exception as e:
-            print(f"Ошибка при аутентификации студента по ТГ id: {e}")
-            return {"status": False, "info": f"Ошибка"}
-        
-
-
-# Авторизация по ID --------------------------------------------------------------------------
-
-
-# Получить достижения --------------------------------------------------------------------------
+# Получить достижения -----------------------------------------------------------------------------
 def get_achivments(student_id: int):
     with session_factory() as session:
         try:
@@ -396,9 +508,7 @@ def get_achivments(student_id: int):
             return  {"status": False, "info": f"Ошибка при получении достижений: {e}"}
 # Получить достижения --------------------------------------------------------------------------
 
-
-
-# Получить темы --------------------------------------------------------------------------
+# Получить оценки --------------------------------------------------------------------------
 def get_marks(student_id: int):
     with session_factory() as session:
         try:
@@ -412,8 +522,7 @@ def get_marks(student_id: int):
         except Exception as e:
             session.rollback()
             return  {"status": False, "info": f"Ошибка при получении достижений: {e}"}
-# Получить темы --------------------------------------------------------------------------
-
+# Получить оценки --------------------------------------------------------------------------
 
 # Получить рейтинг группы --------------------------------------------------------------------------
 def get_group_rating(student_id: int):
@@ -448,7 +557,6 @@ def get_group_rating(student_id: int):
         except Exception as e:
             return  {"status": False, "info": f"Ошибка при получении рейтинга группы: {e}"}
 # Получить рейтинг группы --------------------------------------------------------------------------
-
 
 # Получить рейтинг кванта --------------------------------------------------------------------------
 def get_kvant_rating(student_id: int):
@@ -485,19 +593,4 @@ def get_kvant_rating(student_id: int):
         except Exception as e:
             return  {"status": False, "info": f"Ошибка при получении рейтинга паралели: {e}"}
 # Получить рейтинг кванта --------------------------------------------------------------------------
-
-
-# Получить рейтинг кванта --------------------------------------------------------------------------
-def get_student_FIO(student_id: int):
-    with session_factory() as session:
-        try:
-            # Получаем информацию о студенте
-            student = session.query(StudentClass).filter(StudentClass.id == student_id).first()
-            if not student:
-                return {"status": False, "info": "Студент не найден"}
-
-            return {"status": True, "name": student.name, "surname": student.surname, "patronymic": student.patronymic}
-
-        except Exception as e:
-            return  {"status": False, "info": f"Ошибка при получении ФИО студента: {e}"}
-# Получить рейтинг кванта --------------------------------------------------------------------------
+# Сайт -------------------------------------------------------------------------------------------------------------------------------------------

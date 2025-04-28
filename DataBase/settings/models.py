@@ -42,7 +42,7 @@ class StudentClass(Base):
     __tablename__ = "student"
 
     id: Mapped[intpk]
-    name: Mapped[str_32] = mapped_column()
+    name: Mapped[str_32]
     surname: Mapped[str_32]
     patronymic: Mapped[str_32]
     login: Mapped[str_256] = mapped_column(default="")
@@ -74,6 +74,31 @@ class StudentClass(Base):
             self._code = generate_random_code()
 # Студент --------------------------------------------------------------------------
 
+
+# Учитель --------------------------------------------------------------------------
+class TeacherClass(Base):
+    __tablename__ = "teacher"
+
+    id: Mapped[intpk]
+    name: Mapped[str_32]
+    surname: Mapped[str_32]
+    patronymic: Mapped[str_32]
+    tg_id: Mapped[str] = mapped_column(String(10), default="")
+    _code: Mapped[str] = mapped_column(String(8))
+
+    @hybrid_property
+    def code(self):
+        return self._code
+
+    @code.setter
+    def code(self, code: str):
+      self._code = code
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self._code:
+            self._code = generate_random_code()
+# Учитель --------------------------------------------------------------------------
 
 # Группа --------------------------------------------------------------------------
 class GroupClass(Base):
