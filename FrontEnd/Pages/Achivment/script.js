@@ -113,7 +113,7 @@ function createAchievementElement(key, achievement) {
   // Создаем HTML-структуру
   li.innerHTML = `
     <a class="hexIn" style="background-color: ${bgColor}">
-      <img src="../img/Achivment/${achievement.img}.png" alt="${key}">
+      <img src="../../img/Achivment/${achievement.img}.png" alt="${key}">
       <h1 id="title">${key}</h1>
       <p id="description">
         ${achievement.description}
