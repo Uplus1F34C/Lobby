@@ -6,3 +6,8 @@ DataBase/settings/__pycache__/models.cpython-312.pyc
 TGbot/__pycache__/config.cpython-312.pyc
 BackEnd/__pycache__/FastApi.cpython-312.pyc
 .vscode/easycode.ignore
+DataBase/settings/.env
+DataBase/DATA/ACHIVMENT/1.json
+DataBase/DATA/MARKS/1.json
+DataBase/settings/.env
+DataBase/settings/.env

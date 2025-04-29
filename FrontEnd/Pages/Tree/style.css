@@ -8,7 +8,7 @@ body {
   animation: 10s ease 0s normal none infinite running CustomAnimation;
   margin: 0; /* Убираем стандартные отступы body */
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
 }
 /* Анимация заднего фона -------------------------------------------------------------------------------- */
 @keyframes CustomAnimation {
