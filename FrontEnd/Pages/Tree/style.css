@@ -10,7 +10,6 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
   touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
-  min-height: 100%;
 }
 
 

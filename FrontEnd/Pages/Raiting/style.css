@@ -120,7 +120,7 @@ body::-webkit-scrollbar-thumb:hover {
 /* Кнопки -------------------------------------------------------------------------------- */
 
 
-
+/* ГРУППА -------------------------------------------------------------------------------- */
 #container {
   display: flex;
   height: calc(100vh);
@@ -138,6 +138,7 @@ body::-webkit-scrollbar-thumb:hover {
   overflow-y: auto;
   direction: rtl;
 }
+
 /* Стилизация скроллбара */
 #group::-webkit-scrollbar {
   width: 8px; /* Ширина скроллбара */
@@ -158,18 +159,21 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding-top: 10px;
   padding-bottom: 10px;
+
   height: 75px;
   width: auto; /* Adjust width as needed */
   color: black; /* Darker text color for readability */
   direction: ltr; /* Возвращаем нормальное направление для содержимого */
 }
+
 .rank {
   background-color: #00FFAE; /* Green background */
   padding: 10px; /* Use position instead of clip-path for visible borders */
   height: 30px;
-  min-width: 25px;
+  min-width: 30px;
   width: auto;
   padding-right: 20px; /* Use position instead of clip-path for visible borders */
   padding-left: 15px; /* Use position instead of clip-path for visible borders */
@@ -226,12 +230,13 @@ body::-webkit-scrollbar-thumb:hover {
   z-index: -1;
 }
 .text {
-  font-family: cursive;
+  font-family: "Comic Relief";
   font-size: 20px;
   transform: skew(40deg)
 }
 
 /* ГРУППА -------------------------------------------------------------------------------- */
+
 /* ЛИДЕРЫ -------------------------------------------------------------------------------- */
 
 
@@ -426,32 +431,27 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 @media (max-width: 420px) {
-  #container * {
-    font-size: 15px;
-  }
-
-  #container div {
-    font-size: 18px;
-  }
-
-  #group .rank {
-    min-width: 40px;
-    padding-left: 4px;
-    padding-right: 8px;
-  }
   
-  #leaders .rank {
-    min-width: 40px;
-    padding-left: 8px;
-    padding-right: 16px;
+  #container .student {
+    max-width: 400px;
   }
-  .name {
-    min-width: 170px;
+  #container .rank {
+    min-width: 15px;
   }
-  .score {
+  #container .rank .text{
+    padding: 0;
+    padding-right: 10px;
+  }
+
+  #container .name {
+    min-width: 130px;
+  }
+  #container .score {
     min-width: 30px;
-    padding-left: 1;
-    padding-right: 1;
+  }
+
+  #container .text {
+    font-size: 15px;
   }
 
 }
