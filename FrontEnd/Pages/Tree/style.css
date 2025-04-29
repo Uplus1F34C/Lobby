@@ -7,7 +7,8 @@ body {
   background: transparent linear-gradient(47deg, #00F8BE, #2A96FB) repeat scroll 0% 0% / 200% 200%;
   animation: 10s ease 0s normal none infinite running CustomAnimation;
   margin: 0; /* Убираем стандартные отступы body */
-  overflow-y:visible;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 /* Анимация заднего фона -------------------------------------------------------------------------------- */
 @keyframes CustomAnimation {
