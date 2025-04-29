@@ -5,14 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Рейтинг</title>
     <link rel="stylesheet" href="Raiting/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
   </head>
   <body>
 
+    <script src="https://telegram.org/js/telegram-web-app.js">
+      window.Telegram.WebApp.disableVerticalSwipes()
+    </script>
+
+    
     <!-- Кнопки -->
     <div class="button-container">
-      <button id="raiting" style="font-family: cursive ;">Рейтинг</button>
-      <button id="achivment" onclick="location.href='Achivment.html' " style="font-family: cursive ;">Достижения</button> <!-- Добавляем кнопку для информации -->
-      <button id="tree" onclick="location.href='index.html'" style="font-family: cursive ;">Дерево навыков</button>
+      <button id="raiting">Рейтинг</button>
+      <button id="tree"  onclick="location.href='index.html'">Дерево навыков</button>
+      <button id="achivment" onclick="location.href='Achivment.html'"">Достижения</button>
     </div>
     <!-- Кнопки -->
 

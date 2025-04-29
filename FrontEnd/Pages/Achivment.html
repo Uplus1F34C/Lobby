@@ -5,24 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Достижения</title>
     <link rel="stylesheet" href="Achivment/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
   </head>
   <body>
-            <!-- КНОПКИ -->
+    
+    <script src="https://telegram.org/js/telegram-web-app.js">
+      window.Telegram.WebApp.disableVerticalSwipes()
+    </script>
+
+    
+    <!-- Кнопки -->
     <div class="button-container">
       <button id="achivment" >Достижения</button>
+      <button id="tree" onclick="location.href='index.html'" >Дерево навыков</button>
       <button id="raiting" onclick="location.href='Raiting.html'">Рейтинг</button>
-      <button id="tree" onclick="location.href='index.html'">Дерево навыков</button>
     </div>
+    <!-- Кнопки -->
 
+    <!-- Логотип -->
     <div id="logo-container">
-      <img id="logo" src="../img/Кванториум.svg" alt="Логотип" />
+      <img id="logo-img" src="../img/Кванториум.svg" alt=""/>
     </div>
+    <!-- Логотип -->
 
 
-    <ul id="hexGrid">
-            
-
-    </ul>
+    <ul id="hexGrid"></ul>
 
     </body>
   <script src="Achivment/script.js"></script>

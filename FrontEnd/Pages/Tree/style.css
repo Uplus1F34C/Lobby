@@ -1,31 +1,18 @@
-*{
-  overscroll-behavior: none;
+html {
+  overscroll-behavior: contain; /* Предотвращает overscroll эффекты */
+  height: 100%;
 }
 
 body {
-  background: linear-gradient(230deg, #00F8BE, #2A96FB);
-  background-size: 300% 300%;
-  -webkit-animation: 20s ease infinite;
-  -moz-animation: 20s ease infinite;
-  -o-animation: 20s ease infinite;
-  background: transparent linear-gradient(47deg, #00F8BE, #2A96FB) repeat scroll 0% 0% / 200% 200%;
-  animation: 10s ease 0s normal none infinite running CustomAnimation;
-  margin: 0; /* Убираем стандартные отступы body */
+  background: linear-gradient(47deg, #00F8BE, #2A96FB);
+  background-size: 200% 200%;
+  margin: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
+  touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
+  min-height: 100%;
 }
-/* Анимация заднего фона -------------------------------------------------------------------------------- */
-@keyframes CustomAnimation {
-  0% {
-    background-position: 0% 53%;
-  }
-  50% {
-    background-position: 100% 48%;
-  }
-  100% {
-    background-position: 0% 53%;
-  }
-}
-/* Анимация заднего фона -------------------------------------------------------------------------------- */
+
 
 /* Скролл бар -------------------------------------------------------------------------------- */
 body::-webkit-scrollbar {
@@ -52,10 +39,10 @@ body::-webkit-scrollbar-thumb:hover {
   height: 100vh; /* 100% высоты viewport */
   overflow: visible;
   z-index: -10;
-  transform: none; /* Убираем transform так как больше не нужно центрировать */
-  /* Если нужно содержимое по вертикали по центру, можно добавить: */
   display: flex;
   align-items: center;
+  backface-visibility: hidden; /* Улучшает производительность */
+  transform: translate3d(0, 0, 0); /* Аппаратное ускорение */
 }
 
 #logo-img {
@@ -65,6 +52,9 @@ body::-webkit-scrollbar-thumb:hover {
   height: auto;
   filter: opacity(0.4);
   animation: rotate 20s linear infinite;
+  
+  will-change: transform; /* Оптимизация для анимации */
+  transform: translate3d(0, 0, 0); /* Аппаратное ускорение */
 }
 
 @keyframes rotate {
@@ -246,7 +236,4 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 25px;
   color: white;
   -webkit-text-stroke: 0.5px black; /* Толщина и цвет обводки (для браузеров, использующих движок WebKit, например Google Chrome) */
-
 }
-
-

@@ -98,44 +98,34 @@ let achievements = {
       "point": 25
   }
 }
-
-
-
-
-
 const hexGrid = document.getElementById('hexGrid');
 
-// Генерация угольников
-for (const key in achievements) {
-    const achivment = achievements[key];
-    const li = document.createElement('li');
-    li.className = 'hex';
+// Функция для создания HTML-элемента достижения
+function createAchievementElement(key, achievement) {
+  const li = document.createElement('li');
+  li.className = 'hex';
+  
+  // Определяем цвет фона в зависимости от статуса и типа
+  const bgColor = achievement.status 
+    ? (achievement.type === "Achivment" ? "#00FFC3" : "#FF3333")
+    : "gray";
 
-    if (achivment.point != 0) {
-      li.innerHTML = `
-          <a class="hexIn">
-              <img src="../img/Achivment/${achivment.img}.png" alt="${key}">
-              <h1 id="title">${key}</h1>
-              <p id="description">${achivment.description}<br><b><small>Награда:<br>${achivment.point} б.</small><b></p>
-          </a>
-      `;} else {
-        li.innerHTML = `
-          <a class="hexIn">
-              <img src="../img/Achivment/${achivment.img}.png" alt="${key}">
-              <h1 id="title">${key}</h1>
-              <p id="description">${achivment.description}</p>
-          </a>
-      `;}
+  // Создаем HTML-структуру
+  li.innerHTML = `
+    <a class="hexIn" style="background-color: ${bgColor}">
+      <img src="../img/Achivment/${achievement.img}.png" alt="${key}">
+      <h1 id="title">${key}</h1>
+      <p id="description">
+        ${achievement.description}
+        ${achievement.point !== 0 ? `<br><b><small>Награда:<br>${achievement.point} б.</small><b>` : ''}
+      </p>
+    </a>
+  `;
 
-    const color = li.querySelector("*")
-    if (achivment.status == true) {
-      if (achivment.type == "Achivment") {
-        color.style.backgroundColor = "#00FFC3";
-      } else if (achivment.type == "Test") {
-        color.style.backgroundColor = "#FF3333";
-      }
-    } else {
-      color.style.backgroundColor = "gray";
-    }
-    hexGrid.appendChild(li);
+  return li;
+}
+
+// Генерация элементов для всех достижений
+for (const [key, achievement] of Object.entries(achievements)) {
+  hexGrid.appendChild(createAchievementElement(key, achievement));
 }
