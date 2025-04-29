@@ -4,10 +4,10 @@ body {
   -webkit-animation: 20s ease infinite;
   -moz-animation: 20s ease infinite;
   -o-animation: 20s ease infinite;
-  animation: 20s ease infinite;
   background: transparent linear-gradient(47deg, #00F8BE, #2A96FB) repeat scroll 0% 0% / 200% 200%;
   animation: 10s ease 0s normal none infinite running CustomAnimation;
   margin: 0; /* Убираем стандартные отступы body */
+  overflow-y:visible;
 }
 /* Анимация заднего фона -------------------------------------------------------------------------------- */
 @keyframes CustomAnimation {
@@ -41,23 +41,26 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* Логотип -------------------------------------------------------------------------------- */
 #logo-container {
-  position: fixed; /* Фиксированное позиционирование */
-  bottom: 0; /* Прижимаем к нижней части */
-  left: 0; /* Прижимаем к левому краю */
-  width: 1100px; /* Ширина контейнера */
-  height: 1100px; /* Высота контейнера */
-  overflow: hidden; /* Скрываем часть логотипа */
+  position: fixed;
+  top: 0; /* Изменено с 50% на 0 для полного покрытия высоты */
+  left: 0;
+  width: 100vh; /* 50% ширины viewport */
+  height: 100vh; /* 100% высоты viewport */
+  overflow: visible;
   z-index: -10;
+  transform: none; /* Убираем transform так как больше не нужно центрировать */
+  /* Если нужно содержимое по вертикали по центру, можно добавить: */
+  display: flex;
+  align-items: center;
 }
 
 #logo-img {
-  position: absolute; /* Абсолютное позиционирование внутри контейнера */
-  bottom: -45%; /* Прижимаем к нижней части контейнера */
-  left: -45%; /* Прижимаем к левому краю контейнера */
-  width: 90%; /* Увеличиваем ширину для показа 1/4 */
-  height: auto; /* Автоматическая высота */
+  position: absolute;
+  left: -42%; /* Сдвигаем влево на 100%, чтобы показывать правую половину */
+  width: 84%; /* Ширина в 2 раза больше контейнера */
+  height: auto;
   filter: opacity(0.4);
-  animation: rotate 20s linear infinite; /* Анимация вращения */
+  animation: rotate 20s linear infinite;
 }
 
 @keyframes rotate {
@@ -93,32 +96,33 @@ body::-webkit-scrollbar-thumb:hover {
   cursor: pointer; /* Курсор в виде руки при наведении */
 
   width: 300px; /* Фиксированная ширина кнопок */
-  display: inline-block; /* Отображаем как строчный элемент */
+  min-height: 50px;
+  font-size: 30px;
   padding: 5px 20px; /* Отступы внутри кнопки */
   border: 1px solid rgba(0,0,0,1);
   box-sizing: border-box; /* Учитываем padding и border в ширине */
-  font-family: cursive;
-
   color: white; /* Белый текст */
   text-align: center; /* Выравниваем текст по центру */
-  font-size: 30px; /* Размер шрифта */
-   -webkit-text-stroke: 0.5px #000000;  /*Толщина и цвет обводки */
-   font-family: cursive;
+  -webkit-text-stroke: 0.5px #000000;  /*Толщина и цвет обводки */
+
+  display: inline-block; /* Отображаем как строчный элемент */
+
+  font-family: "Comic Relief";
 }
+
 .button-container button:hover {
   opacity: 0.8; /* Небольшая прозрачность при наведении */
 }
 #raiting { 
   background-color: #268BC1; /* Дерево навыков */
 }
-#tree {
-  background-color: #2AAD89; /* Достижения */
-  
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-}
 #achivment {
   background-color: #67C0B9 /* рейтинг */
+}
+#tree {
+  background-color: #2AAD89; /* Достижения */
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 /* Кнопки -------------------------------------------------------------------------------- */
 
@@ -166,8 +170,11 @@ body::-webkit-scrollbar-thumb:hover {
   border-radius: 5px;
 }
 
+
+
 #info {
   background-color: rgba(36, 202, 218, 0.778);
+  border: 1px solid #000000;
 
   display: flex;
   flex-direction: column;
@@ -238,10 +245,4 @@ body::-webkit-scrollbar-thumb:hover {
 
 }
 
-
-@media (max-width: 500px) {
-  body {
-    overflow-y:visible;
-  }
-}
 

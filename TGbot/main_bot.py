@@ -44,7 +44,7 @@ class GetCode(StatesGroup):
 # Определение состояний для FSM -------------------------------------------------------------------
 
 # Команда /start ----------------------------------------------------------------------------------
-@dp.message(Command("start"))
+@dp.message(Command("start", "menu"))
 async def cmd_start(message: Message):
     if Func.log_teacher(message.from_user.id)["status"]:
         Teacher = Func.get_FIO_teacher(message.from_user.id)
@@ -62,7 +62,7 @@ async def cmd_start(message: Message):
         builder.add(InlineKeyboardButton(
             text="Выйти из аккаунта",
             callback_data="exit_teacher"))
-        builder.adjust(2, 1, 1)
+        builder.adjust(1, 1, 1, 1)
 
         welcome_message = f"""Здравствуйте, {Teacher["name"]} {Teacher["patronymic"]}!
 С помощью этого бота вы можете редактировать базу данных проекта "Lobby"
@@ -114,8 +114,9 @@ async def cmd_start(message: Message):
         builder.add(InlineKeyboardButton(
             text="Гость",
             callback_data="role_guest__cd"))
+        builder.adjust(1, 2)
 
-        welcome_message = "Выберете вашу роль:"
+        welcome_message = "Для начала регистрации выберете свою роль"
 
         await message.answer(
             welcome_message,

@@ -434,125 +434,119 @@ let data = {
 }
 const container = document.getElementById('flex-container');
 
+// Цвета для разных оценок
+const MARK_COLORS = {
+    3: '#4AB968', // зеленый
+    2: '#E6F355', // желтый
+    1: '#F35555', // красный
+    default: '#D4D4D4' // серый
+};
 
-const branches = Object.keys(data); // Получаем количество веток в JSON
-
-// Создаем блоки на основе веток
-branches.forEach((branch, index) => {
-    const block = document.createElement('div');
-    block.textContent = data[branch].title; // Текст блока из title
-    block.style.textAlign = 'center'; // Выравнивание текста по центру
+// Создаем блоки для каждой ветки (раздела)
+Object.keys(data).forEach(branchId => {
+    const branch = data[branchId];
+    const branchBlock = document.createElement('div');
+    branchBlock.textContent = branch.title;
+    branchBlock.style.textAlign = 'center';
+    branchBlock.style.fontFamily = "Comic Relief"
     
-    // Создаем контейнер для тем
     const topicsContainer = document.createElement('div');
     
-    // Получаем темы для текущей ветки
-    const topics = Object.keys(data[branch].topics);
-
-    topics.forEach(topic => {
-        const topicBlock = document.createElement('button');
-
-        const topicData = data[branch].topics[topic];
-        let mark_js = String(topicData.mark);
-
-        if (mark_js == 3) {
-            topicBlock.style.backgroundColor = '#4AB968';
-        } else if (mark_js == 2) {
-            topicBlock.style.backgroundColor = '#E6F355';
-        }
-        else if (mark_js == 1) {
-            topicBlock.style.backgroundColor = '#F35555';
-        } else {
-            topicBlock.style.backgroundColor = '#D4D4D4';
-        }
-
+    // Создаем кнопки для каждой темы
+    Object.keys(branch.topics).forEach(topicId => {
+        const topic = branch.topics[topicId];
+        const topicBtn = document.createElement('button');
+        
+        // Устанавливаем цвет в зависимости от оценки
+        topicBtn.style.backgroundColor = MARK_COLORS[topic.mark] || MARK_COLORS.default;
+        
         // Добавляем изображение, если оно есть
-        if (data[branch].topics[topic].img) {
+        if (topic.img) {
             const img = document.createElement('img');
-            img.src = "../img/Topics/" + data[branch].topics[topic].img; // Путь к изображению
-            console.log(img.src)
-            topicBlock.appendChild(img); // Добавляем изображение в кнопку
+            img.src = `../img/Topics/${topic.img}`;
+            topicBtn.appendChild(img);
         }
 
-        // Добавляем обработчик события для отображения информации
-        topicBlock.addEventListener('click', (event) => {
-            document.getElementById('info').style.display = 'block'; // Показываем блок информации
-
-            document.getElementById('title').textContent = topicData.title;
-            document.getElementById('description').textContent = topicData.description;
-            document.getElementById('points').textContent = `${topicData[mark_js]}/${topicData["3"]}`; // Пример, как можно отобразить баллы
-
-            if (mark_js == 3) {
-                document.getElementById('mark').style.backgroundColor = '#4AB968';
-            } else if (mark_js == 2) {
-                document.getElementById('mark').style.backgroundColor = '#E6F355';
-            } else if (mark_js == 1) {
-                document.getElementById('mark').style.backgroundColor = '#F35555';
-            } else {
-                document.getElementById('mark').style.backgroundColor = '#D4D4D4';
-            }
-
-            document.getElementById('mark').textContent = mark_js; // Отображаем оценку
-
-            // Позиционируем блок информации рядом с кнопкой
-            const rect = event.target.getBoundingClientRect(); // Получаем размеры кнопки
-            const infoBlock = document.getElementById('info');
-            const style = infoBlock.style
-            if (window.innerWidth > 700) {
-                
-                style.top = `${rect.top + window.scrollY}px`; // Устанавливаем позицию по Y
-
-                style.position = "absolute";
-                style.width = "300px";
-                style.height = "auto";
-                style.borderRadius = "20px"
-
-                if (rect.x + 400 > window.innerWidth) {
-                    style.left = `${rect.left - 300 - 50}px`;
-                } else {
-                    style.left = `${rect.left + 100}px`; // Устанавливаем позицию по X на левую границу кнопки
-                }
-
-            } else {
-                style.left = `0px`; // Устанавливаем позицию по X на левую границу кнопки
-                style.bottom = `0px`;
-
-                style.position = "fixed";
-                style.width = "100%";
-                
-                style.borderRadius = "20px"
-                style.borderBottomLeftRadius = "0px";
-                style.borderBottomRightRadius = "0px";
-                style.height = "auto";
-            }
-    
-            // Сбрасываем стиль всех кнопок тем
-            const allTopicBlocks = document.querySelectorAll('#flex-container button');
-            allTopicBlocks.forEach(block => {
-                block.style.border = '1px solid #000000'; // Сбрасываем границу
-            });
-
-            // Увеличиваем границу и меняем цвет текущей кнопки 
-            topicBlock.style.border = '3px solid rgb(0, 82, 97)'; // Увеличиваем границу
+        // Обработчик клика по теме
+        topicBtn.addEventListener('click', (event) => {
+            showTopicInfo(topic, topicBtn, event);
+            highlightSelectedTopic(topicBtn);
         });
 
-        topicsContainer.appendChild(topicBlock); // Добавляем квадратик в контейнер тем
-        });
+        topicsContainer.appendChild(topicBtn);
+    });
 
-    block.appendChild(topicsContainer); // Добавляем контейнер тем в блок
-    container.appendChild(block); // Добавляем блок в контейнер
+    branchBlock.appendChild(topicsContainer);
+    container.appendChild(branchBlock);
 });
 
-// Обработчик события для скрытия блока информации при клике на пустую область
+// Показывает информацию о теме
+function showTopicInfo(topic, topicBtn, event) {
+    const infoBlock = document.getElementById('info');
+    const mark = topic.mark;
+    
+    // Заполняем информацию
+    document.getElementById('title').textContent = topic.title;
+    document.getElementById('description').textContent = topic.description;
+    document.getElementById('points').textContent = `${topic[mark]}/${topic["3"]}`;
+    
+    // Устанавливаем цвет и текст оценки
+    const markElement = document.getElementById('mark');
+    markElement.style.backgroundColor = MARK_COLORS[mark] || MARK_COLORS.default;
+    markElement.textContent = mark;
+    
+    // Позиционируем блок информации
+    positionInfoBlock(infoBlock, topicBtn, event);
+    infoBlock.style.display = 'block';
+}
+
+// Подсвечивает выбранную тему
+function highlightSelectedTopic(topicBtn) {
+    // Сбрасываем стиль всех кнопок
+    document.querySelectorAll('#flex-container button').forEach(btn => {
+        btn.style.border = '1px solid #000000';
+    });
+    // Подсвечиваем текущую
+    topicBtn.style.border = '3px solid rgb(0, 82, 97)';
+}
+
+// Позиционирует блок информации
+function positionInfoBlock(infoBlock, topicBtn, event) {
+    const rect = topicBtn.getBoundingClientRect();
+    const style = infoBlock.style;
+    const infoHeight = 200; // Примерная высота блока информации
+    
+    if (window.innerWidth > 700) {
+        // Позиционируем по центру вертикально
+        const centerY = rect.top + window.scrollY + (rect.height / 2) - (infoHeight / 2);
+        style.top = `${Math.max(0, centerY)}px`; // Не выходим за верхнюю границу
+        
+        style.position = "absolute";
+        style.width = "300px";
+        style.borderRadius = "20px";
+        style.bottom = `auto`;
+        
+        // Горизонтальное позиционирование (как было)
+        style.left = (rect.x + 400 > window.innerWidth) 
+            ? `${rect.left - 300 - 50}px` 
+            : `${rect.left + 100}px`;
+    } else {
+        // Для мобильной версии оставляем как было (снизу)
+        style.left = `0px`;
+        style.bottom = `0px`;
+        style.position = "fixed";
+        style.width = "100%";
+        style.borderRadius = "20px 20px 0 0";
+    }
+}
+
+// Скрываем блок информации при клике вне его
 document.addEventListener('click', (event) => {
     const infoBlock = document.getElementById('info');
     if (!infoBlock.contains(event.target) && !event.target.closest('button')) {
-        infoBlock.style.display = 'none'; // Скрываем блок информации
-
-        // Сбрасываем стиль всех кнопок тем
-        const allTopicBlocks = document.querySelectorAll('#flex-container button');
-        allTopicBlocks.forEach(block => {
-            block.style.border = '1px solid #000000'; // Сбрасываем границу
+        infoBlock.style.display = 'none';
+        document.querySelectorAll('#flex-container button').forEach(btn => {
+            btn.style.border = '1px solid #000000';
         });
     }
 });
