@@ -442,6 +442,17 @@ const MARK_COLORS = {
     default: '#D4D4D4' // серый
 };
 
+// Проверяем, что WebApp Telegram загружен и доступен
+if (window.Telegram && window.Telegram.WebApp) {
+    // Отключаем вертикальные свайпы (эффект "растягивания")
+    window.Telegram.WebApp.disableVerticalSwipes();
+    
+    // Опционально: расширяем страницу на весь экран
+    window.Telegram.WebApp.expand();
+  } else {
+    console.log("Telegram WebApp API не обнаружен");
+}
+
 // Создаем блоки для каждой ветки (раздела)
 Object.keys(data).forEach(branchId => {
     const branch = data[branchId];
