@@ -1,3 +1,7 @@
+*{
+  overscroll-behavior: none;
+}
+
 body {
   background: linear-gradient(230deg, #00F8BE, #2A96FB);
   background-size: 300% 300%;
@@ -8,7 +12,6 @@ body {
   animation: 10s ease 0s normal none infinite running CustomAnimation;
   margin: 0; /* Убираем стандартные отступы body */
   overflow-y: auto;
-  overscroll-behavior: none;
 }
 /* Анимация заднего фона -------------------------------------------------------------------------------- */
 @keyframes CustomAnimation {
