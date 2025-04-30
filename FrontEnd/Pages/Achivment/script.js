@@ -1,100 +1,104 @@
+function getRandomBoolean() {
+  return Math.random() >= 0.5;
+}
+
 let achievements = {
   "Кормилец": {
       "description": "Принеси вкусняшки к чаю",
       "type": "Achivment",
       "img": "Food",
-      "status": false,
+      "status": getRandomBoolean(),
       "point": 9
   },
   "Волонтер": {
       "description": "Стань волонтером кванториума",
       "type": "Achivment",
       "img": "GoodBoy",
-      "status": true,
+      "status": getRandomBoolean(),
       "point": 25
   },
   "Денис": {
       "description": "Допрыгни до потолка",
       "type": "Achivment",
       "img": "Denis",
-      "status": false,
+      "status": getRandomBoolean(),
       "point": -5
   },
   "Местный Жуков": {
       "description": "Хорошо покажи себя в роли тимлида",
       "type": "Achivment",
       "img": "teamlid",
-      "status": true,
+      "status": getRandomBoolean(),
       "point": 25
   },
   "Эврика!": {
       "description": "Найди неожиданное и эффективное решение проблемы",
       "type": "Achivment",
       "img": "idea",
-      "status": false,
+      "status": getRandomBoolean(),
       "point": 18
   },
   "Победитель": {
       "description": "Займи призовое место в не групповом соревновании",
       "type": "Test",
       "img": "Medal",
-      "status": false,
+      "status": getRandomBoolean(),
       "point": 25
   },
   "Отличник": {
       "description": "Получи максимально возможную оценку за год",
       "type": "Test",
       "img": "Profy",
-      "status": true,
+      "status": getRandomBoolean(),
       "point": 50
   },
   "Как?": {
       "description": "Получи максимально возможное количество баллов",
       "type": "Test",
       "img": "que",
-      "status": false,
+      "status": getRandomBoolean(),
       "point": 0
   },
   "Превозмог": {
       "description": "Выйди со своим проектом на коллаборацию",
       "type": "Test",
       "img": "Star",
-      "status": false,
+      "status": getRandomBoolean(),
       "point": 100
   },
   "Активный": {
       "description": "Сходи на мероприятие кванториума",
       "type": "Achivment",
       "img": "event",
-      "status": true,
+      "status": getRandomBoolean(),
       "point": 12
   },
   "Командный игрок": {
       "description": "Прими активное участие в командной работе",
       "type": "Achivment",
       "img": "group",
-      "status": true,
+      "status": getRandomBoolean(),
       "point": 12
   },
   "Это моё?": {
       "description": "Создай свой кейс или проект",
       "type": "Achivment",
       "img": "Hummer",
-      "status": true,
+      "status": getRandomBoolean(),
       "point": 15
   },
   "Мастер": {
       "description": "Принеси настольную игру",
       "type": "Achivment",
       "img": "GameMaster",
-      "status": false,
+      "status": getRandomBoolean(),
       "point": 9
   },
   "Оратор": {
       "description": "Покажи всем, как надо говорить на публике",
       "type": "Achivment",
       "img": "micro",
-      "status": true,
+      "status": getRandomBoolean(),
       "point": 25
   }
 }

@@ -1,16 +1,16 @@
 html {
-  overscroll-behavior: contain; /* Предотвращает overscroll эффекты */
-  height: 100%;
+  overscroll-behavior: none; /* Предотвращает overscroll эффекты */
+  max-height: 100%;
 }
 
 body {
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
+  background-attachment: fixed;
   background-size: 200% 200%;
   margin: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
   touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
-  min-height: 100%;
 }
 
 /* Скролл бар -------------------------------------------------------------------------------- */
@@ -302,6 +302,7 @@ body::-webkit-scrollbar-thumb:hover {
 
 #gift div{
   width: 100px;
+  min-width: 75px;
 }
 
 .post {
@@ -315,12 +316,19 @@ body::-webkit-scrollbar-thumb:hover {
   width: 75px;
   margin: auto;
 }
+
+.post div {
+  border: 2px solid black;
+}
+
 #zero-gift {
   background-color: #00E6DA;
   height: 100px;
   margin: 0;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+
+  z-index: 4;
 }
 #zero-img {
   margin-bottom: 10px;
@@ -330,6 +338,8 @@ body::-webkit-scrollbar-thumb:hover {
   height: 75px;
   margin-top: 25px;
   border-top-left-radius: 10px;
+
+  z-index: 3;
 }
 #first-img {
   margin-bottom: -15px;
@@ -339,6 +349,8 @@ body::-webkit-scrollbar-thumb:hover {
   height: 50px;
   margin-top: 50px;
   border-top-right-radius: 10px;
+
+  z-index: 2;
 }
 #second-img {
   margin-bottom: -40px;
@@ -348,6 +360,8 @@ body::-webkit-scrollbar-thumb:hover {
   height: 25px;
   margin-top: 75px;
   border-top-left-radius: 10px;
+
+  z-index: 1;
 }
 #third-img {
   margin-bottom: -65px;
@@ -404,6 +418,14 @@ body::-webkit-scrollbar-thumb:hover {
     padding: 0;
   }
 
+}
+
+@media (max-width: 700px) {
+  #logo-container {
+    top: 15vh; 
+    width: 70vh;
+    height: 70vh;
+  }
 }
 
 @media (max-height: 550px) {

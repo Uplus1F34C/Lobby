@@ -15,7 +15,6 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
   touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
-  min-height: 100%;
 }
 
 /* Скролл бар -------------------------------------------------------------------------------- */
@@ -196,7 +195,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .hex h1 {
   bottom: 60%;
-  padding-top:50%;
+  padding-top:40%;
   font-size: 1.3em;
   z-index: 1;
   
@@ -216,7 +215,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .hex p {
   top: 40%;
-  padding-bottom:50%;
+  padding-bottom:60%;
   
   font-family: "Comic Relief";
   -webkit-transform:translateY(100%) translatez(-1px);
@@ -378,25 +377,10 @@ body {
 }
 
 
-
 @media (max-width: 700px) {
   #logo-container {
-    position: fixed; /* Фиксированное позиционирование */
-    bottom: 0; /* Прижимаем к нижней части */
-    left: 0; /* Прижимаем к левому краю */
-    width: 1100px; /* Ширина контейнера */
-    height: 1100px; /* Высота контейнера */
-    overflow: hidden; /* Скрываем часть логотипа */
-    z-index: -10;
-  }
-  
-  #logo {
-    position: absolute; /* Абсолютное позиционирование внутри контейнера */
-    bottom: -30%; /* Прижимаем к нижней части контейнера */
-    left: -30%; /* Прижимаем к левому краю контейнера */
-    width: 60%; /* Увеличиваем ширину для показа 1/4 */
-    height: auto; /* Автоматическая высота */
-    filter: opacity(0.4);
-    animation: rotate 20s linear infinite; /* Анимация вращения */
+    top: 15vh; 
+    width: 70vh;
+    height: 70vh;
   }
 }

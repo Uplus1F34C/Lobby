@@ -1,10 +1,11 @@
 html {
-  overscroll-behavior: contain; /* Предотвращает overscroll эффекты */
+  overscroll-behavior: none; /* Предотвращает overscroll эффекты */
   height: 100%;
 }
 
 body {
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
+  background-attachment: fixed;
   background-size: 200% 200%;
   margin: 0;
   overflow-y: auto;
@@ -235,4 +236,13 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 25px;
   color: white;
   -webkit-text-stroke: 0.5px black; /* Толщина и цвет обводки (для браузеров, использующих движок WebKit, например Google Chrome) */
+}
+
+
+@media (max-width: 700px) {
+  #logo-container {
+    top: 15vh; 
+    width: 70vh;
+    height: 70vh;
+  }
 }
