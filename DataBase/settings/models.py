@@ -16,7 +16,6 @@ def generate_random_code(length: int = 8, max_attempts: int = 100) -> str: #Ге
             for _ in range(max_attempts):
                 code = ''.join(secrets.choice(alphabet) for _ in range(length))
                 if not session.query(StudentClass).filter_by(_code=code).first():  # Проверяем наличие кода в БД
-                    print(f"УИ код успешно сгенерирован")
                     return code
             raise ValueError(f"Не удалось сгенерировать уникальный код после {max_attempts} попыток.")
 class level(Enum):

@@ -11,26 +11,26 @@ while True:
     cmd = input("""
 reset - Пересоздать БД
                 
-add_teacher - Добавить учителя
+insert_teacher - Добавить учителя
 delete_teacher - Удалить учителя
-log_teacher - Аутентифицировать учителя 
-reg_teacher - Зарегестрировать учителя    
-get_fio_teacher_tg - Получить ФИО учителя по Tg id
+reg_teacher - Зарегестрировать учителя по TG id
+log_teacher - Аутентифицировать учителя по TG id
+get_teacher_info - Получить информацию учителя по Tg id
                 
-add_student - Добавить студента
+insert_student - Добавить студента
 delete_student - Удалить студента
-log_student_login - Аутентифицировать студента по логину
-log_student_tg - Аутентифицировать студента по tg
 reg_student_login - Зарегестрировать студента по логину
 reg_student_tg - Зарегестрировать студента по tg
-get_FIO_student - Получить ФИО студента
-get_FIO_student_tg - Получить ФИО студента по Tg id
-get_achivment - Получить достижения
-get_mark - Получить оценки
+log_student_login - Аутентифицировать студента по логину
+log_student_tg - Аутентифицировать студента по tg
+get_student_info - Получить ФИО студента
+get_student_info_tg - Получить ФИО студента по Tg id
+get_achivments - Получить достижения
+get_marks - Получить оценки
 
-count - Принудительно пересчитать количство очков у студента по ID
-raiting_by_group - Получить рейтинг одной группы
-raiting_by_kvant - Получить рейтинг одной параллели
+count_points - Принудительно пересчитать количство очков у студента по ID
+get_group_rating - Получить рейтинг одной группы
+get_kvant_rating - Получить рейтинг одной параллели
                 
 ->"""
     )
@@ -40,7 +40,7 @@ raiting_by_kvant - Получить рейтинг одной параллели
         print(Func.insert_group())
 
 # Учитель ----------------------------------------------------------------------
-    elif cmd == "add_teacher":
+    elif cmd == "insert_teacher":
         print(
             Func.insert_teacher(
                 name=input("Имя: "),
@@ -66,8 +66,8 @@ raiting_by_kvant - Получить рейтинг одной параллели
             teacher_tg_id=input("Tg id: ")
             )
         )
-    elif cmd == "get_fio_teacher_tg":
-        print(Func.get_FIO_teacher(
+    elif cmd == "get_teacher_info":
+        print(Func.get_teacher_info(
             teacher_tg_id=input("Tg id: ")
             )
         )
@@ -75,7 +75,7 @@ raiting_by_kvant - Получить рейтинг одной параллели
 
 
 # Студент ----------------------------------------------------------------------
-    elif cmd == "add_student":
+    elif cmd == "insert_student":
         print(
             Func.insert_student(
                 name=input("Имя: "),
@@ -96,7 +96,7 @@ raiting_by_kvant - Получить рейтинг одной параллели
                 )
         )
     elif cmd == "reg_student_login":
-        print(Func.reg_student(
+        print(Func.reg_student_login(
             code = input("CODE: "),
             login = input("Логин: "),
             password = input("Пароль: "),
@@ -119,22 +119,22 @@ raiting_by_kvant - Получить рейтинг одной параллели
                 tg_id = input("Tg id: ")
             )
         )
-    elif cmd == "get_FIO_student":
-        print(Func.get_FIO_student(
+    elif cmd == "get_student_info":
+        print(Func.get_student_info(
             student_id=input("id: ")
             )
         )
-    elif cmd == "get_FIO_student_tg":
-        print(Func.get_FIO_student_tg(
+    elif cmd == "get_student_info_tg":
+        print(Func.get_student_info_tg(
             student_tg_id=input("Tg id: ")
             )
         )
-    elif cmd == "get_achivment":
+    elif cmd == "get_achivments":
         print(Func.get_achivments(
             student_id=input("id: ")
             )
         )
-    elif cmd == "get_mark":
+    elif cmd == "get_marks":
         print(Func.get_marks(
             student_id=input("id: ")
             )
@@ -143,15 +143,15 @@ raiting_by_kvant - Получить рейтинг одной параллели
 
 
 # Остальное ----------------------------------------------------------------------
-    elif cmd == "count":
+    elif cmd == "count_points":
             print(Func.count_points())
-    elif cmd == "raiting_by_group":
+    elif cmd == "get_group_rating":
         print(
             Func.get_group_rating(
                 student_id=input("id:")
             )
         )
-    elif cmd == "raiting_by_kvant":
+    elif cmd == "get_kvant_rating":
         print(
             Func.get_kvant_rating(
                 student_id=input("id: ")
