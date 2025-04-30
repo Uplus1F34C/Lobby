@@ -10,11 +10,15 @@ html {
 
 body {
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
+  background-attachment: fixed;
   background-size: 200% 200%;
   margin: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
   touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
+
+  display: flex;
+  justify-content:center;
 }
 
 /* Скролл бар -------------------------------------------------------------------------------- */
@@ -127,7 +131,7 @@ body::-webkit-scrollbar-thumb:hover {
 
   overflow: hidden;
   width: 75%;
-  margin: 0 auto;
+  margin: 0 0;
   margin-top: 45px;
   padding:0.866% 0;
   font-family: "Comic Relief";
