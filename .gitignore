@@ -11,4 +11,6 @@ DataBase/settings/__pycache__/config.cpython-312.pyc
 DataBase/settings/__pycache__/configuration_DB.cpython-312.pyc
 DataBase/settings/__pycache__/database.cpython-312.pyc
 DataBase/settings/__pycache__/models.cpython-312.pyc
+TGbot/.env
 TGbot/__pycache__/config.cpython-312.pyc
+DataBase/settings/.env
