@@ -1,7 +1,10 @@
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String, ForeignKey, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import event
 
+import asyncio
 from typing import Annotated
 from enum import Enum
 import secrets, string, bcrypt
@@ -10,14 +13,18 @@ from DataBase.settings.configuration_DB import Base, str_256, str_32, session_fa
 
 
 # Помощь --------------------------------------------------------------------------
-def generate_random_code(length: int = 8, max_attempts: int = 100) -> str: #Генерация кода
-        with session_factory() as session:
-            alphabet = string.ascii_uppercase + string.digits 
-            for _ in range(max_attempts):
-                code = ''.join(secrets.choice(alphabet) for _ in range(length))
-                if not session.query(StudentClass).filter_by(_code=code).first():  # Проверяем наличие кода в БД
-                    return code
-            raise ValueError(f"Не удалось сгенерировать уникальный код после {max_attempts} попыток.")
+async def generate_random_code(length: int = 8, max_attempts: int = 100) -> str:
+    async with session_factory() as session:
+        alphabet = string.ascii_uppercase + string.digits 
+        for _ in range(max_attempts):
+            code = ''.join(secrets.choice(alphabet) for _ in range(length))
+            result = await session.execute(
+                select(TeacherClass).where(TeacherClass._code == code)
+            )
+            if not result.scalars().first():
+                return code
+        raise ValueError(f"Не удалось сгенерировать уникальный код после {max_attempts} попыток.")
+
 class level(Enum):
     Стартовый = "Стартовый"
     Базовый = "Базовый"
@@ -58,6 +65,10 @@ class StudentClass(Base):
             return {"status": True, "info": f"Успешная утентификация", "id": self.id}
         else: 
             return {"status": False, "info": f"Неверный пароль"}
+        
+    async def generate_and_set_code(self):
+        if not self._code:
+            self._code = await generate_random_code()
 
     @hybrid_property
     def code(self):
@@ -67,10 +78,7 @@ class StudentClass(Base):
     def code(self, code: str):
       self._code = code
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if not self._code:
-            self._code = generate_random_code()
+
 # Студент --------------------------------------------------------------------------
 
 
@@ -93,10 +101,9 @@ class TeacherClass(Base):
     def code(self, code: str):
       self._code = code
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    async def generate_and_set_code(self):
         if not self._code:
-            self._code = generate_random_code()
+            self._code = await generate_random_code()
 # Учитель --------------------------------------------------------------------------
 
 # Группа --------------------------------------------------------------------------
@@ -109,6 +116,8 @@ class GroupClass(Base):
     kvant: Mapped[kvant]
     group_num: Mapped[int]
     topics: Mapped[str_256]
+
+    marks: Mapped[list["MarkClass"]] = relationship(back_populates="group")
 # Группа --------------------------------------------------------------------------
 
 
@@ -124,4 +133,5 @@ class MarkClass(Base):
     achivment: Mapped[str_256]
     
     student: Mapped["StudentClass"] = relationship(back_populates="marks") 
+    group: Mapped["GroupClass"] = relationship(back_populates="marks")
 # Оценка --------------------------------------------------------------------------

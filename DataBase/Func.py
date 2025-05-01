@@ -3,6 +3,10 @@ import bcrypt
 import shutil
 import os
 import sys
+import aiofiles
+import json
+from sqlalchemy import select, desc
+from sqlalchemy.orm import joinedload
 from DataBase.settings.configuration_DB import Base, session_factory, engine
 from DataBase.settings.models import GroupClass, StudentClass, TeacherClass, MarkClass, level, kvant
 
@@ -13,32 +17,26 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # БАЗОВЫЕ ФУНКЦИИ
 # =================================================================================
 
-def reset_base():
+async  def reset_base():
     """
     Полный сброс базы данных
     """
     try:
         # Удаление всех таблиц
-        Base.metadata.drop_all(engine)
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
         
-        # Очистка папки с оценками
+         # Очистка файлов (синхронный код)
         marks_dir = "DataBase\\DATA\\MARKS"
-        if os.path.exists(marks_dir):
-            for file in os.listdir(marks_dir):
-                file_path = os.path.join(marks_dir, file)
-                if os.path.isfile(file_path):
-                    os.unlink(file_path)
-        
-        # Очистка папки с достижениями
         achivment_dir = "DataBase\\DATA\\ACHIVMENT"
-        if os.path.exists(achivment_dir):
-            for file in os.listdir(achivment_dir):
-                file_path = os.path.join(achivment_dir, file)
-                if os.path.isfile(file_path):
-                    os.unlink(file_path)
-
-        # Создание новых таблиц
-        Base.metadata.create_all(engine)
+        
+        for directory in [marks_dir, achivment_dir]:
+            if os.path.exists(directory):
+                for file in os.listdir(directory):
+                    file_path = os.path.join(directory, file)
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path)
         
         return {"status": True, 
                 "error": False, 
@@ -51,11 +49,11 @@ def reset_base():
                 "info": f"Ошибка при сбросе базы данных: {e}"
         }
 
-def insert_group():
+async def insert_group():
     """
     Добавление групп в базу данных
     """
-    with session_factory() as session:
+    async  with session_factory() as session:
         try:
             for k in kvant:
                 for l in level:
@@ -69,14 +67,14 @@ def insert_group():
                         )
                         session.add(group)
                         
-            session.commit()
+            await session.commit()
             return {"status": True, 
                     "error": False, 
                     "info": "Группы добавлены"
             }
 
         except Exception as e:
-            session.rollback()
+            await  session.rollback()
             return {"status": False, 
                     "error": True, 
                     "info": f"Ошибка при добавлении групп: {e}"
@@ -86,54 +84,70 @@ def insert_group():
 # ФУНКЦИИ ДЛЯ РАБОТЫ С УЧИТЕЛЯМИ
 # =================================================================================
 
-def insert_teacher(name: str, surname: str, patronymic: str, tg_id: str = ""):
+async def insert_teacher(name: str, surname: str, patronymic: str, tg_id = ""):
     """
     Добавление нового учителя в базу данных
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
             teacher = TeacherClass(
                 name=name,
                 surname=surname,
                 patronymic=patronymic,
                 tg_id=tg_id,
-                code=""
+                _code=""
             )
 
             session.add(teacher)
-            session.commit()
+            await teacher.generate_and_set_code()  # Генерируем код перед коммитом
+            await session.commit()
+            await session.refresh(teacher)  # Обновляем объект из БД
 
             return {
                 "status": True, 
                 "error": False,
-                "info": f"Учитель {teacher.name} {teacher.patronymic} добавлен в базу данных", 
+                "info": f"Учитель добавлен в базу данных", 
                 "id": teacher.id,
                 "name": teacher.name,
                 "surname": teacher.surname,
-                "patronymic": teacher.patronymic
+                "patronymic": teacher.patronymic,
+                "Tg_id": teacher.tg_id,
+                "code": teacher.code  # Возвращаем сгенерированный код
             }
         except Exception as e:
-            session.rollback()
+            await  session.rollback()
             return {"status": False, 
                     "error": True, 
                     "info": f"Ошибка при добавлении учителя: {e}"
             }
+        finally:
+            # Явно закрываем сессию
+            await session.close()
 
-def delete_teacher(teacher_id: int):
+async def delete_teacher(teacher_id = "", name: str = "", surname: str = "", patronymic: str = "",):
     """
     Удаление учителя по ID
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            teacher = session.query(TeacherClass).filter(TeacherClass.id == teacher_id).first()
+            if teacher_id:
+                teacher = await session.get(TeacherClass, teacher_id)
+            elif name and surname:
+                stmt = await session.execute(select(TeacherClass).where(
+                    TeacherClass.name == name,
+                    TeacherClass.surname == surname,
+                    TeacherClass.patronymic == patronymic,
+                    ))
+                teacher = stmt.scalars().first()
+
             if not teacher:
                 return {"status": False, 
                         "error": False, 
-                        "info": f"Учитель с таким id не найден"
+                        "info": f"Учитель с такими данными не найден"
                 }
 
-            session.delete(teacher)
-            session.commit()
+            await session.delete(teacher)
+            await session.commit()
 
             return {"status": True, 
                     "error": False, 
@@ -141,23 +155,29 @@ def delete_teacher(teacher_id: int):
             }
 
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             return {"status": False, 
                     "error": True, 
                     "info": f"Ошибка при удалении учителя: {e}"
             }
+        finally:
+            await session.close()
 
-def log_teacher(teacher_tg_id: int):
+async def log_teacher(teacher_tg_id):
     """
     Аутентификация учителя по Telegram ID
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            teacher = session.query(TeacherClass).filter(TeacherClass.tg_id == teacher_tg_id).first()
+            stmt = await session.execute(select(TeacherClass).where(
+                    TeacherClass.tg_id == teacher_tg_id
+                    ))
+            teacher = stmt.scalars().first()
+
             if teacher is None:
                 return {"status": False, 
                         "error": False, 
-                        "info": f"Учитель с таким TG id не найден"
+                        "info": f"Учитель с таким tg id не найден"
                 }
             return {
                 "status": True, 
@@ -171,29 +191,39 @@ def log_teacher(teacher_tg_id: int):
         except Exception as e:
             return {"status": False, 
                     "error": True, 
-                    "info": f"Ошибка при аутентификации учителя по TG: {e}"
+                    "info": f"Ошибка при аутентификации учителя по tg id: {e}"
                 }
+        finally:
+            await session.close()
 
-def reg_teacher(teacher_tg_id: int, code: str):
+async def reg_teacher(teacher_tg_id: int, code: str):
     """
     Регистрация учителя по коду и Telegram ID
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            if session.query(TeacherClass).filter_by(tg_id=teacher_tg_id).first():
+            stmt = await session.execute(select(TeacherClass).where(
+                    TeacherClass.tg_id == teacher_tg_id
+                    ))
+            teacher = stmt.scalars().first()
+            if teacher:
                 return {"status": False, 
                         "error": False, 
-                        "info": "Учитель с таким TG id уже существует"
+                        "info": "Учитель с таким Tg id уже существует"
                 }
 
-            teacher = session.query(TeacherClass).filter(TeacherClass._code == code).first()
+            stmt = await session.execute(select(TeacherClass).where(
+                    TeacherClass._code == code
+                    ))
+            teacher = stmt.scalars().first()
+
             if not teacher:
                 return {"status": False, 
                         "error": False, 
                         "info": "Учитель с таким кодом не найден"}
 
             teacher.tg_id = teacher_tg_id
-            session.commit()
+            await session.commit()
 
             return {
                 "status": True, 
@@ -206,78 +236,80 @@ def reg_teacher(teacher_tg_id: int, code: str):
             }
             
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             return {"status": False, 
                     "error": True, 
                     "info": f"Ошибка при регистрации учителя по TG: {e}"
             }
+        finally:
+            await session.close()
 
-def del_teacher_tg_id(teacher_tg_id: int):
+async def del_teachers_tg_id(teacher_tg_id: int):
     """
     Удаление Telegram ID у учителя
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            teacher = session.query(TeacherClass).filter(TeacherClass.tg_id == teacher_tg_id).first()
+            stmt = await session.execute(select(TeacherClass).where(
+                    TeacherClass.tg_id == teacher_tg_id
+                    ))
+            teacher = stmt.scalars().first()
             if not teacher:
                 return {"status": False, "error": False, "info": "Учитель не найден"}
 
             teacher.tg_id = ""
-            session.commit()
+            await session.commit()
 
             return {
                 "status": True, 
                 "error": False,
-                "info": "Tg id учителя удален", 
-                "teacher_id": teacher.id
+                "info": "Tg id учителя удален"
             }
 
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             return {"status": False, "error": True, "info": f"Ошибка при удалении Tg id учителя: {e}"}
+        finally:
+            await session.close()
 
 # =================================================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ СО СТУДЕНТАМИ
 # =================================================================================
 
-def insert_student(name: str, surname: str, patronymic: str, level: level, 
-                 kvant: kvant, group_num: str, login: str = "", 
-                 password: str = "", tg_id: str = ""):
+async def insert_student(name: str, surname: str, patronymic: str, level: level, 
+                 kvant: kvant, group_num: str, tg_id: str = ""):
     """
     Добавление нового студента в базу данных
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            # Проверка уникальности логина
-            if login and session.query(StudentClass).filter_by(login=login).first():
-                return {"status": False, "error": False, "info": "Студент с таким логином уже существует"}
             
             # Поиск группы
-            group = session.query(GroupClass).filter(
-                GroupClass.level == level,
-                GroupClass.kvant == kvant,
-                GroupClass.group_num == group_num,
-            ).first()
+            stmt = await session.execute(select(GroupClass).where(
+                    GroupClass.level == level,
+                    GroupClass.kvant == kvant,
+                    GroupClass.group_num == group_num,
+            ))
+            group = stmt.scalars().first()
             
             if not group:
                 return {"status": False, "error": False, "info": f"Группа {level}-{kvant}-{group_num} не найдена"}
-            
-            # Хеширование пароля
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') if password else ""
 
             # Создание студента
             student = StudentClass(
                 name=name,
                 surname=surname,
                 patronymic=patronymic,
-                login=login,
-                password=hashed_password,
+                login="",
+                password="",
                 tg_id=tg_id,
                 code=""
             )
 
             session.add(student)
-            session.commit()
+            await student.generate_and_set_code()
+            await session.commit()
+            await session.refresh(student)
 
             # Создание файла с оценками
             marks_file_path = os.path.join("DataBase/DATA/MARKS", f"{student.id}.json")
@@ -296,52 +328,64 @@ def insert_student(name: str, surname: str, patronymic: str, level: level,
                 achivment=achivment_file_path
             )
             session.add(mark)
-            session.commit()
+            await session.commit()
 
             return {
                 "status": True, 
                 "error": False,
-                "info": f"Студент {student.name} {student.surname} добавлен в БД", 
-                "id": student.id
+                "info": f"Студент добавлен в базу данных", 
+                "id": student.id,
+                "name": student.name,
+                "surname": student.surname,
+                "patronymic": student.patronymic,
+                "group": f"{level}-{kvant}-{group_num}",
+                "code": student._code
             }
             
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             return {"status": False, "error": True, "info": f"Ошибка при добавлении студента: {e}"}
+        
+        finally:
+            await session.close()
 
-def delete_student(name: str = "", surname: str = "", patronymic: str = ""):
+async def delete_student(student_id = "", name: str = "", surname: str = "", patronymic: str = ""):
     """
     Удаление студента
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
             # Удаление связанных файлов и записей
-            
-            Student = session.query(StudentClass).filter(
-                StudentClass.name == name,
-                StudentClass.surname == surname,
-                StudentClass.patronymic == patronymic
-                ).first()
-            
-            
+            if student_id:
+                Student = await session.get(StudentClass, student_id)
+            elif name and surname:
+                stmt = await session.execute(select(StudentClass).where(
+                        StudentClass.name == name,
+                        StudentClass.surname == surname,
+                        StudentClass.patronymic == patronymic,
+                        ))
+                Student = stmt.scalars().first()
+    
             if not Student:
                 return {"status": False, 
                         "error": False, 
                         "info": f"Студент с таким id не найден"
                 }
             
-            
-            marks = session.query(MarkClass).filter(MarkClass.id_student == Student.id).all()
+            stmt = await session.execute(select(MarkClass).where(
+                    MarkClass.id_student == Student.id
+                    ))
+            marks = stmt.scalars().all()
             for mark in marks:
                 if os.path.isfile(mark.achivment):
                     os.unlink(mark.achivment)
                 if os.path.isfile(mark.marks):
                     os.unlink(mark.marks)
-                session.delete(mark)
+                await session.delete(mark)
 
 
-            session.delete(Student)
-            session.commit()
+            await session.delete(Student)
+            await session.commit()
 
             return {"status": True, 
                     "error": False, 
@@ -349,62 +393,72 @@ def delete_student(name: str = "", surname: str = "", patronymic: str = ""):
             }
 
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             return {"status": False, 
                     "error": True, 
                     "info": f"Ошибка при удалении студента: {e}"
             }
+        finally:
+            await session.close()
 
-def reg_student_login(code: str, login: str, password: str):
-    """
-    Регистрация студента по коду с использованием логина и пароля
-    """
-    with session_factory() as session:
-        try:
-            if session.query(StudentClass).filter_by(login=login).first():
-                return {"status": False, 
-                        "error": False, 
-                        "info": "Студент с таким логином уже существует"
-                }
+# def reg_student_login(code: str, login: str, password: str):
+#     """
+#     Регистрация студента по коду с использованием логина и пароля
+#     """
+#     with session_factory() as session:
+#         try:
+#             if session.query(StudentClass).filter_by(login=login).first():
+#                 return {"status": False, 
+#                         "error": False, 
+#                         "info": "Студент с таким логином уже существует"
+#                 }
 
-            student = session.query(StudentClass).filter(StudentClass._code == code).first()
-            if not student:
-                return {"status": False, 
-                        "error": False, 
-                        "info": "Студент с таким кодом не найден"
-                }
+#             student = session.query(StudentClass).filter(StudentClass._code == code).first()
+#             if not student:
+#                 return {"status": False, 
+#                         "error": False, 
+#                         "info": "Студент с таким кодом не найден"
+#                 }
 
-            student.login = login
-            student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            session.commit()
+#             student.login = login
+#             student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+#             session.commit()
 
-            return {
-                "status": True, 
-                "error": False,
-                "info": "Студент зарегистрирован", 
-                "student_id": student.id
-            }
+#             return {
+#                 "status": True, 
+#                 "error": False,
+#                 "info": "Студент зарегистрирован", 
+#                 "student_id": student.id
+#             }
 
-        except Exception as e:
-            session.rollback()
-            return {"status": False, 
-                    "error": True, 
-                    "info": f"Ошибка при регистрации: {e}"
-            }
+#         except Exception as e:
+#             session.rollback()
+#             return {"status": False, 
+#                     "error": True, 
+#                     "info": f"Ошибка при регистрации: {e}"
+#             }
 
-def reg_student_tg(code: str, student_tg_id: int):
+async def reg_student_tg(code: str, student_tg_id: int):
     """
     Регистрация студента по коду с использованием Telegram ID
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            if session.query(StudentClass).filter_by(tg_id=student_tg_id).first():
+            stmt = await session.execute(select(StudentClass).where(
+                    StudentClass.tg_id == student_tg_id
+                    ))
+            student = stmt.scalars().first()
+
+            if student:
                 return {"status": False, 
                         "error": False, 
-                        "info": "Студент с таким tg_id уже существует"
+                        "info": "Студент с таким tg id уже существует"
                 }
 
-            student = session.query(StudentClass).filter(StudentClass._code == code).first()
+            stmt = await session.execute(select(StudentClass).where(
+                    StudentClass._code == code
+                    ))
+            student = stmt.scalars().first()
             if not student:
                 return {"status": False, 
                         "error": False, 
@@ -412,67 +466,75 @@ def reg_student_tg(code: str, student_tg_id: int):
                 }
 
             student.tg_id = student_tg_id
-            session.commit()
+            await session.commit()
 
             return {
                 "status": True, 
                 "error": False,
                 "info": "Студент зарегистрирован по tg", 
-                "student_id": student.id
+                "student_id": student.id,
+                "name": student.name,
+                "surname": student.surname,
+                "patronymic": student.patronymic
             }
 
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             return {"status": False, 
                     "error": True, 
                     "info": f"Ошибка при регистрации по tg: {e}"
             }
+        finally:
+            await session.close()
 
-def log_student_login(login: str, password: str):
-    """
-    Аутентификация студента по логину и паролю
-    """
-    with session_factory() as session:
-        try:
-            student = session.query(StudentClass).filter(StudentClass.login == login).first()
-            if student is None:
-                return {"status": False, 
-                        "error": False, 
-                        "info": "Студент с таким логином не найден"
-                }
+# def log_student_login(login: str, password: str):
+#     """
+#     Аутентификация студента по логину и паролю
+#     """
+#     with session_factory() as session:
+#         try:
+#             student = session.query(StudentClass).filter(StudentClass.login == login).first()
+#             if student is None:
+#                 return {"status": False, 
+#                         "error": False, 
+#                         "info": "Студент с таким логином не найден"
+#                 }
             
-            if not student.password:
-                return {"status": False, 
-                        "error": False, 
-                        "info": "У студента не установлен пароль"
-                }
+#             if not student.password:
+#                 return {"status": False, 
+#                         "error": False, 
+#                         "info": "У студента не установлен пароль"
+#                 }
             
-            if bcrypt.checkpw(password.encode('utf-8'), student.password.encode('utf-8')):
-                return {
-                    "status": True, 
-                    "error": False,
-                    "info": "Аутентификация успешна", 
-                    "student_id": student.id
-                }
-            else:
-                return {"status": False, 
-                        "error": False, 
-                        "info": "Неверный пароль"
-                }
+#             if bcrypt.checkpw(password.encode('utf-8'), student.password.encode('utf-8')):
+#                 return {
+#                     "status": True, 
+#                     "error": False,
+#                     "info": "Аутентификация успешна", 
+#                     "student_id": student.id
+#                 }
+#             else:
+#                 return {"status": False, 
+#                         "error": False, 
+#                         "info": "Неверный пароль"
+#                 }
 
-        except Exception as e:
-            return {"status": False, 
-                    "error": True, 
-                    "info": f"Ошибка при аутентификации: {e}"
-            }
+#         except Exception as e:
+#             return {"status": False, 
+#                     "error": True, 
+#                     "info": f"Ошибка при аутентификации: {e}"
+#             }
 
-def log_student_tg(tg_id: int):
+async def log_student_tg(student_tg_id: int):
     """
     Аутентификация студента по Telegram ID
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            student = session.query(StudentClass).filter(StudentClass.tg_id == tg_id).first()
+            stmt = await session.execute(select(StudentClass).where(
+                    StudentClass.tg_id == student_tg_id
+                    ))
+            student = stmt.scalars().first()
             if student is None:
                 return {"status": False, 
                         "error": False, 
@@ -483,76 +545,60 @@ def log_student_tg(tg_id: int):
                 "status": True, 
                 "error": False,
                 "info": "Успешная аутентификация", 
-                "student_id": student.id
+                "id": student.id,
+                "name": student.name,
+                "surname": student.surname,
+                "patronymic": student.patronymic
             }
-            
+        
         except Exception as e:
             return {"status": False, 
                     "error": True, 
                     "info": f"Ошибка при аутентификации: {e}"
             }
+        finally:
+            await session.close()
 
-def get_student_info(student_id: int):
-    """
-    Получение ФИО студента по ID
-    """
-    with session_factory() as session:
-        try:
-            student = session.query(StudentClass).filter(StudentClass.id == student_id).first()
-            if not student:
-                return {"status": False, 
-                        "error": False, 
-                        "info": "Студент не найден"
-                }
+# def get_student_info(student_id: int):
+#     """
+#     Получение ФИО студента по ID
+#     """
+#     with session_factory() as session:
+#         try:
+#             student = session.query(StudentClass).filter(StudentClass.id == student_id).first()
+#             if not student:
+#                 return {"status": False, 
+#                         "error": False, 
+#                         "info": "Студент не найден"
+#                 }
 
-            return {
-                "status": True, 
-                "error": False,
-                "info": "Данные студента получены",
-                "name": student.name, 
-                "surname": student.surname, 
-                "patronymic": student.patronymic
-            }
+#             return {
+#                 "status": True, 
+#                 "error": False,
+#                 "info": "Данные студента получены",
+#                 "name": student.name, 
+#                 "surname": student.surname, 
+#                 "patronymic": student.patronymic
+#             }
 
-        except Exception as e:
-            return {"status": False, 
-                    "error": True, 
-                    "info": f"Ошибка при получении ФИО студента: {e}"
-            }
-
-def get_student_info_tg(student_tg_id: int):
-    """
-    Получение ФИО студента по Telegram ID
-    """
-    with session_factory() as session:
-        try:
-            student = session.query(StudentClass).filter(StudentClass.tg_id == student_tg_id).first()
-            if not student:
-                return {"status": False, "error": False, "info": "Студент не найден"}
-
-            return {
-                "status": True, 
-                "error": False,
-                "info": "Данные студента получены",
-                "name": student.name, 
-                "surname": student.surname, 
-                "patronymic": student.patronymic
-            }
-
-        except Exception as e:
-            return {"status": False, "error": True, "info": f"Ошибка при получении ФИО студента: {e}"}
-        
-def get_student_code(name: str, surname: str, patronymic: str):
+#         except Exception as e:
+#             return {"status": False, 
+#                     "error": True, 
+#                     "info": f"Ошибка при получении ФИО студента: {e}"
+#             }
+  
+async def get_student_code(name: str, surname: str, patronymic: str):
     """
     Получение кода студента по ФИО
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            student = session.query(StudentClass).filter(
-                StudentClass.name == name, 
-                StudentClass.surname == surname, 
-                StudentClass.patronymic == patronymic
-            ).first()
+            stmt = await session.execute(select(StudentClass).where(
+                    StudentClass.name == name, 
+                    StudentClass.surname == surname, 
+                    StudentClass.patronymic == patronymic
+                    ))
+            student = stmt.scalars().first()
             
             if not student:
                 return {"status": False, "error": False, "info": "Студент не найден", "code": ""}
@@ -566,19 +612,24 @@ def get_student_code(name: str, surname: str, patronymic: str):
 
         except Exception as e:
             return {"status": False, "error": True, "info": f"Ошибка при получении кода студента: {e}"}
+        finally:
+            await session.close()
 
-def del_student_tg_id(student_tg_id: int):
+async def del_students_tg_id(student_tg_id: int):
     """
     Удаление Telegram ID у студента
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            student = session.query(StudentClass).filter(StudentClass.tg_id == student_tg_id).first()
+            stmt = await session.execute(select(StudentClass).where(
+                    StudentClass.tg_id == student_tg_id
+                    ))
+            student = stmt.scalars().first()
             if not student:
                 return {"status": False, "error": False, "info": "Студент не найден"}
 
             student.tg_id = ""
-            session.commit()
+            await session.commit()
 
             return {
                 "status": True, 
@@ -588,20 +639,23 @@ def del_student_tg_id(student_tg_id: int):
             }
 
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             return {"status": False, "error": True, "info": f"Ошибка при удалении Tg id студента: {e}"}
+        finally:
+            await session.close()
 
 # =================================================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ С ОЦЕНКАМИ И РЕЙТИНГАМИ
 # =================================================================================
 
-def count_points():
+async def count_points():
     """
     Пересчет баллов для всех студентов на основе оценок и достижений
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            marks = session.query(MarkClass).all()
+            stmt = await session.execute(select(MarkClass))
+            marks = stmt.scalars().all()
             for mark in marks:
                 points = 0
 
@@ -631,25 +685,38 @@ def count_points():
                         points += achivment["point"]
 
                 mark.points = points
-                session.commit()
+                await session.commit()
                 
             return {"status": True, "error": False, "info": "Баллы успешно пересчитаны"}
 
         except Exception as e:
+            await session.rollback()
             return {"status": False, "error": True, "info": f"Ошибка при пересчете баллов: {e}"}
+        finally:
+            await session.close()
 
-def get_achivments(student_id: int):
+async def get_achivments(student_id: int):
     """
-    Получение списка достижений студента
+    Асинхронное получение списка достижений студента
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            mark = session.query(MarkClass).filter(MarkClass.id_student == student_id).first()
-            if not mark:
-                return {"status": False, "error": False, "info": "Студент не найден"}
+            # Асинхронный запрос к БД
+            stmt = select(MarkClass).where(MarkClass.id_student == student_id)
+            result = await session.execute(stmt)
+            mark = result.scalars().first()
+            
+            if not mark or not mark.achivment:
+                return {
+                    "status": False, 
+                    "error": False, 
+                    "info": "Достижения не найдены"
+                }
 
-            with open(mark.achivment, 'r', encoding='utf-8') as file:
-                data = json.load(file)
+            # Асинхронное чтение файла
+            async with aiofiles.open(mark.achivment, 'r', encoding='utf-8') as file:
+                content = await file.read()
+                data = json.loads(content)
                 
             return {
                 "status": True, 
@@ -658,21 +725,47 @@ def get_achivments(student_id: int):
                 "achivments": data
             }
 
+        except FileNotFoundError:
+            return {
+                "status": False, 
+                "error": False,
+                "info": "Файл с достижениями не найден"
+            }
+        except json.JSONDecodeError:
+            return {
+                "status": False,
+                "error": True,
+                "info": "Ошибка формата файла достижений"
+            }
         except Exception as e:
-            return {"status": False, "error": True, "info": f"Ошибка при получении достижений: {e}"}
+            return {
+                "status": False, 
+                "error": True, 
+                "info": f"Ошибка при получении достижений: {str(e)}"
+            }
 
-def get_marks(student_id: int):
+async def get_marks(student_id: int):
     """
-    Получение оценок студента
+    Асинхронное получение оценок студента
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            mark = session.query(MarkClass).filter(MarkClass.id_student == student_id).first()
-            if not mark:
-                return {"status": False, "error": False, "info": "Студент не найден"}
+            # Асинхронный запрос к БД
+            stmt = select(MarkClass).where(MarkClass.id_student == student_id)
+            result = await session.execute(stmt)
+            mark = result.scalars().first()
+            
+            if not mark or not mark.marks:
+                return {
+                    "status": False, 
+                    "error": False, 
+                    "info": "Оценки не найдены"
+                }
 
-            with open(mark.marks, 'r', encoding='utf-8') as file:
-                data = json.load(file)
+            # Асинхронное чтение файла
+            async with aiofiles.open(mark.marks, 'r', encoding='utf-8') as file:
+                content = await file.read()
+                data = json.loads(content)
                 
             return {
                 "status": True, 
@@ -681,102 +774,152 @@ def get_marks(student_id: int):
                 "topics": data
             }
 
+        except FileNotFoundError:
+            return {
+                "status": False, 
+                "error": False,
+                "info": "Файл с оценками не найден"
+            }
+        except json.JSONDecodeError:
+            return {
+                "status": False,
+                "error": True,
+                "info": "Ошибка формата файла оценок"
+            }
         except Exception as e:
-            return {"status": False, "error": True, "info": f"Ошибка при получении оценок: {e}"}
+            return {
+                "status": False, 
+                "error": True, 
+                "info": f"Ошибка при получении оценок: {str(e)}"
+            }
 
-def get_group_rating(student_id: int):
+async def get_group_rating(student_id: int):
     """
-    Получение рейтинга группы студента
+    Получение рейтинга группы студента (асинхронная версия)
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            # Получаем информацию о студенте и его группе
-            student_mark = session.query(MarkClass).filter(MarkClass.id_student == student_id).first()
+            # 1. Находим студента и его группу
+            stmt = (
+                select(MarkClass)
+                .join(MarkClass.student)
+                .where(StudentClass.id == student_id)
+                .options(joinedload(MarkClass.group))
+            )
+            result = await session.execute(stmt)
+            student_mark = result.scalars().first()
+
             if not student_mark:
                 return {"status": False, "error": False, "info": "Студент не найден"}
-
-            group = session.query(GroupClass).filter(GroupClass.id == student_mark.id_group).first()
-            if not group:
+            if not student_mark.group:
                 return {"status": False, "error": False, "info": "Группа не найдена"}
 
-            # Получаем всех студентов группы, отсортированных по баллам
-            students = session.query(StudentClass)\
-                .join(MarkClass)\
-                .join(GroupClass)\
-                .filter(
-                    GroupClass.level == group.level,
-                    GroupClass.kvant == group.kvant,
-                    GroupClass.group_num == group.group_num
-                )\
-                .order_by(MarkClass.points.desc())\
-                .all()
+            group = student_mark.group
 
-            rating = []
-            for student in students:
-                mark = session.query(MarkClass).filter(MarkClass.id_student == student.id).first()
-                rating.append({
-                    "student_id": student.id,
+            # 2. Получаем всех студентов группы с их оценками
+            stmt = (
+                select(StudentClass, MarkClass.points)
+                .join(StudentClass.marks)
+                .join(MarkClass.group)
+                .where(
+                    GroupClass.id == group.id  # Проще фильтровать по id группы
+                )
+                .order_by(desc(MarkClass.points))
+            )
+            result = await session.execute(stmt)
+            students_data = result.all()
+
+            # 3. Формируем рейтинг
+            rating = [
+                {
+                    "id": student.id,
                     "name": student.name,
                     "surname": student.surname,
-                    "points": mark.points
-                })
-                
+                    "points": points
+                }
+                for student, points in students_data
+            ]
+
             return {
-                "status": True, 
+                "status": True,
                 "error": False,
                 "info": "Рейтинг группы получен",
                 "group_rating": rating
             }
 
         except Exception as e:
-            return {"status": False, "error": True, "info": f"Ошибка при получении рейтинга группы: {e}"}
-
-def get_kvant_rating(student_id: int):
+            return {
+                "status": False,
+                "error": True,
+                "info": f"Ошибка: {str(e)}"
+            }
+        
+async def get_kvant_rating(student_id: int):
     """
-    Получение рейтинга по направлению (кванту)
+    Асинхронное получение рейтинга по направлению (кванту)
     """
-    with session_factory() as session:
+    async with session_factory() as session:
         try:
-            # Получаем информацию о студенте и его группе
-            student_mark = session.query(MarkClass).filter(MarkClass.id_student == student_id).first()
+            # 1. Получаем информацию о студенте и его группе за один запрос
+            stmt = (
+                select(MarkClass)
+                .where(MarkClass.id_student == student_id)
+                .options(joinedload(MarkClass.group)))
+            
+            result = await session.execute(stmt)
+            student_mark = result.scalars().first()
+            
             if not student_mark:
                 return {"status": False, "error": False, "info": "Студент не найден"}
-
-            group = session.query(GroupClass).filter(GroupClass.id == student_mark.id_group).first()
-            if not group:
+            if not student_mark.group:
                 return {"status": False, "error": False, "info": "Группа не найдена"}
+            
+            group = student_mark.group
 
-            # Получаем топ студентов направления
-            students = session.query(StudentClass)\
-                .join(MarkClass)\
-                .join(GroupClass)\
-                .filter(
+            # 2. Получаем топ студентов направления с их оценками и группами за один запрос
+            stmt = (
+                select(
+                    StudentClass,
+                    MarkClass.points,
+                    GroupClass.level,
+                    GroupClass.kvant,
+                    GroupClass.group_num
+                )
+                .join(StudentClass.marks)
+                .join(MarkClass.group)
+                .where(
                     GroupClass.level == group.level,
                     GroupClass.kvant == group.kvant
-                )\
-                .order_by(MarkClass.points.desc())\
-                .limit(4)\
-                .all()
-
-            rating = []
-            for student in students:
-                mark = session.query(MarkClass).filter(MarkClass.id_student == student.id).first()
-                student_group = session.query(GroupClass).filter(GroupClass.id == mark.id_group).first()
-                
-                rating.append({
+                )
+                .order_by(desc(MarkClass.points))
+                .limit(4)
+            )
+            
+            result = await session.execute(stmt)
+            rows = result.all()
+            
+            # 3. Формируем рейтинг
+            rating = [
+                {
                     "student_id": student.id,
                     "name": student.name,
                     "surname": student.surname,
-                    "group": f"{student_group.level.name}-{student_group.kvant.name}-{student_group.group_num}",
-                    "points": mark.points
-                })
-                
+                    "group": f"{level.name}-{kvant.name}-{group_num}",
+                    "points": points
+                }
+                for student, points, level, kvant, group_num in rows
+            ]
+            
             return {
                 "status": True, 
                 "error": False,
                 "info": "Рейтинг направления получен",
-                "kvant_rating": rating
+                "kvant_rating": rating,
             }
 
         except Exception as e:
-            return {"status": False, "error": True, "info": f"Ошибка при получении рейтинга направления: {e}"}
+            return {
+                "status": False, 
+                "error": True, 
+                "info": f"Ошибка при получении рейтинга направления: {str(e)}"
+            }
