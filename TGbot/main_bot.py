@@ -48,6 +48,7 @@ class GetCode(StatesGroup):
 
 class DeleteStudent(StatesGroup):
     """Состояния для удаления студента по ФИО"""
+    id = State()
     name = State()
     surname = State()
     patronymic = State()
@@ -63,9 +64,9 @@ async def cmd_start(message: Message):
     Определяет роль пользователя и показывает соответствующее меню
     """
     # Проверка на учителя
-    teacher_auth = Func.log_teacher(message.from_user.id)
+    teacher_auth = await Func.log_teacher(message.from_user.id)
     if teacher_auth["status"]:
-        teacher_info = Func.log_teacher(message.from_user.id)
+        teacher_info = await Func.log_teacher(message.from_user.id)
         
         builder = InlineKeyboardBuilder()
         builder.add(InlineKeyboardButton(
@@ -94,9 +95,9 @@ async def cmd_start(message: Message):
         return
 
     # Проверка на студента
-    student_auth = Func.log_student_tg(message.from_user.id)
+    student_auth = await Func.log_student_tg(message.from_user.id)
     if student_auth["status"]:
-        student_info = Func.get_student_info_tg(message.from_user.id)
+        student_info = await Func.log_student_tg(message.from_user.id)
 
         builder = InlineKeyboardBuilder()
         builder.add(InlineKeyboardButton(
@@ -157,9 +158,9 @@ async def cmd_menu(message: Message):
     Обработчик команды /menu\
     """
     # Проверка на учителя
-    teacher_auth = Func.log_teacher(message.from_user.id)
+    teacher_auth = await Func.log_teacher(message.from_user.id)
     if teacher_auth["status"]:
-        teacher_info = Func.log_teacher(message.from_user.id)
+        teacher_info = await Func.log_teacher(message.from_user.id)
         
         builder = InlineKeyboardBuilder()
         builder.add(InlineKeyboardButton(
@@ -186,9 +187,9 @@ async def cmd_menu(message: Message):
         return
 
     # Проверка на студента
-    student_auth = Func.log_student_tg(message.from_user.id)
+    student_auth = await Func.log_student_tg(message.from_user.id)
     if student_auth["status"]:
-        student_info = Func.get_student_info_tg(message.from_user.id)
+        student_info = await Func.log_student_tg(message.from_user.id)
 
         builder = InlineKeyboardBuilder()
         builder.add(InlineKeyboardButton(
@@ -236,7 +237,7 @@ async def reg_teacher(callback: CallbackQuery, state: FSMContext):
 async def reg_teacher_2(message: Message, state: FSMContext):
     """Завершение регистрации учителя"""
     registration_code = message.text.strip()
-    result = Func.reg_teacher(message.from_user.id, registration_code)
+    result = await Func.reg_teacher(message.from_user.id, registration_code)
 
     if result["status"]:
         await message.answer("✅ Регистрация успешно завершена! Теперь у вас есть доступ к управлению базой данных.")
@@ -350,7 +351,7 @@ async def process_student_num(message: Message, state: FSMContext):
     """Завершение добавления студента"""
     data = await state.get_data()
     
-    result = Func.insert_student(
+    result = await Func.insert_student(
         name=data.get('name'),
         surname=data.get('surname'),
         patronymic=data.get('patronymic'),
@@ -364,7 +365,8 @@ async def process_student_num(message: Message, state: FSMContext):
         f"👤 Имя: {data.get('name')}\n"
         f"📛 Фамилия: {data.get('surname')}\n"
         f"🔤 Отчество: {data.get('patronymic')}\n"
-        f"🏷️ Группа: {data.get('level')}-{data.get('kvant')}-{message.text.strip()}"
+        f"🏷️ Группа: {data.get('level')}-{data.get('kvant')}-{message.text.strip()}\n"
+        f"🗝️ Код: {result["code"]}"
     )
     
     if result['status']:
@@ -385,6 +387,64 @@ async def process_student_num(message: Message, state: FSMContext):
 
 
 @dp.callback_query(F.data == "delete_student__cd")
+async def delete_student_by_fio(callback: CallbackQuery, state: FSMContext):
+    """Начало процесса удаления студента с выбором метода"""
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(
+        text="🔢 По ID",
+        callback_data="delete_student_by_id__cd"))
+    builder.add(InlineKeyboardButton(
+        text="👤 По ФИО",
+        callback_data="delete_student_by_fio__cd"))
+    builder.add(InlineKeyboardButton(
+        text="❌ Отменить",
+        callback_data="cancel_operation__cd"))
+    builder.adjust(2, 1)
+    
+    await callback.message.answer(
+        "🤖 Выберите способ удаления студента:",
+        reply_markup=builder.as_markup()
+    )
+    await callback.answer()
+
+
+@dp.callback_query(F.data == "delete_student_by_id__cd")
+async def delete_student_by_id_start(callback: CallbackQuery, state: FSMContext):
+    """Начало процесса удаления студента по ID"""
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(
+        text="❌ Отменить удаление",
+        callback_data="cancel_operation__cd"))
+    
+    await state.set_state(DeleteStudent.id)
+    await callback.message.answer(
+        "🔢 Введите ID студента для удаления:",
+        reply_markup=builder.as_markup()
+    )
+    await callback.answer()
+
+@dp.message(DeleteStudent.id)
+async def process_delete_id(message: Message, state: FSMContext):
+    """Обработка ID для удаления"""
+    student_id = message.text.strip()
+    
+    try:
+        student_id = int(student_id)  # Проверяем, что ID - число
+        result = await Func.delete_student(student_id=student_id)
+        
+        if result["status"]:
+            await message.answer(f"✅ Студент с ID {student_id} успешно удален из системы!")
+        else:
+            await message.answer(f"❌ Ошибка при удалении студента:\n{result['info']}")
+    except ValueError:
+        await message.answer("❌ ID должен быть числом. Пожалуйста, введите корректный ID.")
+        return
+    
+    await cmd_menu(message)
+    await state.clear()
+
+
+@dp.callback_query(F.data == "delete_student_by_fio__cd")
 async def delete_student_by_fio(callback: CallbackQuery, state: FSMContext):
     """Начало процесса удаления студента по ФИО"""
     builder = InlineKeyboardBuilder()
@@ -444,7 +504,7 @@ async def process_delete_patronymic(message: Message, state: FSMContext):
         f"🔤 Отчество: {message.text.strip()}"
     )
 
-    result = Func.delete_student(name=data.get('name'), surname=data.get('surname'), patronymic=message.text.strip())
+    result = await Func.delete_student(name=data.get('name'), surname=data.get('surname'), patronymic=message.text.strip())
     
     if result["status"]:
         await message.answer(f"{student_info}\n\n✅ Студент успешно удален из системы!")
@@ -497,7 +557,7 @@ async def process_student_surname_for_code(message: Message, state: FSMContext):
 async def process_student_patronymic_for_code(message: Message, state: FSMContext):
     """Завершение получения кода студента"""
     data = await state.get_data()
-    result = Func.get_student_code(
+    result = await Func.get_student_code(
         name=data.get('name'),
         surname=data.get('surname'),
         patronymic=message.text.strip()
@@ -517,7 +577,7 @@ async def process_student_patronymic_for_code(message: Message, state: FSMContex
 @dp.callback_query(F.data == "exit_teacher__cd")
 async def exit_teacher(callback: CallbackQuery):
     """Выход учителя из аккаунта"""
-    result = Func.del_teacher_tg_id(teacher_tg_id=callback.from_user.id)
+    result = await Func.del_teachers_tg_id(teacher_tg_id=callback.from_user.id)
 
     if result["status"]:
         await callback.message.answer("✅ Вы успешно вышли из аккаунта")
@@ -544,7 +604,7 @@ async def reg_student(callback: CallbackQuery, state: FSMContext):
 @dp.message(WaitCode.reg_student)
 async def reg_student_2(message: Message, state: FSMContext):
     """Завершение регистрации студента"""
-    result = Func.reg_student_tg(
+    result = await Func.reg_student_tg(
         student_tg_id=message.from_user.id,
         code=message.text.strip()
     )
@@ -570,7 +630,7 @@ async def post_idea(callback: CallbackQuery):
 @dp.callback_query(F.data == "exit_student__cd")
 async def exit_student(callback: CallbackQuery):
     """Выход студента из аккаунта"""
-    result = Func.del_student_tg_id(student_tg_id=callback.from_user.id)
+    result = await Func.del_students_tg_id(student_tg_id=callback.from_user.id)
 
     if result["status"]:
         await callback.message.answer("✅ Вы успешно вышли из аккаунта")
