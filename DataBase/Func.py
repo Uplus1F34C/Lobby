@@ -221,6 +221,12 @@ async def reg_teacher(teacher_tg_id: int, code: str):
                 return {"status": False, 
                         "error": False, 
                         "info": "Учитель с таким кодом не найден"}
+            
+            if teacher.tg_id:
+                return {"status": False, 
+                        "error": False, 
+                        "info": "Учитель с таким кодом уже зарегестрирован на другом устройстве"}
+
 
             teacher.tg_id = teacher_tg_id
             await session.commit()
@@ -695,18 +701,22 @@ async def count_points():
         finally:
             await session.close()
 
-async def get_achivments(student_id: int):
+async def get_achivments(student_tg_id: int):
     """
     Асинхронное получение списка достижений студента
     """
     async with session_factory() as session:
         try:
             # Асинхронный запрос к БД
-            stmt = select(MarkClass).where(MarkClass.id_student == student_id)
+            stmt = select(StudentClass.id).where(StudentClass.tg_id == student_tg_id)
             result = await session.execute(stmt)
-            mark = result.scalars().first()
+            student_id = result.scalar()
+
+            stmt = select(MarkClass.achivment).where(MarkClass.id_student == student_id)
+            result = await session.execute(stmt)
+            achivments = result.scalars().first()
             
-            if not mark or not mark.achivment:
+            if not achivments:
                 return {
                     "status": False, 
                     "error": False, 
@@ -714,7 +724,7 @@ async def get_achivments(student_id: int):
                 }
 
             # Асинхронное чтение файла
-            async with aiofiles.open(mark.achivment, 'r', encoding='utf-8') as file:
+            async with aiofiles.open(achivments, 'r', encoding='utf-8') as file:
                 content = await file.read()
                 data = json.loads(content)
                 
@@ -744,18 +754,22 @@ async def get_achivments(student_id: int):
                 "info": f"Ошибка при получении достижений: {str(e)}"
             }
 
-async def get_marks(student_id: int):
+async def get_marks(student_tg_id: int):
     """
     Асинхронное получение оценок студента
     """
     async with session_factory() as session:
         try:
             # Асинхронный запрос к БД
-            stmt = select(MarkClass).where(MarkClass.id_student == student_id)
+            stmt = select(StudentClass.id).where(StudentClass.tg_id == student_tg_id)
             result = await session.execute(stmt)
-            mark = result.scalars().first()
+            student_id = result.scalar()
+
+            stmt = select(MarkClass.marks).where(MarkClass.id_student == student_id)
+            result = await session.execute(stmt)
+            marks = result.scalars().first()
             
-            if not mark or not mark.marks:
+            if not marks:
                 return {
                     "status": False, 
                     "error": False, 
@@ -763,7 +777,7 @@ async def get_marks(student_id: int):
                 }
 
             # Асинхронное чтение файла
-            async with aiofiles.open(mark.marks, 'r', encoding='utf-8') as file:
+            async with aiofiles.open(marks, 'r', encoding='utf-8') as file:
                 content = await file.read()
                 data = json.loads(content)
                 
@@ -793,7 +807,7 @@ async def get_marks(student_id: int):
                 "info": f"Ошибка при получении оценок: {str(e)}"
             }
 
-async def get_group_rating(student_id: int):
+async def get_group_rating(student_tg_id: int):
     """
     Получение рейтинга группы студента (асинхронная версия)
     """
@@ -803,7 +817,7 @@ async def get_group_rating(student_id: int):
             stmt = (
                 select(MarkClass)
                 .join(MarkClass.student)
-                .where(StudentClass.id == student_id)
+                .where(StudentClass.tg_id == student_tg_id)
                 .options(joinedload(MarkClass.group))
             )
             result = await session.execute(stmt)
@@ -854,16 +868,18 @@ async def get_group_rating(student_id: int):
                 "info": f"Ошибка: {str(e)}"
             }
         
-async def get_kvant_rating(student_id: int):
+async def get_kvant_rating(student_tg_id: int):
     """
     Асинхронное получение рейтинга по направлению (кванту)
     """
     async with session_factory() as session:
         try:
             # 1. Получаем информацию о студенте и его группе за один запрос
+            
             stmt = (
                 select(MarkClass)
-                .where(MarkClass.id_student == student_id)
+                .join(MarkClass.student)
+                .where(StudentClass.tg_id == student_tg_id)
                 .options(joinedload(MarkClass.group)))
             
             result = await session.execute(stmt)

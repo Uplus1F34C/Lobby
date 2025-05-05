@@ -121,7 +121,7 @@ class GroupClass(Base):
 # Группа --------------------------------------------------------------------------
 
 
-# Оценка --------------------------------------------------------------------------
+# Оценки --------------------------------------------------------------------------
 class MarkClass(Base):
     __tablename__ = "mark"
 
@@ -134,4 +134,29 @@ class MarkClass(Base):
     
     student: Mapped["StudentClass"] = relationship(back_populates="marks") 
     group: Mapped["GroupClass"] = relationship(back_populates="marks")
-# Оценка --------------------------------------------------------------------------
+# Оценки --------------------------------------------------------------------------
+
+
+# Админ --------------------------------------------------------------------------
+class AdminClass(Base):
+    __tablename__ = "admin"
+
+    id: Mapped[intpk]
+    name: Mapped[str_32]
+    surname: Mapped[str_32]
+    patronymic: Mapped[str_32]
+    tg_id: Mapped[str] = mapped_column(String(10), default="")
+    _code: Mapped[str] = mapped_column(String(8))
+
+    @hybrid_property
+    def code(self):
+        return self._code
+
+    @code.setter
+    def code(self, code: str):
+      self._code = code
+
+    async def generate_and_set_code(self):
+        if not self._code:
+            self._code = await generate_random_code()
+# Админ --------------------------------------------------------------------------

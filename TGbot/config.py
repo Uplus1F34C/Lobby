@@ -3,12 +3,17 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     token: str
     url: str
+    admin_password: str
 
     @property
     def get_token(self):
         return self.token
+    
     def get_url(self):
         return self.url
+    
+    def get_admin_password(self):
+        return self.admin_password
     model_config = SettingsConfigDict(env_file="TGbot/.env")
 
 settings = Settings()
