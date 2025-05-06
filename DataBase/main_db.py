@@ -38,6 +38,8 @@ async def main():
             if cmd == "reset":
                 reset_result = await Func.reset_base()
                 insert_result = await Func.insert_group()
+                await Func.insert_student(name="Гость (Вы)", surname="", patronymic="", level="Стартовый", kvant="IT", group_num="1", tg_id="101010")
+        
                 result = reset_result, insert_result
 
         # Учитель ----------------------------------------------------------------------
@@ -122,11 +124,11 @@ async def main():
                 
             elif cmd == "get_achivments":
                 result = await Func.get_achivments(
-                    student_id=input("id: ")
+                    student_tg_id=input("tg_id: ")
                     )
             elif cmd == "get_marks":
                 result = await Func.get_marks(
-                    student_id=input("id: ")
+                    student_tg_id=input("tg_id: ")
                     )
         # Студент ----------------------------------------------------------------------
 

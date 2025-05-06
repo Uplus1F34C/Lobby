@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Response, Cookie, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from authx import AuthX, AuthXConfig
 from pydantic import BaseModel
 
@@ -8,6 +9,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from DataBase import Func
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # В продакшене замените на конкретный домен фронта
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get(summary="Получить достижения",
         path='/get_achivments/{tg_id}')

@@ -1,42 +1,107 @@
-const kvants_raiting = [{'id': 6, 'name': 'Никита ', 'surname': 'Иванов', 'group': 'C-IT-1', 'point': 198}, {'id': 2, 'name': 'Анна ', 'surname': 'Сидорова ', 'group': 'C-IT-1', 'point': 64}, {'id': 4, 'name': 'Ирина ', 'surname': 'Попова ', 'group': 'C-IT-3', 'point': 62}, {'id': 1, 'name': 'Александр', 'surname': 'Петров ', 'group': 'C-IT-2', 'point': 61}]
+const API_BASE_URL = 'http://localhost:8000'; // Убедитесь, что совпадает с адресом вашего FastAPI сервера
+const TEST_TG_ID = 1359587483; // Тестовый TG ID
 
-const groups_raiting = [{'id': 6, 'name': 'Никита ', 'surname': 'Иванов', 'point': 198}, {'id': 2, 'name': 'Анна ', 'surname': 'Сидорова ', 'point': 64}, {'id': 1, 'name': 'Александр', 'surname': 'Петров ', 'point': 50}, {'id': 5, 'name': 'Наталья ', 'surname': 'Кузнецова ', 'point': 45}, {'id': 7, 'name': 'Сергей ', 'surname': 'Попов ', 'point': 34}, {'id': 9, 'name': 'Анна ', 'surname': 'Романова ', 'point': 25}, {'id': 10, 'name': 'Мария ', 'surname': 'Соколова ', 'point': 17}, {'id': 11, 'name': 'Ольга ', 'surname': 'Васильева ', 'point': 15}, {'id': 12, 'name': 'Вика ', 'surname': 'Антонова ', 'point': 8}, {'id': 13, 'name': 'Никита ', 'surname': 'Рубцов ', 'point': 2}]
+async function fetchGroupRating(tgId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/get_group_raiting/${tgId}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.group_rating || [];
+  } catch (error) {
+    console.error('Ошибка при запросе рейтинга группы:', error);
+    return [];
+  }
+}
 
-  
-// Получаем контейнеры для вставки данных
-const groupContainer = document.getElementById('group');
-const leadersContainer = document.getElementById('leaders').querySelector('#top');
+async function fetchKvantRating(tgId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/get_kvant_raiting/${tgId}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.kvant_rating || [];
+  } catch (error) {
+    console.error('Ошибка при запросе рейтинга параллели:', error);
+    return [];
+  }
+}
 
 function createStudentElement(student, index, isLeader = false) {
-const studentDiv = document.createElement('div');
-studentDiv.className = 'student';
+  const studentDiv = document.createElement('div');
+  studentDiv.className = 'student';
 
-// Добавляем спец. классы для первых мест в рейтинге лидеров
-if (isLeader) {
+  if (isLeader) {
     studentDiv.id = ['zero', 'first', 'second', 'third'][index] || '';
-}
+  }
 
-studentDiv.innerHTML = isLeader
+  // Обрабатываем разные названия поля с баллами (point/points)
+  const points = student.points !== undefined ? student.points : student.point;
+
+  studentDiv.innerHTML = isLeader
     ? `
-    <div class="rank"><div class="text">${student.point} б.</div></div>
-    <div class="name"><div class="text">${student.surname} ${student.name}</div></div>
-    <div class="score"><div class="text">${student.group}</div></div>
+      <div class="rank"><div class="text">${points} б.</div></div>
+      <div class="name"><div class="text">${student.surname} ${student.name}</div></div>
+      <div class="score"><div class="text">${student.group || ''}</div></div>
     `
     : `
-    <div class="rank"><div class="text">${index}</div></div>
-    <div class="name"><div class="text">${student.surname} ${student.name}</div></div>
-    <div class="score"><div class="text">${student.point} б.</div></div>
+      <div class="rank"><div class="text">${index + 1}</div></div>
+      <div class="name"><div class="text">${student.surname} ${student.name}</div></div>
+      <div class="score"><div class="text">${points} б.</div></div>
     `;
 
-return studentDiv;
+  return studentDiv;
 }
 
-// Заполняем рейтинг группы
-groups_raiting.forEach((student, index) => {
-groupContainer.appendChild(createStudentElement(student, index + 1));
-});
+async function initializeRatings() {
+  const groupContainer = document.getElementById('group');
+  const leadersContainer = document.getElementById('leaders')?.querySelector('#top');
+  
+  if (!groupContainer || !leadersContainer) {
+    console.error('Не найдены контейнеры для рейтингов');
+    return;
+  }
 
-// Заполняем топ лидеров
-kvants_raiting.forEach((student, index) => {
-leadersContainer.appendChild(createStudentElement(student, index, true));
-});
+  // Показываем заглушки на время загрузки
+  groupContainer.innerHTML = '<p>Загрузка рейтинга группы...</p>';
+  leadersContainer.innerHTML = '<p>Загрузка топ лидеров...</p>';
+
+  // Получаем данные с сервера
+  const [groupRating, kvantRating] = await Promise.all([
+    fetchGroupRating(TEST_TG_ID),
+    fetchKvantRating(TEST_TG_ID)
+  ]);
+
+  // Очищаем контейнеры перед добавлением новых данных
+  groupContainer.innerHTML = '';
+  leadersContainer.innerHTML = '';
+
+  // Заполняем рейтинг группы
+  if (groupRating.length > 0) {
+    groupRating.forEach((student, index) => {
+      // Добавляем поддержку старой структуры данных
+      const normalizedStudent = {
+        ...student,
+        point: student.points !== undefined ? student.points : student.point
+      };
+      groupContainer.appendChild(createStudentElement(normalizedStudent, index));
+    });
+  } else {
+    groupContainer.innerHTML = '<p>Нет данных о рейтинге группы</p>';
+  }
+
+  // Заполняем топ лидеров
+  if (kvantRating.length > 0) {
+    kvantRating.forEach((student, index) => {
+      // Добавляем поддержку старой структуры данных
+      const normalizedStudent = {
+        ...student,
+        point: student.points !== undefined ? student.points : student.point
+      };
+      leadersContainer.appendChild(createStudentElement(normalizedStudent, index, true));
+    });
+  } else {
+    leadersContainer.innerHTML = '<p>Нет данных о топ лидерах</p>';
+  }
+}
+
+// Инициализируем при загрузке страницы
+document.addEventListener('DOMContentLoaded', initializeRatings);

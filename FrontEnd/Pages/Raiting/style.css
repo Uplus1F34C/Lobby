@@ -128,8 +128,11 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 #group {
+  margin-top: 50px;
   width: 50%;
   margin-left: 0; /* Убираем отступ слева */
+  
+  height: calc(100% - 50px);
   
   display: flex;
   flex-direction: column;
@@ -241,6 +244,9 @@ body::-webkit-scrollbar-thumb:hover {
 
 
 #leaders {
+  margin-top: 50px;
+  
+  height: calc(100% - 50px);
   width: 50%;
   margin-left: 0; /* Убираем отступ слева */
   /* background-color: rgba(0,0,0,0.2); */
@@ -296,7 +302,7 @@ body::-webkit-scrollbar-thumb:hover {
 /* НАГРАДЫ -------------------------------------------------------------------------------- */
 #gift {
   display: flex;
-  
+  bottom: 0px;
   margin-top: auto; /* Pushes the element to the bottom of the flex container */
 }
 

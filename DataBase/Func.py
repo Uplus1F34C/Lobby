@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # БАЗОВЫЕ ФУНКЦИИ
 # =================================================================================
 
-async  def reset_base():
+async def reset_base():
     """
     Полный сброс базы данных
     """
@@ -37,7 +37,7 @@ async  def reset_base():
                     file_path = os.path.join(directory, file)
                     if os.path.isfile(file_path):
                         os.unlink(file_path)
-        
+
         return {"status": True, 
                 "error": False, 
                 "info": "База данных сброшена"
@@ -545,6 +545,7 @@ async def log_student_tg(student_tg_id: int):
                 return {"status": False, 
                         "error": False, 
                         "info": "Студент не найден"
+
                 }
             
             return {
@@ -674,7 +675,7 @@ async def count_points():
                         topic_mark = topic["mark"]
                         if topic_mark != 0:
                             if topic_mark < 4:
-                                points += topic[str(topic_mark)]
+                                points +=  topic_mark*topic["X"]
                             else:
                                 return {
                                     "status": False, 
@@ -712,13 +713,19 @@ async def get_achivments(student_tg_id: int):
             result = await session.execute(stmt)
             student_id = result.scalar()
 
+            if not student_id:
+                student_tg_id = "101010"
+                stmt = select(StudentClass.id).where(StudentClass.tg_id == student_tg_id)
+                result = await session.execute(stmt)
+                student_id = result.scalar()
+
             stmt = select(MarkClass.achivment).where(MarkClass.id_student == student_id)
             result = await session.execute(stmt)
             achivments = result.scalars().first()
             
             if not achivments:
                 return {
-                    "status": False, 
+                    "status": True, 
                     "error": False, 
                     "info": "Достижения не найдены"
                 }
@@ -765,13 +772,19 @@ async def get_marks(student_tg_id: int):
             result = await session.execute(stmt)
             student_id = result.scalar()
 
+            if not student_id:
+                student_tg_id = "101010"
+                stmt = select(StudentClass.id).where(StudentClass.tg_id == student_tg_id)
+                result = await session.execute(stmt)
+                student_id = result.scalar()
+
             stmt = select(MarkClass.marks).where(MarkClass.id_student == student_id)
             result = await session.execute(stmt)
             marks = result.scalars().first()
             
             if not marks:
                 return {
-                    "status": False, 
+                    "status": True, 
                     "error": False, 
                     "info": "Оценки не найдены"
                 }
@@ -824,7 +837,15 @@ async def get_group_rating(student_tg_id: int):
             student_mark = result.scalars().first()
 
             if not student_mark:
-                return {"status": False, "error": False, "info": "Студент не найден"}
+                student_tg_id = "101010"
+                stmt = (
+                select(MarkClass)
+                .join(MarkClass.student)
+                .where(StudentClass.tg_id == student_tg_id)
+                .options(joinedload(MarkClass.group))
+                )
+                result = await session.execute(stmt)
+                student_mark = result.scalars().first()
             if not student_mark.group:
                 return {"status": False, "error": False, "info": "Группа не найдена"}
 
@@ -886,7 +907,15 @@ async def get_kvant_rating(student_tg_id: int):
             student_mark = result.scalars().first()
             
             if not student_mark:
-                return {"status": False, "error": False, "info": "Студент не найден"}
+                student_tg_id = "101010"
+                stmt = (
+                select(MarkClass)
+                .join(MarkClass.student)
+                .where(StudentClass.tg_id == student_tg_id)
+                .options(joinedload(MarkClass.group)))
+                
+                result = await session.execute(stmt)
+                student_mark = result.scalars().first()
             if not student_mark.group:
                 return {"status": False, "error": False, "info": "Группа не найдена"}
             

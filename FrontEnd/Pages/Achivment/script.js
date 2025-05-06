@@ -1,135 +1,74 @@
-function getRandomBoolean() {
-  return Math.random() >= 0.5;
-}
-
-let achievements = {
-  "Кормилец": {
-      "description": "Принеси вкусняшки к чаю",
-      "type": "Achivment",
-      "img": "Food",
-      "status": getRandomBoolean(),
-      "point": 9
-  },
-  "Волонтер": {
-      "description": "Стань волонтером кванториума",
-      "type": "Achivment",
-      "img": "GoodBoy",
-      "status": getRandomBoolean(),
-      "point": 25
-  },
-  "Денис": {
-      "description": "Допрыгни до потолка",
-      "type": "Achivment",
-      "img": "Denis",
-      "status": getRandomBoolean(),
-      "point": -5
-  },
-  "Местный Жуков": {
-      "description": "Хорошо покажи себя в роли тимлида",
-      "type": "Achivment",
-      "img": "teamlid",
-      "status": getRandomBoolean(),
-      "point": 25
-  },
-  "Эврика!": {
-      "description": "Найди неожиданное и эффективное решение проблемы",
-      "type": "Achivment",
-      "img": "idea",
-      "status": getRandomBoolean(),
-      "point": 18
-  },
-  "Победитель": {
-      "description": "Займи призовое место в не групповом соревновании",
-      "type": "Test",
-      "img": "Medal",
-      "status": getRandomBoolean(),
-      "point": 25
-  },
-  "Отличник": {
-      "description": "Получи максимально возможную оценку за год",
-      "type": "Test",
-      "img": "Profy",
-      "status": getRandomBoolean(),
-      "point": 50
-  },
-  "Как?": {
-      "description": "Получи максимально возможное количество баллов",
-      "type": "Test",
-      "img": "que",
-      "status": getRandomBoolean(),
-      "point": 0
-  },
-  "Превозмог": {
-      "description": "Выйди со своим проектом на коллаборацию",
-      "type": "Test",
-      "img": "Star",
-      "status": getRandomBoolean(),
-      "point": 100
-  },
-  "Активный": {
-      "description": "Сходи на мероприятие кванториума",
-      "type": "Achivment",
-      "img": "event",
-      "status": getRandomBoolean(),
-      "point": 12
-  },
-  "Командный игрок": {
-      "description": "Прими активное участие в командной работе",
-      "type": "Achivment",
-      "img": "group",
-      "status": getRandomBoolean(),
-      "point": 12
-  },
-  "Это моё?": {
-      "description": "Создай свой кейс или проект",
-      "type": "Achivment",
-      "img": "Hummer",
-      "status": getRandomBoolean(),
-      "point": 15
-  },
-  "Мастер": {
-      "description": "Принеси настольную игру",
-      "type": "Achivment",
-      "img": "GameMaster",
-      "status": getRandomBoolean(),
-      "point": 9
-  },
-  "Оратор": {
-      "description": "Покажи всем, как надо говорить на публике",
-      "type": "Achivment",
-      "img": "micro",
-      "status": getRandomBoolean(),
-      "point": 25
+async function fetchAchievements(tgId) {
+  const API_BASE_URL = 'http://localhost:8000'; // Убедитесь, что это совпадает с адресом вашего FastAPI сервера
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/get_achivments/${tgId}`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.status && !data.error && data.achivments) {
+      return data.achivments;
+    } else {
+      console.error('Ошибка в данных достижений:', data.info);
+      return {};
+    }
+  } catch (error) {
+    console.error('Ошибка при запросе достижений:', error);
+    return {};
   }
 }
-const hexGrid = document.getElementById('hexGrid');
 
-// Функция для создания HTML-элемента достижения
-function createAchievementElement(key, achievement) {
-  const li = document.createElement('li');
-  li.className = 'hex';
+async function initializeAchievements() {
+  const tgId = 1359587483; // Тестовый TG ID
+  const hexGrid = document.getElementById('hexGrid');
   
-  // Определяем цвет фона в зависимости от статуса и типа
-  const bgColor = achievement.status 
-    ? (achievement.type === "Achivment" ? "#00FFC3" : "#FF3333")
-    : "gray";
+  // Показываем заглушку на время загрузки
+  hexGrid.innerHTML = '<p>Загрузка достижений...</p>';
+  
+  // Получаем достижения с сервера
+  const achievements = await fetchAchievements(tgId);
+  
+  // Если достижений нет, показываем сообщение
+  if (Object.keys(achievements).length === 0) {
+    hexGrid.innerHTML = '<p>Не удалось загрузить достижения</p>';
+    return;
+  }
 
-  // Создаем HTML-структуру
-  li.innerHTML = `
-    <a class="hexIn" style="background-color: ${bgColor}">
-      <img src="../img/Achivment/${achievement.img}.png" alt="${key}">
-      <h1 id="title">${key}</h1>
-      <p id="description">
-        ${achievement.description}
-        ${achievement.point !== 0 ? `<br><b><small>Награда:<br>${achievement.point} б.</small><b>` : ''}
-      </p>
-    </a>
-  `;
+  // Функция для создания HTML-элемента достижения
+  function createAchievementElement(key, achievement) {
+    const li = document.createElement('li');
+    li.className = 'hex';
+    
+    const bgColor = achievement.status 
+      ? (achievement.type === "Achivment" ? "#00FFC3" : "#FF3333")
+      : "gray";
 
-  return li;
+    li.innerHTML = `
+      <a class="hexIn" style="background-color: ${bgColor}">
+        <img src="../img/Achivment/${achievement.img}.png" alt="${key}">
+        <h1 id="title">${key}</h1>
+        <p id="description">
+          ${achievement.description}
+          ${achievement.point !== 0 ? `<br><b><small>Награда:<br>${achievement.point} б.</small><b>` : ''}
+        </p>
+      </a>
+    `;
+
+    return li;
+  }
+
+  // Очищаем сетку перед добавлением новых элементов
+  hexGrid.innerHTML = '';
+
+  // Генерация элементов для всех достижений
+  for (const [key, achievement] of Object.entries(achievements)) {
+    hexGrid.appendChild(createAchievementElement(key, achievement));
+  }
 }
 
-// Генерация элементов для всех достижений
-for (const [key, achievement] of Object.entries(achievements)) {
-  hexGrid.appendChild(createAchievementElement(key, achievement));
-}
+// Инициализируем при загрузке страницы
+document.addEventListener('DOMContentLoaded', initializeAchievements);
