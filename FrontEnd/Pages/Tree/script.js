@@ -1,3 +1,22 @@
+if (window.Telegram && window.Telegram.WebApp) {
+    const initData = window.Telegram.WebApp.initData;
+    
+    // Парсим initData (он в формате URL-encoded строки)
+    const params = new URLSearchParams(initData);
+    const userStr = params.get('user'); // Получаем JSON строку с данными пользователя
+    
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      const userId = user.id;
+      console.log('User ID:', userId);
+    } else {
+      console.error('User data not found in initData');
+    }
+  } else {
+    console.error('Telegram WebApp API not available');
+  }
+
+
 const API_BASE_URL = 'http://localhost:8000';
 const TEST_TG_ID = 1359587483; // Тестовый TG ID
 
