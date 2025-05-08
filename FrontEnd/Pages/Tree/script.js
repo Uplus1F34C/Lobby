@@ -9,6 +9,7 @@ if (window.Telegram && window.Telegram.WebApp) {
       const user = JSON.parse(userStr);
       const userId = user.id;
       console.log('User ID:', userId);
+      console.log('User ID');
     } else {
       console.error('User data not found in initData');
     }
