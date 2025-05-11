@@ -1,25 +1,28 @@
+const userId = 0
+
 if (window.Telegram && window.Telegram.WebApp) {
     const initData = window.Telegram.WebApp.initData;
-    
+
     // Парсим initData (он в формате URL-encoded строки)
     const params = new URLSearchParams(initData);
     const userStr = params.get('user'); // Получаем JSON строку с данными пользователя
-    
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      const userId = user.id;
-      console.log('User ID:', userId);
-      console.log('User ID');
-    } else {
-      console.error('User data not found in initData');
-    }
-  } else {
-    console.error('Telegram WebApp API not available');
-  }
 
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            const userId = user.id;
+            console.log('User ID:', userId);
+        } else {
+            console.error('User data not found in initData');
+        }
+    } else {
+    console.error('Telegram WebApp API not available');
+}
 
 const API_BASE_URL = 'http://localhost:8000';
-const TEST_TG_ID = 1359587483; // Тестовый TG ID
+
+function getRandomMark() {
+    return Math.floor(Math.random() * 4); 
+}
 
 const MARK_COLORS = {
     3: '#4AB968', // зеленый
@@ -55,8 +58,327 @@ async function initializeTopics() {
     // Показываем заглушку на время загрузки
     container.innerHTML = '<p>Загрузка данных тем...</p>';
 
+    let topicsData = {}
+
     // Получаем данные с сервера
-    const topicsData = await fetchMarksData(TEST_TG_ID);
+    if (userId != 0) {
+        topicsData = await fetchMarksData(userId);
+    } else {
+        alert("Вы авторизованы как гость!")
+        topicsData = { 
+    "1": {
+        "title": "Введение в информационные технологии",
+        "topics": {
+            "1": {
+                "title": "Экскурсия по технопарку. Техника безопасности",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/Protect.png",
+                "mark": getRandomMark(),
+                "X": 1
+            },
+            "2": {
+                "title": "Среда окружения, работа с файлами",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/Windows.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "3": {
+                "title": "Облачные сервисы: виды и функционал",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/Cloud.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "4": {
+                "title": "Создание презентации\"IT-Я\"",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/Presentation.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "5": {
+                "title": "Соревнование по киберспортивной Дисциплине",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/Game.png",
+                "mark": getRandomMark(),
+                "X": 4
+            }
+        }
+    },
+
+    "2": {
+        "title": "Програмированеи на Python",
+        "topics": { 
+            "1": {
+                "title": "Введение в программирование",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/python.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "2": {
+                "title": "Числовые переменные, ввод и вывод данных",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/numbers.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "3": {
+                "title": "Операции с данными",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/calc.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "4": {
+                "title": "Условия",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/vetv.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "5": {
+                "title": "Циклы",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/sicl.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "6": {
+                "title": "Строковые переменные",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/text.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "7": {
+                "title": "Списки",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/list.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "8": {
+                "title": "Словари и множества",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/dict.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "9": {
+                "title": "Функциональное программирование",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/func.png",
+                "mark": getRandomMark(),
+                "X": 5
+            },
+            "10": {
+                "title": "Алгоритмическое соревнование",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/test.png",
+                "mark": getRandomMark(),
+                "X": 4
+            },
+            "11": {
+                "title": "Работа с библиотеками",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/books.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "12": {
+                "title": "Графика в python",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/videocard.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "13": {
+                "title": "Соревнование \"Добро пожаловать в виртуальный мир\"",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/vr.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "14": {
+                "title": "Кейс: \"Создание игры\"",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/Game.png",
+                "mark": getRandomMark(),
+                "X": 5
+            }
+        }
+    },
+    "3": {
+        "title": "Микроэлектроника",
+        "topics": { 
+            "1": {
+                "title": "Электричество, закон Ома, электрические компоненты",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/electro.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "2": {
+                "title": "Знакомство с Tinkercad",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/tinkercad.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "3": {
+                "title": "Сборка электрической схемы на макетной плате",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/plata.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "4": {
+                "title": "Микроконтроллеры, плата Arduino, Arduino IDE",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/uno.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "5": {
+                "title": "Основы синтаксиса языка “Arduino Wiring“",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT//c++.png",
+                "mark": getRandomMark(),
+                "X": 4
+            },
+            "6": {
+                "title": "Работа с последовательным портом",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/bin.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "7": {
+                "title": "Построение логических схем",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/logic.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "8": {
+                "title": "Цифровой сигнал",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/1.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "9": {
+                "title": "Аналоговый сигнал",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/123.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "10": {
+                "title": "Считывание аналогового значения",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/nbin.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "11": {
+                "title": "Подключение сервоприводов",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/motor.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "12": {
+                "title": "Подключение дисплея",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/screen.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "13": {
+                "title": "Кейс: «Создание МФУ»",
+                "description": "Описание-Описание-Описание-Описание-Описание-Описание",
+                "img": "S-IT/mfu.png",
+                "mark": getRandomMark(),
+                "X": 5
+            }
+        }
+    },
+
+    "4": {
+        "title": "Веб-разработка",
+        "topics": { 
+            "1": {
+            "title": "Введение в веб-разработку",
+            "description": "Основы веб разработки",
+            "img": "S-IT/internet.png",
+            "mark": getRandomMark(),
+            "0": 0,
+            "X": 1
+            },
+            "2": {
+                "title": "Основные теги HTML",
+                "description": "Изучение основных тегов языка гипертекстовой разметки",
+                "img": "S-IT/html.png",
+                "mark": getRandomMark(),
+                "0": 0,
+                "X": 3
+            },
+            "3": {
+                "title": "Теги, парные и одинарные",
+                "description": "Варианты тегов с различным функционалом",
+                "img": "S-IT/html_tags.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "4": {
+                "title": "Атрибуты тегов",
+                "description": "Расширенная настройка тегов",
+                "img": "S-IT/plus.png",
+                "mark": getRandomMark(),
+                "X": 2
+            },
+            "5": {
+                "title": "Каскадная таблица стилей",
+                "description": "Изучение CSS, основных атрибутов и синтаксиса",
+                "img": "S-IT/css.png",
+                "mark": getRandomMark(),
+                "X": 4
+            },
+            "6": {
+                "title": "Наследование стилей",
+                "description": "Возможность настраивать большое количество элементво через наследования",
+                "img": "S-IT/alph.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "7": {
+                "title": "Интеграция медиа ресурсов",
+                "description": "Добавленеи видео, картинок и т.п. на сайт",
+                "img": "S-IT/video.png",
+                "mark": getRandomMark(),
+                "X": 3
+            },
+            "8": {
+                "title": "Позиционирование элементов",
+                "description": "Расположение элементов на странице по расписанным правилам",
+                "img": "S-IT/marker.png",
+                "mark": getRandomMark(),
+                "X": 4
+            },
+            "9": {
+                "title": "Кейс: «Создание сайта-визитки»",
+                "description": "Проверь свои способности в создании сайта-визитки",
+                "img": "S-IT/doc.png",
+                "mark": getRandomMark(),
+                "X": 5
+            } 
+        }
+    }
+}
+    }
 
     if (Object.keys(topicsData).length === 0) {
         container.innerHTML = '<p>Не удалось загрузить данные тем</p>';

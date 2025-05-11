@@ -1,6 +1,30 @@
+const userId = 0
+
+if (window.Telegram && window.Telegram.WebApp) {
+    const initData = window.Telegram.WebApp.initData;
+
+    // Парсим initData (он в формате URL-encoded строки)
+    const params = new URLSearchParams(initData);
+    const userStr = params.get('user'); // Получаем JSON строку с данными пользователя
+
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            const userId = user.id;
+            console.log('User ID:', userId);
+        } else {
+            console.error('User data not found in initData');
+        }
+    } else {
+    console.error('Telegram WebApp API not available');
+}
+
+const API_BASE_URL = 'http://localhost:8000'; // Убедитесь, что это совпадает с адресом вашего FastAPI сервера
+
+function getRandomBoolean() {
+    return Math.random() < 0.5
+}
+
 async function fetchAchievements(tgId) {
-  const API_BASE_URL = 'http://localhost:8000'; // Убедитесь, что это совпадает с адресом вашего FastAPI сервера
-  
   try {
     const response = await fetch(`${API_BASE_URL}/get_achivments/${tgId}`);
     
@@ -23,14 +47,118 @@ async function fetchAchievements(tgId) {
 }
 
 async function initializeAchievements() {
-  const tgId = 1359587483; // Тестовый TG ID
   const hexGrid = document.getElementById('hexGrid');
   
   // Показываем заглушку на время загрузки
   hexGrid.innerHTML = '<p>Загрузка достижений...</p>';
+
+  let achievements = {}
   
   // Получаем достижения с сервера
-  const achievements = await fetchAchievements(tgId);
+  if (userId != 0) {
+    achievements = await fetchAchievements(userId);
+  } else {
+    achievements = {
+    "Кормилец": {
+        "description": "Принеси вкусняшки к чаю",
+        "type": "Achivment",
+        "img": "Food",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Волонтер": {
+        "description": "Стань волонтером кванториума",
+        "type": "Achivment",
+        "img": "GoodBoy",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Денис": {
+        "description": "Допрыгни до потолка",
+        "type": "Achivment",
+        "img": "Denis",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Местный Жуков": {
+        "description": "Хорошо покажи себя в роли тимлида",
+        "type": "Achivment",
+        "img": "teamlid",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Эврика!": {
+        "description": "Найди неожиданное и эффективное решение проблемы",
+        "type": "Achivment",
+        "img": "idea",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Победитель": {
+        "description": "Займи призовое место в не групповом соревновании",
+        "type": "Test",
+        "img": "Medal",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Отличник": {
+        "description": "Получи максимально возможную оценку за год",
+        "type": "Test",
+        "img": "Profy",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Как?": {
+        "description": "Получи максимально возможное количество баллов",
+        "type": "Test",
+        "img": "que",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Превозмог": {
+        "description": "Выйди со своим проектом на коллаборацию",
+        "type": "Test",
+        "img": "Star",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Активный": {
+        "description": "Сходи на мероприятие кванториума",
+        "type": "Achivment",
+        "img": "event",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Командный игрок": {
+        "description": "Прими активное участие в командной работе",
+        "type": "Achivment",
+        "img": "group",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Это моё?": {
+        "description": "Создай свой кейс или проект",
+        "type": "Achivment",
+        "img": "Hummer",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Мастер": {
+        "description": "Принеси настольную игру",
+        "type": "Achivment",
+        "img": "GameMaster",
+        "status": getRandomBoolean(),
+        "point": 25
+    },
+    "Оратор": {
+        "description": "Покажи всем, как надо говорить на публике",
+        "type": "Achivment",
+        "img": "micro",
+        "status": getRandomBoolean(),
+        "point": 25
+    }
+}
+  }
   
   // Если достижений нет, показываем сообщение
   if (Object.keys(achievements).length === 0) {

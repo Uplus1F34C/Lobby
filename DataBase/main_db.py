@@ -38,8 +38,7 @@ async def main():
             if cmd == "reset":
                 reset_result = await Func.reset_base()
                 insert_result = await Func.insert_group()
-                await Func.insert_student(name="Гость (Вы)", surname="", patronymic="", level="Стартовый", kvant="IT", group_num="1", tg_id="101010")
-        
+                
                 result = reset_result, insert_result
 
         # Учитель ----------------------------------------------------------------------
@@ -138,11 +137,11 @@ async def main():
                 result = await Func.count_points()
             elif cmd == "get_group_rating":
                 result = await Func.get_group_rating(
-                        student_id=input("id:")
+                        student_tg_id=input("tg_id:")
                     )
             elif cmd == "get_kvant_rating":
                 result = await Func.get_kvant_rating(
-                        student_id=input("id: "))
+                        student_tg_id=input("tg_id: "))
         # Остальное ----------------------------------------------------------------------
 
             else: 

@@ -345,6 +345,7 @@ async def insert_student(name: str, surname: str, patronymic: str, level: level,
                 "surname": student.surname,
                 "patronymic": student.patronymic,
                 "group": f"{level}-{kvant}-{group_num}",
+                "tg_id": tg_id,
                 "code": student._code
             }
             
@@ -714,10 +715,7 @@ async def get_achivments(student_tg_id: int):
             student_id = result.scalar()
 
             if not student_id:
-                student_tg_id = "101010"
-                stmt = select(StudentClass.id).where(StudentClass.tg_id == student_tg_id)
-                result = await session.execute(stmt)
-                student_id = result.scalar()
+                return {"status": False, "error": False, "info": "Студент не найден"}
 
             stmt = select(MarkClass.achivment).where(MarkClass.id_student == student_id)
             result = await session.execute(stmt)
@@ -773,10 +771,7 @@ async def get_marks(student_tg_id: int):
             student_id = result.scalar()
 
             if not student_id:
-                student_tg_id = "101010"
-                stmt = select(StudentClass.id).where(StudentClass.tg_id == student_tg_id)
-                result = await session.execute(stmt)
-                student_id = result.scalar()
+                return {"status": False, "error": False, "info": "Студент не найден"}
 
             stmt = select(MarkClass.marks).where(MarkClass.id_student == student_id)
             result = await session.execute(stmt)
@@ -837,15 +832,8 @@ async def get_group_rating(student_tg_id: int):
             student_mark = result.scalars().first()
 
             if not student_mark:
-                student_tg_id = "101010"
-                stmt = (
-                select(MarkClass)
-                .join(MarkClass.student)
-                .where(StudentClass.tg_id == student_tg_id)
-                .options(joinedload(MarkClass.group))
-                )
-                result = await session.execute(stmt)
-                student_mark = result.scalars().first()
+                return {"status": False, "error": False, "info": "Студент не найден"}
+                
             if not student_mark.group:
                 return {"status": False, "error": False, "info": "Группа не найдена"}
 
@@ -907,15 +895,8 @@ async def get_kvant_rating(student_tg_id: int):
             student_mark = result.scalars().first()
             
             if not student_mark:
-                student_tg_id = "101010"
-                stmt = (
-                select(MarkClass)
-                .join(MarkClass.student)
-                .where(StudentClass.tg_id == student_tg_id)
-                .options(joinedload(MarkClass.group)))
-                
-                result = await session.execute(stmt)
-                student_mark = result.scalars().first()
+                return {"status": False, "error": False, "info": "Студент не найден"}
+            
             if not student_mark.group:
                 return {"status": False, "error": False, "info": "Группа не найдена"}
             

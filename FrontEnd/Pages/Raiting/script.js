@@ -1,5 +1,24 @@
+const userId = 0
+
+if (window.Telegram && window.Telegram.WebApp) {
+    const initData = window.Telegram.WebApp.initData;
+
+    // Парсим initData (он в формате URL-encoded строки)
+    const params = new URLSearchParams(initData);
+    const userStr = params.get('user'); // Получаем JSON строку с данными пользователя
+
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            const userId = user.id;
+            console.log('User ID:', userId);
+        } else {
+            console.error('User data not found in initData');
+        }
+    } else {
+    console.error('Telegram WebApp API not available');
+}
+
 const API_BASE_URL = 'http://localhost:8000'; // Убедитесь, что совпадает с адресом вашего FastAPI сервера
-const TEST_TG_ID = 1359587483; // Тестовый TG ID
 
 async function fetchGroupRating(tgId) {
   try {
@@ -64,11 +83,19 @@ async function initializeRatings() {
   groupContainer.innerHTML = '<p>Загрузка рейтинга группы...</p>';
   leadersContainer.innerHTML = '<p>Загрузка топ лидеров...</p>';
 
+  let groupRating = []
+  let kvantRating = []
+
   // Получаем данные с сервера
-  const [groupRating, kvantRating] = await Promise.all([
-    fetchGroupRating(TEST_TG_ID),
-    fetchKvantRating(TEST_TG_ID)
-  ]);
+  if (userId != 0) {
+    [groupRating, kvantRating] = await Promise.all([
+      fetchGroupRating(userId),
+      fetchKvantRating(userId)
+    ]);
+  } else {
+    groupRating = [{'id': 4, 'name': 'Алексей ', 'surname': 'Романов ', 'points': 75}, {'id': 7, 'name': 'Максим ', 'surname': 'Морозов ', 'points': 50}, {'id': 2, 'name': 'Дмитрий ', 'surname': 'Кузнецов ', 'points': 25}, {'id': 8, 'name': 'Ольга ', 'surname': 'Волкова ', 'points': 25}, {'id': 1, 'name': 'Даниил', 'surname': 'Леонов', 'points': 0}, {'id': 3, 'name': 'Мария ', 'surname': 'Романова ', 'points': 0}, {'id': 5, 'name': 'Андрей ', 'surname': 'Сидоров ', 'points': 0}, {'id': 6, 'name': 'Юрий ', 'surname': 'Петров ', 'points': 0}, {'id': 9, 'name': 'Сергей ', 'surname': 'Соколов ', 'points': 0}, {'id': 10, 'name': 'Татьяна ', 'surname': 'Иванова ', 'points': 0}]
+    kvantRating = [{'student_id': 4, 'name': 'Алексей ', 'surname': 'Романов ', 'group': 'Стартовый-IT-1', 'points': 75}, {'student_id': 12, 'name': 'Алексей ', 'surname': 'Сидоров ', 'group': 'Стартовый-IT-3', 'points': 75}, {'student_id': 7, 'name': 'Максим ', 'surname': 'Морозов ', 'group': 'Стартовый-IT-1', 'points': 50}, {'student_id': 11, 'name': 'Наталья ', 'surname': 'Кузнецова ', 'group': 'Стартовый-IT-2', 'points': 50}]
+  }  
 
   // Очищаем контейнеры перед добавлением новых данных
   groupContainer.innerHTML = '';
