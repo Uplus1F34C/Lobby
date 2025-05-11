@@ -1,6 +1,7 @@
 html {
   overscroll-behavior: none; /* Предотвращает overscroll эффекты */
-  max-height: 100%;
+  height: 100%;
+  touch-action: pan-y; /* разрешает только прокрутку, без масштабирования */
 }
 
 body {
@@ -8,26 +9,11 @@ body {
   background-attachment: fixed;
   background-size: 200% 200%;
   margin: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
   touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
 }
 
-/* Скролл бар -------------------------------------------------------------------------------- */
-body::-webkit-scrollbar {
-  width: 8px; /* Ширина скроллбара */
-}
-body::-webkit-scrollbar-track {
-  background: rgb(74, 125, 125); /* Цвет трека */
-}
-body::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
-  border-radius: 4px;
-}
-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.8); 
-} 
-/* Скролл бар -------------------------------------------------------------------------------- */
 
 /* Логотип -------------------------------------------------------------------------------- */
 #logo-container {
@@ -107,15 +93,16 @@ body::-webkit-scrollbar-thumb:hover {
   opacity: 0.8; /* Небольшая прозрачность при наведении */
 }
 #raiting { 
-  background-color: #268BC1; 
+  background-color: #268BC1; /* Дерево навыков */
+  
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
 }
 #achivment {
-  background-color: #67C0B9;
+  background-color: #67C0B9 /* рейтинг */
 }
 #tree {
-  background-color: #2AAD89;
+  background-color: #2AAD89; /* Достижения */
 }
 /* Кнопки -------------------------------------------------------------------------------- */
 
@@ -256,26 +243,8 @@ body::-webkit-scrollbar-thumb:hover {
   flex-direction: column;
   align-items: center; /* Центрируем студентов по горизонтали */
 
-  overflow-y: auto;
+  overflow-y: none;
   direction: rtl;
-}
-
-
-
-
-#leaders::-webkit-scrollbar {
-  width: 8px; /* Ширина скроллбара */
-}
-#leaders::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1); /* Цвет трека */
-  border-radius: 4px;
-}
-#leaders::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
-  border-radius: 4px;
-}
-#leaders::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.6); /* Цвет ползунка при наведении */
 }
 
 #leaders .student {
@@ -307,8 +276,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 #gift div{
-  width: 100px;
-  min-width: 75px;
+  width: 90px;
 }
 
 .post {

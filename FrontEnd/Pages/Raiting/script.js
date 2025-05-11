@@ -94,7 +94,7 @@ async function initializeRatings() {
     ]);
   } else {
     groupRating = [{'id': 4, 'name': 'Алексей ', 'surname': 'Романов ', 'points': 75}, {'id': 7, 'name': 'Максим ', 'surname': 'Морозов ', 'points': 50}, {'id': 2, 'name': 'Дмитрий ', 'surname': 'Кузнецов ', 'points': 25}, {'id': 8, 'name': 'Ольга ', 'surname': 'Волкова ', 'points': 25}, {'id': 1, 'name': 'Даниил', 'surname': 'Леонов', 'points': 0}, {'id': 3, 'name': 'Мария ', 'surname': 'Романова ', 'points': 0}, {'id': 5, 'name': 'Андрей ', 'surname': 'Сидоров ', 'points': 0}, {'id': 6, 'name': 'Юрий ', 'surname': 'Петров ', 'points': 0}, {'id': 9, 'name': 'Сергей ', 'surname': 'Соколов ', 'points': 0}, {'id': 10, 'name': 'Татьяна ', 'surname': 'Иванова ', 'points': 0}]
-    kvantRating = [{'student_id': 4, 'name': 'Алексей ', 'surname': 'Романов ', 'group': 'Стартовый-IT-1', 'points': 75}, {'student_id': 12, 'name': 'Алексей ', 'surname': 'Сидоров ', 'group': 'Стартовый-IT-3', 'points': 75}, {'student_id': 7, 'name': 'Максим ', 'surname': 'Морозов ', 'group': 'Стартовый-IT-1', 'points': 50}, {'student_id': 11, 'name': 'Наталья ', 'surname': 'Кузнецова ', 'group': 'Стартовый-IT-2', 'points': 50}]
+    kvantRating = [{'student_id': 4, 'name': 'Алексей ', 'surname': 'Романов ', 'group': 'С-IT-1', 'points': 75}, {'student_id': 12, 'name': 'Алексей ', 'surname': 'Сидоров ', 'group': 'C-IT-3', 'points': 75}, {'student_id': 7, 'name': 'Максим ', 'surname': 'Морозов ', 'group': 'C-IT-1', 'points': 50}, {'student_id': 11, 'name': 'Наталья ', 'surname': 'Кузнецова ', 'group': 'C-IT-2', 'points': 50}]
   }  
 
   // Очищаем контейнеры перед добавлением новых данных
