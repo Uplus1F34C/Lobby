@@ -1,6 +1,25 @@
+document.addEventListener('touchmove', function(e) {
+  // Если контент уже вверху или внизу — блокируем стандартное поведение
+  const scroller = e.target.closest('.scrollable-element');
+  if (scroller) {
+    const isTop = scroller.scrollTop <= 0;
+    const isBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight;
+    if ((isTop && e.deltaY < 0) || (isBottom && e.deltaY > 0)) {
+      e.preventDefault();
+    }
+  }
+}, { passive: false });
+
+
 const userId = 0
 
 if (window.Telegram && window.Telegram.WebApp) {
+
+  if (window.Telegram?.WebApp?.expand) {
+        Telegram.WebApp.expand(); // Развернуть на весь экран (если свёрнуто)
+        Telegram.WebApp.enableClosingConfirmation(); // Запросить подтверждение перед закрытием
+    }
+
     const initData = window.Telegram.WebApp.initData;
 
     // Парсим initData (он в формате URL-encoded строки)

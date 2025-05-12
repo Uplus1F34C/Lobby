@@ -107,10 +107,7 @@ async def cmd_start(message: Message):
         builder.add(InlineKeyboardButton(
             text="👨‍🎓 Я ученик",
             callback_data="role_student__cd"))
-        builder.add(InlineKeyboardButton(
-            text="👀 Я гость",
-            callback_data="role_guest__cd"))
-        builder.adjust(2, 1)
+        builder.adjust(2)
 
         welcome_message = (
             "👋 Приветствую!\n\n"
@@ -120,7 +117,7 @@ async def cmd_start(message: Message):
             "• 📊 Отправить опрос в конкретные группы\n"
             "• 📰 Делать рассылки (уведомления о мероприятиях, работе кванториума и образовательном процессе)\n"
             "• 📅 Отобразить расписание занятий и мероприятий\n\n"
-            """• 💡 А так же принять идеи по улучшению этого проекта "Lobby" или записать ошибку\n\n"""
+            """• 💡 А так же принять идеи по улучшению проекта "Lobby" или записать ошибку\n\n"""
             "🟢 Для начала работы выберите свою роль:"
         )
 
@@ -155,9 +152,6 @@ async def cmd_menu(message: Message):
 
     # Проверка на студента
     elif student_auth["status"]:
-        builder.add(InlineKeyboardButton(
-            text="🌐 Lobby",
-            web_app=WebAppInfo(url=f"{settings.get_url()}?student_id={message.from_user.id}")))
         builder.add(InlineKeyboardButton(
             text="📊 Отправить опрос",
             callback_data="post_que__cd"))
@@ -518,6 +512,12 @@ async def post_idea(callback: CallbackQuery):
     """Обработчик предложения идей (временно недоступен)"""
     await callback.answer("❌ Программа предложений пока что недоступна")
 
+    
+# ==== ПРОСМОТР РАСПИСАНИЯ ====
+@dp.callback_query(F.data == "schedule__cd")
+async def post_idea(callback: CallbackQuery):
+    await callback.answer("❌ Программа расписаний пока что недоступна")
+
 # ==== ВЫХОД ИЗ АККАУНТА СТУДЕНТА ====
 @dp.callback_query(F.data == "exit_student__cd")
 async def exit_student(callback: CallbackQuery):
@@ -531,43 +531,6 @@ async def exit_student(callback: CallbackQuery):
         await callback.answer(f"❌ {result['info']}")
 
     await callback.answer()
-
-# ======================== ФУНКЦИИ ГОСТЯ ========================
-
-@dp.callback_query(F.data == "role_guest__cd")
-async def guest(callback: CallbackQuery):
-    """Обработчик для гостей"""
-
-    builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton(
-        text="📊 Отправить опрос",
-        callback_data="post_que__cd"))
-    builder.add(InlineKeyboardButton(
-        text="📝 Управление БД",
-        callback_data="edit_db_guest__cd"))
-    builder.add(InlineKeyboardButton(
-        text="📅 Узнать расписание",
-        callback_data="schedule__cd"))
-    builder.add(InlineKeyboardButton(
-        text="💡 Предложить идею",
-        callback_data="post_idea__cd"))
-    
-    builder.adjust(1,1,1,1)
-    
-    welcome_message = (
-        "🌐 Чтобы открыть Lobby - нажмите на кнопку слево от поля ввода\n"
-        "🔹 Для дополнительных функций нажмите на кнопку ниже:"
-        )
-    
-    await callback.message.answer(
-        welcome_message, reply_markup=builder.as_markup()
-    )
-    await callback.answer()
-
-@dp.callback_query(F.data == "edit_db_guest__cd")
-async def edit_db_guest(callback: CallbackQuery):
-    await callback.answer("❌ Гости не могут редактировать базу данных")
-    
 
 # ======================== ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ========================
 

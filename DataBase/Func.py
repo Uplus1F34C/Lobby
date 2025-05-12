@@ -471,19 +471,27 @@ async def reg_student_tg(code: str, student_tg_id: int):
                         "error": False, 
                         "info": "Студент с таким кодом не найден"
                 }
+            
+            if student.tg_id == "":
 
-            student.tg_id = student_tg_id
-            await session.commit()
+                student.tg_id = student_tg_id
+                await session.commit()
 
-            return {
-                "status": True, 
-                "error": False,
-                "info": "Студент зарегистрирован по tg", 
-                "student_id": student.id,
-                "name": student.name,
-                "surname": student.surname,
-                "patronymic": student.patronymic
-            }
+                return {
+                    "status": True, 
+                    "error": False,
+                    "info": "Студент зарегистрирован по tg", 
+                    "student_id": student.id,
+                    "name": student.name,
+                    "surname": student.surname,
+                    "patronymic": student.patronymic
+                }
+            else: 
+                return {
+                    "status": False, 
+                    "error": False,
+                    "info": "Студент c таким кодом зарегестрирован на другом устройсвте",
+                }
 
         except Exception as e:
             await session.rollback()

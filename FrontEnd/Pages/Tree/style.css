@@ -4,6 +4,11 @@ html {
 }
 
 body {
+  
+  overscroll-behavior: none;
+  overscroll-behavior-y: contain; /* Блокирует "подёргивание" при скролле */
+  touch-action: pan-y; /* Разрешает только вертикальный скролл */
+  
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
   background-attachment: fixed;
   background-size: 200% 200%;
