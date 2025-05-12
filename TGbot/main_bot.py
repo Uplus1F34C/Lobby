@@ -50,6 +50,7 @@ class DeleteStudent(StatesGroup):
 # ======================== КОМАНДЫ ========================
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
+    print(f"{message.from_user.username} - Запустил бота")
     builder = InlineKeyboardBuilder()
 
      # Проверка на учителя
@@ -204,6 +205,7 @@ async def reg_teacher_2(message: Message, state: FSMContext):
 
     if result["status"]:
         await message.answer("✅ Регистрация успешно завершена!")
+        print(f"{message.from_user.username} - Зарегестрировался как учитель")
         await cmd_start(message)
     else:
         await message.answer(f"❌ Ошибка регистрации: {result['info']}\n\nПопробуйте еще раз или обратитесь к администратору.")
@@ -493,6 +495,7 @@ async def reg_student_2(message: Message, state: FSMContext):
     )
 
     if result["status"]:
+        print(f"{message.from_user.username} - Зарегестрировался как ученик")
         await message.answer("✅ Регистрация успешно пройдена!")
         await cmd_start(message)
     else:
@@ -537,6 +540,7 @@ async def exit_student(callback: CallbackQuery):
 @dp.message()
 async def handle_other_messages(message: Message):
     """Удаление всех необработанных сообщений"""
+    print("Сообщение удалено")
     await message.delete()
 
 # ======================== ЗАПУСК БОТА ========================
