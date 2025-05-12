@@ -14,11 +14,6 @@ document.addEventListener('touchmove', function(e) {
 const userId = 0
 
 if (window.Telegram && window.Telegram.WebApp) {
-
-  if (window.Telegram?.WebApp?.expand) {
-        Telegram.WebApp.expand(); // Развернуть на весь экран (если свёрнуто)
-        Telegram.WebApp.enableClosingConfirmation(); // Запросить подтверждение перед закрытием
-    }
     
     const initData = window.Telegram.WebApp.initData;
 
