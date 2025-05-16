@@ -10,25 +10,25 @@ body {
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
   background-attachment: fixed;
   background-size: 200% 200%;
-  margin: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
-  touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
+  margin: 0;/
 }
 
+#main {
+  overflow-y: auto;
+}
 
 /* Скролл бар -------------------------------------------------------------------------------- */
-body::-webkit-scrollbar {
-  width: 8px; /* Ширина скроллбара */
+#main::-webkit-scrollbar {
+  width: 5px; /* Ширина скроллбара */
 }
-body::-webkit-scrollbar-track {
+#main::-webkit-scrollbar-track {
   background: rgb(74, 125, 125); /* Цвет трека */
 }
-body::-webkit-scrollbar-thumb {
+#main::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
   border-radius: 4px;
 }
-body::-webkit-scrollbar-thumb:hover {
+#main::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.8); 
 } 
 /* Скролл бар -------------------------------------------------------------------------------- */
@@ -72,10 +72,7 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* Кнопки -------------------------------------------------------------------------------- */
 .button-container {
-  position: fixed; /* Фиксированное позиционирование */
   top: 0px; /* Отступ от верха */
-  left: 50%; /* Позиционируем по центру */
-  transform: translateX(-50%); /* Центрируем абсолютно */
   height: 50px; /* Высота в обычном состоянии (видна только первая кнопка) */
   
   z-index: 10;
@@ -102,7 +99,6 @@ body::-webkit-scrollbar-thumb:hover {
   text-align: center; /* Выравниваем текст по центру */
   -webkit-text-stroke: 0.5px #000000;  /*Толщина и цвет обводки */
 
-  display: inline-block; /* Отображаем как строчный элемент */
 
   font-family: "Comic Relief";
 }
