@@ -4,34 +4,15 @@ html {
 }
 
 body {
-  overscroll-behavior: none;
-  overscroll-behavior-y: contain; /* Блокирует "подёргивание" при скролле */
-  touch-action: pan-y; /* Разрешает только вертикальный скролл */
+  position: fixed;
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
   background-attachment: fixed;
   background-size: 200% 200%;
-  margin: 0;/
-}
+  margin: 0;
 
-#main {
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
-
-/* Скролл бар -------------------------------------------------------------------------------- */
-#main::-webkit-scrollbar {
-  width: 5px; /* Ширина скроллбара */
-}
-#main::-webkit-scrollbar-track {
-  background: rgb(74, 125, 125); /* Цвет трека */
-}
-#main::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
-  border-radius: 4px;
-}
-#main::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.8); 
-} 
-/* Скролл бар -------------------------------------------------------------------------------- */
 
 /* Логотип -------------------------------------------------------------------------------- */
 #logo-container {
@@ -72,6 +53,9 @@ body {
 
 /* Кнопки -------------------------------------------------------------------------------- */
 .button-container {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%); /* Центрируем абсолютно */
   top: 0px; /* Отступ от верха */
   height: 50px; /* Высота в обычном состоянии (видна только первая кнопка) */
   
@@ -123,12 +107,32 @@ body {
 
 /* Основа страницы -------------------------------------------------------------------------------- */
 #flex-container {
+  overflow-y: auto;
   display: flex; /* Устанавливаем flexbox */
   height: calc(100vh - 50px); /* Высота контейнера на всю страницу, учитывая высоту кнопок */
   margin-top: 50px; /* Отступ сверху для кнопок */
   width: 100%;
   flex-wrap: wrap;
 }
+
+/* Скролл бар -------------------------------------------------------------------------------- */
+#flex-container::-webkit-scrollbar {
+  width: 5px; /* Ширина скроллбара */
+}
+#flex-container::-webkit-scrollbar-track {
+  background: rgb(74, 125, 125); /* Цвет трека */
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+#flex-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+#flex-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8); 
+} 
+/* Скролл бар -------------------------------------------------------------------------------- */
+
 #flex-container div {
   background-color: rgba(0,0,0,0);
   color: white;
