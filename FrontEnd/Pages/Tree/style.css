@@ -5,6 +5,9 @@ html {
 
 body {
   position: fixed;
+
+  display: flex;
+  flex-direction: column;
   
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
   background-attachment: fixed;
@@ -71,10 +74,7 @@ body {
 
 /* Кнопки -------------------------------------------------------------------------------- */
 .button-container {
-  position: fixed; /* Фиксированное позиционирование */
   top: 0px; /* Отступ от верха */
-  left: 50%; /* Позиционируем по центру */
-  transform: translateX(-50%); /* Центрируем абсолютно */
   height: 50px; /* Высота в обычном состоянии (видна только первая кнопка) */
   
   z-index: 10;
@@ -101,7 +101,6 @@ body {
   text-align: center; /* Выравниваем текст по центру */
   -webkit-text-stroke: 0.5px #000000;  /*Толщина и цвет обводки */
 
-  display: inline-block; /* Отображаем как строчный элемент */
 
   font-family: "Comic Relief";
 }
