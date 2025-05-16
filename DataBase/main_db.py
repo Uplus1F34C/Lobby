@@ -15,13 +15,13 @@ insert_teacher - Добавить учителя
 delete_teacher - Удалить учителя
 reg_teacher - Зарегестрировать учителя по TG id
 log_teacher - Аутентифицировать учителя по TG id
-del_teachers_tg_id - Удалить Tg id учителя
+del_teachers_id - Удалить Tg id учителя
                 
 insert_student - Добавить студента
 delete_student - Удалить студента
-reg_student_tg - Зарегестрировать студента по tg
-log_student_tg - Аутентифицировать студента по tg
-del_students_tg_id - Удалить Tg id учителя
+reg_student - Зарегестрировать студента
+log_student - Аутентифицировать студента
+del_students_id - Удалить Tg id учителя
 get_achivments - Получить достижения
 get_marks - Получить оценки
 
@@ -65,8 +65,8 @@ async def main():
                 result = await Func.log_teacher(
                     teacher_tg_id=input("Tg id: ")
                 )
-            elif cmd == "del_teachers_tg_id":
-                result = await Func.del_teachers_tg_id(
+            elif cmd == "del_teachers_id":
+                result = await Func.del_teachers_id(
                     teacher_tg_id = input("Tg id: "),
                     )
         # Учитель ----------------------------------------------------------------------
@@ -90,37 +90,19 @@ async def main():
                         surname=input("surname: "),
                         patronymic=input("patronymic: ")
                      )
-            # elif cmd == "reg_student_login":
-            #     result = await Func.reg_student_login(
-            #         code = input("CODE: "),
-            #         login = input("Логин: "),
-            #         password = input("Пароль: "),
-            #         )
-            elif cmd == "reg_student_tg":
-                result = await Func.reg_student_tg(
+            elif cmd == "reg_student":
+                result = await Func.reg_student(
                     code = input("CODE: "),
                     student_tg_id = input("Tg id: "),
                     )
-            # elif cmd == "log_student_login":
-            #     print(Func.log_student_login(
-            #             login = input("Логин: "),
-            #             password = input("Пароль: ")
-            #         )
-            #     )
-            elif cmd == "log_student_tg":
-                result = await Func.log_student_tg(
+            elif cmd == "log_student":
+                result = await Func.log_student(
                     student_tg_id = input("Tg id: ")
                     )
-            # elif cmd == "get_student_info":
-            #     print(Func.get_student_info(
-            #         student_id=input("id: ")
-            #         )
-            #     )
-            elif cmd == "del_students_tg_id":
-                result = await Func.del_students_tg_id(
+            elif cmd == "del_students_id":
+                result = await Func.del_students_id(
                     teacher_tg_id = input("Tg id: "),
                     )
-                
             elif cmd == "get_achivments":
                 result = await Func.get_achivments(
                     student_tg_id=input("tg_id: ")

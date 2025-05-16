@@ -51,7 +51,7 @@
     "Как?": {
         "description": "Получи максимально возможное количество баллов",
         "type": "Test",
-        "img": "que",
+        "img": "Quesion",
         "status": false,
         "point": 25
     },
@@ -83,17 +83,17 @@
         "status": false,
         "point": 25
     },
+    "Оратор": {
+        "description": "Покажи всем, как надо говорить на публике",
+        "type": "Achivment",
+        "img": "Micro",
+        "status": false,
+        "point": 25
+    },
     "Мастер": {
         "description": "Принеси настольную игру",
         "type": "Achivment",
         "img": "GameMaster",
-        "status": false,
-        "point": 25
-    },
-    "Оратор": {
-        "description": "Покажи всем, как надо говорить на публике",
-        "type": "Achivment",
-        "img": "micro",
         "status": false,
         "point": 25
     }

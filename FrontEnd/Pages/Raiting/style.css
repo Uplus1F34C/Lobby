@@ -20,6 +20,7 @@ body {
   position: fixed;
   top: 0; /* Изменено с 50% на 0 для полного покрытия высоты */
   left: 0;
+  
   width: 100vh; /* 50% ширины viewport */
   height: 100vh; /* 100% высоты viewport */
   overflow: visible;

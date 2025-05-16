@@ -1,12 +1,8 @@
-import json
-import bcrypt
-import shutil
-import os
-import sys
-import aiofiles
-import json
+import shutil, json, os, sys, aiofiles
+
 from sqlalchemy import select, desc
 from sqlalchemy.orm import joinedload
+
 from DataBase.settings.configuration_DB import Base, session_factory, engine
 from DataBase.settings.models import GroupClass, StudentClass, TeacherClass, MarkClass, level, kvant
 
@@ -250,7 +246,7 @@ async def reg_teacher(teacher_tg_id: int, code: str):
         finally:
             await session.close()
 
-async def del_teachers_tg_id(teacher_tg_id: int):
+async def del_teachers_id(teacher_tg_id: int):
     """
     Удаление Telegram ID у учителя
     """
@@ -445,7 +441,7 @@ async def delete_student(student_id = "", name: str = "", surname: str = "", pat
 #                     "info": f"Ошибка при регистрации: {e}"
 #             }
 
-async def reg_student_tg(code: str, student_tg_id: int):
+async def reg_student(code: str, student_tg_id: int):
     """
     Регистрация студента по коду с использованием Telegram ID
     """
@@ -540,7 +536,7 @@ async def reg_student_tg(code: str, student_tg_id: int):
 #                     "info": f"Ошибка при аутентификации: {e}"
 #             }
 
-async def log_student_tg(student_tg_id: int):
+async def log_student(student_tg_id: int):
     """
     Аутентификация студента по Telegram ID
     """
@@ -631,7 +627,7 @@ async def get_student_code(name: str, surname: str, patronymic: str):
         finally:
             await session.close()
 
-async def del_students_tg_id(student_tg_id: int):
+async def del_students_id(student_tg_id: int):
     """
     Удаление Telegram ID у студента
     """

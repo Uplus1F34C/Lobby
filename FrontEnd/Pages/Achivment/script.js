@@ -1,16 +1,3 @@
-document.addEventListener('touchmove', function(e) {
-  // Если контент уже вверху или внизу — блокируем стандартное поведение
-  const scroller = e.target.closest('.scrollable-element');
-  if (scroller) {
-    const isTop = scroller.scrollTop <= 0;
-    const isBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight;
-    if ((isTop && e.deltaY < 0) || (isBottom && e.deltaY > 0)) {
-      e.preventDefault();
-    }
-  }
-}, { passive: false });
-
-
 const userId = 0
 
 if (window.Telegram && window.Telegram.WebApp) {
@@ -191,7 +178,7 @@ async function initializeAchievements() {
 
     li.innerHTML = `
       <a class="hexIn" style="background-color: ${bgColor}">
-        <img src="../img/Achivment/${achievement.img}.png" alt="${key}">
+        <img src="../img/ACHIVMENT/${achievement.img}.png" alt="${key}">
         <h1 id="title">${key}</h1>
         <p id="description">
           ${achievement.description}

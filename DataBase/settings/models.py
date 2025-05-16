@@ -1,16 +1,12 @@
 from sqlalchemy import String, ForeignKey, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import event
 
-import asyncio
 from typing import Annotated
 from enum import Enum
 import secrets, string, bcrypt
 
 from DataBase.settings.configuration_DB import Base, str_256, str_32, session_factory
-
 
 # Помощь --------------------------------------------------------------------------
 async def generate_random_code(length: int = 8, max_attempts: int = 100) -> str:
@@ -37,9 +33,9 @@ class kvant(Enum):
     Хай_тек = "Хай_тек"
     Космо = "Космо"
     Гео = "Гео"
-    VR = "VR"
+    VR_AR = "VR_AR"
     Пром_робо = "Пром_робо"
-intpk = Annotated[int, mapped_column(primary_key=True)] #id
+intpk = Annotated[int, mapped_column(primary_key=True)]
 # Помощь --------------------------------------------------------------------------
 
 

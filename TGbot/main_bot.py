@@ -1,6 +1,6 @@
 # ======================== ВЫБОР ДЕРИКТОРИИ ========================
-import sys
-import os
+
+import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # ======================== ИМПОРТЫ БИБЛИОТЕК ========================
@@ -13,6 +13,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
 # ======================== ИМПОРТЫ ПРОЕКТА ========================
+
 from TGbot.config import settings
 from DataBase import Func
 from DataBase.settings.models import level, kvant
@@ -23,6 +24,7 @@ bot = Bot(token=settings.get_token)
 dp = Dispatcher()
 
 # ======================== КЛАССЫ СОСТОЯНИЙ FSM ========================
+
 class WaitCode(StatesGroup):
     reg_teacher = State()
     reg_student = State()
@@ -48,9 +50,9 @@ class DeleteStudent(StatesGroup):
     patronymic = State()
 
 # ======================== КОМАНДЫ ========================
+
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
-    print(f"{message.from_user.username} - Запустил бота")
     builder = InlineKeyboardBuilder()
 
      # Проверка на учителя

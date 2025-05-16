@@ -3,7 +3,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     token: str
     url: str
-    admin_password: str
 
     @property
     def get_token(self):

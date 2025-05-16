@@ -1,16 +1,3 @@
-document.addEventListener('touchmove', function(e) {
-  // Если контент уже вверху или внизу — блокируем стандартное поведение
-  const scroller = e.target.closest('.scrollable-element');
-  if (scroller) {
-    const isTop = scroller.scrollTop <= 0;
-    const isBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight;
-    if ((isTop && e.deltaY < 0) || (isBottom && e.deltaY > 0)) {
-      e.preventDefault();
-    }
-  }
-}, { passive: false });
-
-
 const userId = 0
 
 if (window.Telegram && window.Telegram.WebApp) {
@@ -423,7 +410,7 @@ async function initializeTopics() {
             // Добавляем изображение, если оно есть
             if (topic.img) {
                 const img = document.createElement('img');
-                img.src = `../img/Topics/${topic.img}`;
+                img.src = `../img/TOPIC/${topic.img}`;
                 topicBtn.appendChild(img);
             }
 
