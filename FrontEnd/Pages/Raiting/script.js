@@ -15,7 +15,7 @@ const userId = 0
 
 if (window.Telegram && window.Telegram.WebApp) {
 
-    window.Telegram.WebApp.disableVerticalSwipes()
+    window.Telegram.WebApp.isVerticalSwipesEnabled = false;
 
     const initData = window.Telegram.WebApp.initData;
 
