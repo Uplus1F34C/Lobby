@@ -15,6 +15,8 @@ const userId = 0
 
 if (window.Telegram && window.Telegram.WebApp) {
 
+    window.Telegram.WebApp.disableVerticalSwipes()
+
     const initData = window.Telegram.WebApp.initData;
 
     // Парсим initData (он в формате URL-encoded строки)
