@@ -5,6 +5,7 @@ html {
 
 body {
   
+  position: fixed;
   overscroll-behavior: none;
   overscroll-behavior-y: contain; /* Блокирует "подёргивание" при скролле */
   touch-action: pan-y; /* Разрешает только вертикальный скролл */
