@@ -4,19 +4,12 @@ html {
 }
 
 body {
-  
   position: fixed;
-  overscroll-behavior: none;
-  overscroll-behavior-y: contain; /* Блокирует "подёргивание" при скролле */
-  touch-action: pan-y; /* Разрешает только вертикальный скролл */
-  overflow: hidden;
   
   background: linear-gradient(47deg, #00F8BE, #2A96FB);
   background-attachment: fixed;
   background-size: 200% 200%;
-  margin: 0;
-  -webkit-overflow-scrolling: touch; /* Улучшает скролл на iOS */
-  touch-action: manipulation; /* Предотвращает нежелательные зум-жесты */
+  margin: 0;/
 }
 
 #main {
