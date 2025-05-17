@@ -7,3 +7,6 @@ DataBase/settings/__pycache__/models.cpython-312.pyc
 DataBase/settings/.env
 TGbot/__pycache__/config.cpython-312.pyc
 TGbot/.env
+BackEnd/__pycache__/main_back.cpython-312.pyc
+Bot/__pycache__/config.cpython-312.pyc
+Bot/.env

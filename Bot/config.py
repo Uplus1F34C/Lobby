@@ -11,8 +11,6 @@ class Settings(BaseSettings):
     def get_url(self):
         return self.url
     
-    def get_admin_password(self):
-        return self.admin_password
-    model_config = SettingsConfigDict(env_file="TGbot/.env")
+    model_config = SettingsConfigDict(env_file="Bot/.env")
 
 settings = Settings()

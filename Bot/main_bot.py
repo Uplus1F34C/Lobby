@@ -14,7 +14,7 @@ from aiogram.fsm.state import State, StatesGroup
 
 # ======================== ИМПОРТЫ ПРОЕКТА ========================
 
-from TGbot.config import settings
+from Bot.config import settings
 from DataBase import Func
 from DataBase.settings.models import level, kvant
 
