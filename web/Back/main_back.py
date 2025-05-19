@@ -15,6 +15,14 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+@app.get(summary="Получить ученика",
+        path='/get_student_info/{tg_id}')
+async def get_achivments(tg_id: int):
+    try:
+        return await Func.get_student_info(tg_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Ошибка: {e}")
+
 @app.get(summary="Получить достижения",
         path='/get_achivments/{tg_id}')
 async def get_achivments(tg_id: int):

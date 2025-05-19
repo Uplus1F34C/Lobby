@@ -10,3 +10,4 @@ TGbot/.env
 BackEnd/__pycache__/main_back.cpython-312.pyc
 Bot/__pycache__/config.cpython-312.pyc
 Bot/.env
+web/Back/__pycache__/main_back.cpython-312.pyc

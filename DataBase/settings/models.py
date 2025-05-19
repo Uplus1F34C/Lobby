@@ -22,10 +22,10 @@ async def generate_random_code(length: int = 8, max_attempts: int = 100) -> str:
         raise ValueError(f"Не удалось сгенерировать уникальный код после {max_attempts} попыток.")
 
 class level(Enum):
-    Стартовый = "Стартовый"
-    Базовый = "Базовый"
-    Углубленный = "Углубленный"
-    Проектный = "Проектный"
+    С = "С"
+    Б = "Б"
+    У = "У"
+    П = "П"
 class kvant(Enum):
     IT = "IT"
     Пром_дизайн = "Пром_дизайн"

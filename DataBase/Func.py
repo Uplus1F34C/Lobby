@@ -550,7 +550,6 @@ async def log_student(student_tg_id: int):
                 return {"status": False, 
                         "error": False, 
                         "info": "Студент не найден"
-
                 }
             
             return {
@@ -571,6 +570,47 @@ async def log_student(student_tg_id: int):
         finally:
             await session.close()
 
+async def get_student_info(student_tg_id: int):
+    async with session_factory() as session:
+        try:
+            stmt = await session.execute(
+                select(
+                StudentClass.name,
+                GroupClass.year,
+                GroupClass.level,
+                GroupClass.kvant,
+                GroupClass.group_num,
+                MarkClass.points
+            )
+            .select_from(StudentClass)
+            .join(MarkClass, StudentClass.id == MarkClass.id_student)
+            .join(GroupClass, MarkClass.id_group == GroupClass.id)
+            .where(StudentClass.tg_id == student_tg_id)
+            )
+            student_info = stmt.first()
+            
+            if student_info is None:
+                return {"status": False, 
+                        "error": False, 
+                        "info": "Студент не найден"
+                }
+            
+            return {
+                "status": True, 
+                "error": False,
+                "info": "Успешная аутентификация", 
+                "name": student_info.name,
+                "group": f"{student_info.level.value}-{student_info.kvant.value}-{student_info.group_num}",
+                "points": student_info.points
+            }
+        
+        except Exception as e:
+            return {"status": False, 
+                    "error": True, 
+                    "info": f"Ошибка при аутентификации: {e}"
+            }
+        finally:
+            await session.close()
 # def get_student_info(student_id: int):
 #     """
 #     Получение ФИО студента по ID

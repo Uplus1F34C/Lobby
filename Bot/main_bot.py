@@ -57,7 +57,7 @@ async def cmd_start(message: Message):
 
      # Проверка на учителя
     teacher_info = await Func.log_teacher(message.from_user.id)
-    student_info = await Func.log_student_tg(message.from_user.id)
+    student_info = await Func.log_student(message.from_user.id)
     if teacher_info["status"]:
         builder.add(InlineKeyboardButton(
             text="👨‍🎓 Добавить студента",
@@ -137,7 +137,7 @@ async def cmd_menu(message: Message):
 
     # Проверка на учителя
     teacher_auth = await Func.log_teacher(message.from_user.id)
-    student_auth = await Func.log_student_tg(message.from_user.id)
+    student_auth = await Func.log_student(message.from_user.id)
     if teacher_auth["status"]:
         builder.add(InlineKeyboardButton(
             text="👨‍🎓 Добавить студента",
@@ -180,13 +180,6 @@ async def cmd_menu(message: Message):
         await message.message.answer(welcome_message, reply_markup=builder.as_markup())
     except:
         await message.answer(welcome_message, reply_markup=builder.as_markup())
-
-
-@dp.message(Command("admin"))
-async def cmd_menu(message: Message):
-    await message.answer("❌ Программа администраторов пока что недоступна")
-
-
 
 # ======================== ФУНКЦИИ УЧИТЕЛЕЙ ========================
 
@@ -467,7 +460,7 @@ async def process_student_patronymic_for_code(message: Message, state: FSMContex
 # ==== ВЫХОД ИЗ АККАУНТА УЧИТЕЛЯ ====
 @dp.callback_query(F.data == "exit_teacher__cd")
 async def exit_teacher(callback: CallbackQuery):
-    result = await Func.del_teachers_tg_id(teacher_tg_id=callback.from_user.id)
+    result = await Func.del_teachers_id(teacher_tg_id=callback.from_user.id)
 
     if result["status"]:
         await callback.message.answer("✅ Вы успешно вышли из аккаунта")
@@ -491,7 +484,7 @@ async def reg_student(callback: CallbackQuery, state: FSMContext):
 
 @dp.message(WaitCode.reg_student)
 async def reg_student_2(message: Message, state: FSMContext):
-    result = await Func.reg_student_tg(
+    result = await Func.reg_student(
         student_tg_id=message.from_user.id,
         code=message.text.strip()
     )
@@ -527,7 +520,7 @@ async def post_idea(callback: CallbackQuery):
 @dp.callback_query(F.data == "exit_student__cd")
 async def exit_student(callback: CallbackQuery):
     """Выход студента из аккаунта"""
-    result = await Func.del_students_tg_id(student_tg_id=callback.from_user.id)
+    result = await Func.del_students_id(student_tg_id=callback.from_user.id)
 
     if result["status"]:
         await callback.message.answer("✅ Вы успешно вышли из аккаунта")

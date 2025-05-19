@@ -28,6 +28,7 @@ get_marks - Получить оценки
 count_points - Принудительно пересчитать количство очков у студента по ID
 get_group_rating - Получить рейтинг одной группы
 get_kvant_rating - Получить рейтинг одной параллели
+    
 """)
 
 async def main():
@@ -40,6 +41,11 @@ async def main():
                 insert_result = await Func.insert_group()
                 
                 result = reset_result, insert_result
+
+            elif cmd == "test":
+                result = await Func.get_student_info(
+                        student_tg_id=input("Tg id: "),
+                )
 
         # Учитель ----------------------------------------------------------------------
             elif cmd == "insert_teacher":
