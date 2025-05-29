@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from DataBase import Func
+from DataBase.Services import get_service, student_service
 
 app = FastAPI()
 app.add_middleware(
@@ -15,11 +15,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-@app.get(summary="Получить ученика",
-        path='/get_student_info/{tg_id}')
+@app.get(summary="Получить информацию о ученике",
+        path='/get_student/{tg_id}')
 async def get_achivments(tg_id: int):
     try:
-        return await Func.get_student_info(tg_id)
+        return await student_service.get_student_info(tg_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Ошибка: {e}")
 
@@ -27,7 +27,7 @@ async def get_achivments(tg_id: int):
         path='/get_achivments/{tg_id}')
 async def get_achivments(tg_id: int):
     try:
-        return await Func.get_achivments(tg_id)
+        return await get_service.get_achievements(tg_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Ошибка: {e}")
     
@@ -35,15 +35,15 @@ async def get_achivments(tg_id: int):
         path='/get_marks/{tg_id}')
 async def get_achivments(tg_id: int):
     try:
-        return await Func.get_marks(tg_id)
+        return await get_service.get_marks(tg_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Ошибка: {e}")
 
-@app.get(summary="Получить рейтинг",
+@app.get(summary="Получить рейтинг группы",
         path='/get_group_raiting/{tg_id}')
 async def get_achivments(tg_id: int):
     try:
-        return await Func.get_group_rating(tg_id)
+        return await get_service.get_group_rating(tg_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Ошибка: {e}")
     
@@ -51,6 +51,6 @@ async def get_achivments(tg_id: int):
         path='/get_kvant_raiting/{tg_id}')
 async def get_achivments(tg_id: int):
     try:
-        return await Func.get_kvant_rating(tg_id)
+        return await get_service.get_kvant_rating(tg_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Ошибка: {e}")

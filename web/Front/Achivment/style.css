@@ -1,0 +1,307 @@
+body {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  font-family: "Comic Relief";
+  touch-action: manipulation;
+}
+/* ========== HEADER ========== */
+header {
+    top: 0;
+    background-color: #A179DD;
+    padding: 5px;
+    padding-left: 10px;
+    height: 65px;
+    
+    z-index: 1;
+}
+header div{
+    display: flex;
+}
+header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+header p {
+    margin: 0;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 18px;
+    font-size: 15px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 0px 5px;
+}
+/* ========== HEADER ========== */
+
+/* ========== MAIN ========== */
+main {
+    overflow-y: auto;
+    background-color: #65DBC9;
+    height: 100%;
+}
+
+main::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+main::-webkit-scrollbar-track {
+  background: rgb(74, 125, 125); /* Цвет трека */
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8); 
+} 
+
+
+/* 
+main #logo {
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: visible;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+  backface-visibility: hidden; 
+  transform: translate3d(0, 0, 0);
+}
+
+main #logo-img {
+  position: absolute;
+  left: -50%; 
+  width: 100%; 
+  height: auto;
+  filter: opacity(0.4);
+  animation: rotate 20s linear infinite;
+  
+  will-change: transform; 
+  transform: translate3d(0, 0, 0); 
+}
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg); 
+  }
+} */
+
+
+main #Achivment-container {
+    width: 100%;
+    overflow-y: auto;
+    display:flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+main #Achivment-container .ach {
+    margin: 10px;
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+}
+
+
+.ach_noactive {
+    background-color: #517367;
+}
+.ach_noactive .ach-top {
+    background-color: #4c376b;
+}
+.ach_noactive .ach-bottom {
+    background-color: #5f562e;
+}
+
+.ach_active {
+    background-color: #35D59D;
+}
+.ach_active .ach-top {
+    background-color: #A179DD;
+}
+.ach_active .ach-bottom {
+    background-color: #C7B451;
+}
+
+
+.ach-front, .ach-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.ach-front {
+    height: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: transform 0.3s ease; /* Уменьшил время анимации для front */
+}
+
+.ach-back {
+    transform: translateY(100%);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.5s ease; /* Оставил прежним для back */
+}
+
+.ach-top {
+    height: 30%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease 0.2s; /* Оставил прежним */
+}
+
+.ach-bottom {
+    height: 50%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(100%);
+    transition: transform 0.4s ease 0.2s; /* Оставил прежним */
+}
+
+.ach-title {
+    margin: 0;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+}
+
+.ach-desc {
+    margin: 0;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    white-space: pre-line; /* Добавляем перенос строк */
+}
+
+/* Анимация при открытии */
+.ach.active .ach-front {
+    transform: translateY(-100%);
+    transition: transform 0.2s ease; /* Еще больше ускорил исчезновение */
+}
+
+.ach.active .ach-back {
+    transform: translateY(0);
+}   
+
+.ach.active .ach-top {
+    transform: translateY(0);
+}
+
+.ach.active .ach-bottom {
+    transform: translateY(0);
+}
+
+.ach:active {
+    transform: scale(0.95);
+}
+
+/* ========== MAIN ========== */
+
+
+/* ========== FOOTER ========== */
+footer {
+    bottom: 0;
+    background-color: #C7B451;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+
+    z-index: 1;
+}
+footer div{
+    bottom: 0;
+    background-color: #DBCF91;
+    height: 90%;
+    width: 98%;
+
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content:center;
+    align-items: center;
+
+    border-radius: 20px;
+}
+footer div button {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0);
+    height: 95%;
+    width: 33%;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    
+    border-radius: 20px;
+    border:none;
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+}
+footer div button img{
+    height: 90%;
+    width: auto;
+}
+footer div .active{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+footer div .noactive{
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/* ========== FOOTER ========== */
+
+@media (min-width: 350px) {
+    header h1 {
+        font-size: 30px;
+    }
+    header p {
+        font-size: 20px;
+    }
+    header {
+        height: 80px;
+    }
+    footer {
+        height: 80px;
+    }
+}

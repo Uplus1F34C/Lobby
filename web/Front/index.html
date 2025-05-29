@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Дерево навыков</title>
+
+        <link rel="stylesheet" href="Tree/style.css">  
+        <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- Официальный SDK -->
+
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
+
+    </head>
+    <body>
+        <header>
+            <h1 id="Name">Привет, </h1>
+            <div>
+                <p id="Group">Группа: </p>
+                <p id="Point">Баллы: </p>
+            </div>
+        </header>
+
+        <main>
+            <!-- <div id="logo">
+                <img id="logo-img" src="Img/Kvantorium_logo.svg"/>
+            </div> -->
+
+            <!-- Контейнер для тем -->
+            <div id="Topic-container" ></div> 
+            <!-- Контейнер для тем -->
+
+
+            <!-- Блок информации о теме -->
+            <div id="info" style="display: none;">
+                <div id="flex-1">
+                    <div id="flex-2">
+                        <h2 id="title" style='font-family: "Comic Relief";'><b>Название</b></h2>
+                        <div id="points" style='font-family: "Comic Relief";'>_/_</div>
+                    </div>
+                    <div id="mark" style='font-family: "Comic Relief";'>_</div>
+                </div>
+                <div id="description" style='font-family: "Comic Relief";'><b>Описание</b></div>
+            </div>
+            <!-- Блок информации о теме -->
+
+        </main>
+
+        <footer>
+            <div>
+                <button id="Tree" class="active"><img src="Img/Menu/Tree.png"></button>
+                <button onclick="window.location.href='Achivment.html';" id="Achivment" class="noactive"><img src="Img/Menu/Achivment.png"></button>
+                <button onclick="window.location.href='Rating.html';" id="Rating" class="noactive"><img src="Img/Menu/Rating.png"></button>
+            </div>
+        </footer>
+    </body>
+    <script src="Tree/script.js"></script>
+</html>

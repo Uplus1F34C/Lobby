@@ -1,0 +1,331 @@
+body {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  font-family: "Comic Relief";
+  touch-action: manipulation;
+}
+/* ========== HEADER ========== */
+header {
+    top: 0;
+    background-color: #A179DD;
+    padding: 5px;
+    padding-left: 10px;
+    height: 65px;
+    
+    z-index: 1;
+}
+header div{
+    display: flex;
+}
+header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+header p {
+    margin: 0;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 18px;
+    font-size: 15px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 0px 5px;
+}
+/* ========== HEADER ========== */
+
+/* ========== MAIN ========== */
+main {
+    overflow-y: auto;
+    background-color: #65DBC9;
+    height: 100%;
+}
+
+main::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+main::-webkit-scrollbar-track {
+  background: rgb(74, 125, 125); /* Цвет трека */
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8); 
+} 
+
+/* 
+main #logo {
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: visible;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+  backface-visibility: hidden; 
+  transform: translate3d(0, 0, 0);
+}
+
+main #logo-img {
+  position: absolute;
+  left: -50%; 
+  width: 100%; 
+  height: auto;
+  filter: opacity(0.4);
+  animation: rotate 20s linear infinite;
+  
+  will-change: transform; 
+  transform: translate3d(0, 0, 0); 
+}
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg); 
+  }
+} */
+
+
+main #Topic-container {
+  margin-top: 10px;
+  width: 100%;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  display: flex; /* Устанавливаем flexbox */
+}
+
+main #Topic-container div {
+  flex: 1;
+  margin: '0';
+  padding: '10px';
+  border-top: 'none'; 
+  border-bottom: 'none'; 
+  position: 'relative';
+}
+
+#Topic-container div div{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  min-width: 235px;
+}
+#Topic-container div div button{
+  width: 60px;
+  height: 60px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 5px;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+#Topic-container div div button img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+/* ========== INFO ========== */
+#info {
+  background-color: rgba(36, 202, 218, 0.778);
+  border: 1px solid #000000;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: auto;
+  width: 300px;
+}
+#flex-1 {
+  display: flex;
+  align-items: center;
+  justify-content:center;
+}
+
+#flex-2 {
+  margin-left: 10px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  min-width: auto;
+}
+#mark {
+  resize: none;
+  min-width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(45, 219, 45);
+  font-size: 25px;
+  border: 2px solid #000000;
+  margin: 10px;
+
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+#description {
+  width: 95%;
+  height: auto;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  
+  color: black;
+  
+  font-size: 15px;
+  font-family: monospace;
+  
+  text-align: center;
+}
+#points {
+  min-width: 50px;
+  height: 25px;
+  border-radius: 10px;
+  margin-top: -15px;
+  background-color: #E275E0;
+  border: 1px solid #000000;
+  font-size: 17px;
+
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+#title {
+  font-size: 22px;
+  color: white;
+  -webkit-text-stroke: 0.5px black; /* Толщина и цвет обводки (для браузеров, использующих движок WebKit, например Google Chrome) */
+}
+/* ========== INFO ========== */
+/* ========== MAIN ========== */
+
+
+/* ========== FOOTER ========== */
+footer {
+    bottom: 0;
+    background-color: #C7B451;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+
+    z-index: 1;
+}
+footer div{
+    bottom: 0;
+    background-color: #DBCF91;
+    height: 90%;
+    width: 98%;
+
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content:center;
+    align-items: center;
+
+    border-radius: 20px;
+}
+footer div button {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0);
+    height: 95%;
+    width: 33%;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    
+    border-radius: 20px;
+    border:none;
+    
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+}
+footer div button img{
+    height: 90%;
+    width: auto;
+}
+footer div .active{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+footer div .noactive{
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/* ========== FOOTER ========== */
+
+@media (min-width: 350px) {
+    header h1 {
+        font-size: 30px;
+    }
+    header p {
+        font-size: 20px;
+    }
+    header {
+        height: 80px;
+    }
+    footer {
+        height: 80px;
+    }
+}
+
+@media (min-width: 500px) {
+    main #logo-img {
+        left: -45%; /* Сдвигаем влево на 100%, чтобы показывать правую половину */
+        width: 90%; /* Ширина в 2 раза больше контейнера */
+    }
+}
+
+@media (min-width: 600px) {
+    main #logo-img {
+        left: -40%; /* Сдвигаем влево на 100%, чтобы показывать правую половину */
+        width: 80%; /* Ширина в 2 раза больше контейнера */
+    }
+}
+
+@media (min-width: 700px) {
+    main #logo-img {
+        left: -35%; /* Сдвигаем влево на 100%, чтобы показывать правую половину */
+        width: 70%; /* Ширина в 2 раза больше контейнера */
+    }
+}
+
+@media (min-width: 800px) {
+    main #logo-img {
+        left: -30%; /* Сдвигаем влево на 100%, чтобы показывать правую половину */
+        width: 60%; /* Ширина в 2 раза больше контейнера */
+    }
+}
+
+@media (min-width: 900px) {
+    main #logo-img {
+        left: -25%; /* Сдвигаем влево на 100%, чтобы показывать правую половину */
+        width: 50%; /* Ширина в 2 раза больше контейнера */
+    }
+}
+
+@media (min-width: 1000px) {
+    main #logo-img {
+        left: -20%; /* Сдвигаем влево на 100%, чтобы показывать правую половину */
+        width: 40%; /* Ширина в 2 раза больше контейнера */
+    }
+}

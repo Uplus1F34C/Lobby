@@ -1,0 +1,74 @@
+{
+    "Кормилец": {
+        "description": "Принеси вкусняшки к чаю",
+        "img": "Food",
+        "status": false,
+        "point": 25
+    },
+    "Волонтер": {
+        "description": "Стань волонтером кванториума",
+        "img": "GoodBoy",
+        "status": false,
+        "point": 25
+    },
+    "Местный Жуков": {
+        "description": "Хорошо покажи себя в роли тимлида",
+        "img": "teamlid",
+        "status": false,
+        "point": 25
+    },
+    "Эврика!": {
+        "description": "Найди эффективное решение проблемы",
+        "img": "idea",
+        "status": false,
+        "point": 25
+    },
+    "Победитель": {
+        "description": "Выйграй в соревновании кванториума",
+        "img": "Medal",
+        "status": false,
+        "point": 25
+    },
+    "Отличник": {
+        "description": "Получи максимум баллов",
+        "img": "Profy",
+        "status": false,
+        "point": 25
+    },
+    "Превозмог": {
+        "description": "Выйди со своим проектом на коллаборацию",
+        "img": "Star",
+        "status": false,
+        "point": 25
+    },
+    "Активный": {
+        "description": "Сходи на мероприятие кванториума",
+        "img": "event",
+        "status": false,
+        "point": 25
+    },
+    "Командный игрок": {
+        "description": "Будь активным в команде",
+        "img": "group",
+        "status": false,
+        "point": 25
+    },
+    "Это моё?": {
+        "description": "Создай свой кейс или проект",
+        "img": "Hummer",
+        "status": false,
+        "point": 25
+    },
+    "Оратор": {
+        "description": "Покажи всем, как надо выступать на публике",
+        "img": "Micro",
+        "status": false,
+        "point": 25
+    },
+    "Мастер": {
+        "description": "Принеси настольную игру",
+        "img": "GameMaster",
+        "status": false,
+        "point": 25
+    }
+}

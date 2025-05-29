@@ -11,6 +11,6 @@ class Settings(BaseSettings):
     def get_url(self):
         return self.url
     
-    model_config = SettingsConfigDict(env_file="Bot/.env")
+    model_config = SettingsConfigDict(env_file="Bot/settings/.env")
 
 settings = Settings()

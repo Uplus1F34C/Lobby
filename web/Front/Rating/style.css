@@ -1,0 +1,341 @@
+body {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  font-family: "Comic Relief";
+  touch-action: manipulation;
+}
+/* ========== HEADER ========== */
+header {
+    top: 0;
+    background-color: #A179DD;
+    padding: 5px;
+    padding-left: 10px;
+    height: 65px;
+    
+    z-index: 1;
+}
+header div{
+    display: flex;
+}
+header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+header p {
+    margin: 0;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 18px;
+    font-size: 15px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 0px 5px;
+}
+/* ========== HEADER ========== */
+
+/* ========== MAIN ========== */
+main {
+    display: flex;
+    flex-direction: column;
+    background-color: #65DBC9;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+main::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+main::-webkit-scrollbar-track {
+  background: rgb(74, 125, 125); /* Цвет трека */
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4); /* Цвет ползунка */
+  border-radius: 4px;
+}
+main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8); 
+} 
+
+.titel {
+  font-size: 40px;
+  background-color: #00FFAE; 
+  border-radius: 10px;
+  margin: 0;
+  margin-top: 20px;
+  padding: 0px 15px;
+}
+
+#group-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+
+  direction: rtl;
+}
+
+#kvant-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  overflow-y: none;
+  direction: rtl;
+}
+
+.student {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: ltr; /* Возвращаем нормальное направление для содержимого */
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  height: 80px;
+  width: auto;
+}
+.rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #00FFAE; 
+
+  padding: 10px;
+  margin: 0;
+
+  height: 30px;
+  min-width: 50px;
+  max-width: 50px;
+  
+  border: 2px solid black; 
+
+  transform: skew(-40deg);
+}
+.name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #fff;
+
+  padding: 10px 10px; 
+  margin-left: -10px;
+
+  height: 20px;
+  min-width: 200px; /* Минимальная ширина 250 пикселей */
+  width: auto;
+  max-width: 350px;
+
+  border: 2px solid black; /* Add visible border */
+
+  transform: skew(-40deg); /* Skew to create parallelogram effect with visible borders */
+  z-index: 1;
+}
+.point {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+  background-color: #000; 
+
+  padding: 10px 15px;
+  margin-left: -2px;
+
+  height: 20px;
+  min-width: 30px;
+  max-width: 60px;
+  
+  border: 2px solid rgb(255, 255, 255); 
+  transform: skew(-40deg); 
+  z-index: 0;
+}
+
+.text {
+  font-size: 20px;
+  font-family: "Comic Relief";
+  text-align: center;
+
+  transform: skew(0deg);
+  transform: skew(40deg)
+}
+
+
+#kvant-rating .rank {
+  padding: 10px 15px;
+  min-width: 50px;
+  max-width: 70px;
+}
+
+#kvant-rating .point {
+  min-width: 70px;
+  max-width: 160px;
+}
+
+#zero  {
+  background-color: #00E6DA;
+}
+#first {
+  background-color: #E6B800;
+}
+#second {
+  background-color: #9AB3C5;
+}
+#third {
+  background-color: #CB4000;
+}
+
+
+
+
+/* ========== MAIN ========== */
+
+
+/* ========== FOOTER ========== */
+footer {
+    bottom: 0;
+    background-color: #C7B451;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+
+    z-index: 1;
+}
+footer div{
+    bottom: 0;
+    background-color: #DBCF91;
+    height: 90%;
+    width: 98%;
+
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content:center;
+    align-items: center;
+
+    border-radius: 20px;
+}
+footer div button {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0);
+    height: 95%;
+    width: 33%;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    
+    border-radius: 20px;
+    border:none;
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+}
+footer div button img{
+    height: 90%;
+    width: auto;
+}
+footer div .active{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+footer div .noactive{
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/* ========== FOOTER ========== */
+
+@media (min-width: 350px) {
+    header h1 {
+        font-size: 30px;
+    }
+    header p {
+        font-size: 20px;
+    }
+    header {
+        height: 80px;
+    }
+    footer {
+        height: 80px;
+    }
+}
+
+@media (max-width: 500px) {
+    .text {
+      font-size: 15px;
+    }
+    .titel {
+      font-size: 35px;
+    }
+
+    .name {
+      min-width: 150px; 
+      height: 15px;
+    }
+    .rank {
+      height: 25px;
+      min-width: 40px;
+      padding: 10px 3px;
+      padding-right: 7px;
+    }
+    .point {
+      height: 15px;
+      min-width: 30px;
+      padding: 10px 10px;
+    }
+    .student {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+    #kvant-rating .rank {
+      padding: 10px 3px;
+      padding-right: 7px;
+      min-width: 50px;
+    }
+    #kvant-rating .point {
+      min-width: 50px;
+    }
+}
+
+@media (max-width: 400px) {
+  .text {
+    font-size: 13px;
+  }
+  .titel {
+    font-size: 30px;
+  }
+  .name {
+    height: 10px;
+  }
+  .rank {
+    height: 20px;
+  }
+  .point {
+    height: 10px;
+  }
+  .student {
+    margin-bottom: -10px;
+  }
+  #kvant-rating .rank {
+    padding: 10px 3px;
+    padding-right: 7px;
+    min-width: 50px;
+  }
+  #kvant-rating .point {
+    min-width: 50px;
+  }
+}

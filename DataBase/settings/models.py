@@ -1,26 +1,13 @@
-from sqlalchemy import String, ForeignKey, select
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from typing import Annotated
 from enum import Enum
-import secrets, string, bcrypt
+import secrets, string
 
-from DataBase.settings.configuration_DB import Base, str_256, str_32, session_factory
+from DataBase.Settings.configuration_DB import Base, str_256, str_32, session_factory, intpk
 
-# Помощь --------------------------------------------------------------------------
-async def generate_random_code(length: int = 8, max_attempts: int = 100) -> str:
-    async with session_factory() as session:
-        alphabet = string.ascii_uppercase + string.digits 
-        for _ in range(max_attempts):
-            code = ''.join(secrets.choice(alphabet) for _ in range(length))
-            result = await session.execute(
-                select(TeacherClass).where(TeacherClass._code == code)
-            )
-            if not result.scalars().first():
-                return code
-        raise ValueError(f"Не удалось сгенерировать уникальный код после {max_attempts} попыток.")
-
+# ==== ПОМОЩЬ ====
 class level(Enum):
     С = "С"
     Б = "Б"
@@ -35,11 +22,24 @@ class kvant(Enum):
     Гео = "Гео"
     VR_AR = "VR_AR"
     Пром_робо = "Пром_робо"
-intpk = Annotated[int, mapped_column(primary_key=True)]
-# Помощь --------------------------------------------------------------------------
 
+async def generate_random_code(length: int = 8, max_attempts: int = 100) -> str:
+    async with session_factory() as session:
+        alphabet = string.ascii_uppercase + string.digits 
+        for _ in range(max_attempts):
+            code = ''.join(secrets.choice(alphabet) for _ in range(length))
+            # real_teacher_code = await session.execute(
+            #     select(TeacherClass).where(TeacherClass._code == code)
+            # )
+            # real_student_code = await session.execute(
+            #     select(StudentClass).where(StudentClass._code == code)
+            # )
+            # print(real_student_code.scalars().first())
+            # if not real_student_code.scalars().first() and real_teacher_code.scalars().first():
+            return code
+        raise ValueError(f"Не удалось сгенерировать уникальный код после {max_attempts} попыток.")
 
-# Студент --------------------------------------------------------------------------
+# ==== СТУДЕНТ ====
 class StudentClass(Base):
     __tablename__ = "student"
 
@@ -47,20 +47,10 @@ class StudentClass(Base):
     name: Mapped[str_32]
     surname: Mapped[str_32]
     patronymic: Mapped[str_32]
-    login: Mapped[str_256] = mapped_column(default="")
-    password: Mapped[str_256] = mapped_column(default="")
     tg_id: Mapped[str] = mapped_column(String(10), default="")
     _code: Mapped[str] = mapped_column(String(8))
 
     marks: Mapped["MarkClass"] = relationship(back_populates="student")
-
-    def check_password(self, password: str) -> bool: #авторизация
-        if self.password is None:
-            return  {"status": False, "info": "Пароль не указан"}
-        if bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8')):
-            return {"status": True, "info": f"Успешная утентификация", "id": self.id}
-        else: 
-            return {"status": False, "info": f"Неверный пароль"}
         
     async def generate_and_set_code(self):
         if not self._code:
@@ -74,11 +64,9 @@ class StudentClass(Base):
     def code(self, code: str):
       self._code = code
 
+    
 
-# Студент --------------------------------------------------------------------------
-
-
-# Учитель --------------------------------------------------------------------------
+# ==== УЧИТЕЛЬ ====
 class TeacherClass(Base):
     __tablename__ = "teacher"
 
@@ -89,6 +77,10 @@ class TeacherClass(Base):
     tg_id: Mapped[str] = mapped_column(String(10), default="")
     _code: Mapped[str] = mapped_column(String(8))
 
+    async def generate_and_set_code(self):
+        if not self._code:
+            self._code = await generate_random_code()
+
     @hybrid_property
     def code(self):
         return self._code
@@ -97,14 +89,10 @@ class TeacherClass(Base):
     def code(self, code: str):
       self._code = code
 
-    async def generate_and_set_code(self):
-        if not self._code:
-            self._code = await generate_random_code()
-# Учитель --------------------------------------------------------------------------
 
-# Группа --------------------------------------------------------------------------
+# ==== ГРУППА ====
 class GroupClass(Base):
-    __tablename__ = "kgroup"
+    __tablename__ = "_group"
 
     id: Mapped[intpk]
     year: Mapped[str_256]
@@ -114,45 +102,17 @@ class GroupClass(Base):
     topics: Mapped[str_256]
 
     marks: Mapped[list["MarkClass"]] = relationship(back_populates="group")
-# Группа --------------------------------------------------------------------------
 
-
-# Оценки --------------------------------------------------------------------------
+# ==== ОЦЕНКИ ====
 class MarkClass(Base):
     __tablename__ = "mark"
 
     id: Mapped[intpk]
     id_student: Mapped[int] = mapped_column(ForeignKey("student.id", ondelete="CASCADE"))
-    id_group: Mapped[int] = mapped_column(ForeignKey("kgroup.id"))
+    id_group: Mapped[int] = mapped_column(ForeignKey("_group.id"))
     points: Mapped[int]
     marks: Mapped[str_256]
     achivment: Mapped[str_256]
     
     student: Mapped["StudentClass"] = relationship(back_populates="marks") 
     group: Mapped["GroupClass"] = relationship(back_populates="marks")
-# Оценки --------------------------------------------------------------------------
-
-
-# Админ --------------------------------------------------------------------------
-class AdminClass(Base):
-    __tablename__ = "admin"
-
-    id: Mapped[intpk]
-    name: Mapped[str_32]
-    surname: Mapped[str_32]
-    patronymic: Mapped[str_32]
-    tg_id: Mapped[str] = mapped_column(String(10), default="")
-    _code: Mapped[str] = mapped_column(String(8))
-
-    @hybrid_property
-    def code(self):
-        return self._code
-
-    @code.setter
-    def code(self, code: str):
-      self._code = code
-
-    async def generate_and_set_code(self):
-        if not self._code:
-            self._code = await generate_random_code()
-# Админ --------------------------------------------------------------------------
